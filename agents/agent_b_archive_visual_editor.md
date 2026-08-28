@@ -255,9 +255,12 @@ Pass the **same base `--out-dir`** (e.g. `episodes/<id>/media/inspection`) for e
 source you inspect in an episode -- frames are written into a subdirectory scoped to
 that specific source file (its filename stem plus a short hash of its resolved
 path), so inspecting several different videos into one shared inspection directory
-never lets one video's frames overwrite another's. Re-inspecting the exact same
-source (or the same window of it) again is expected to overwrite its own previous
-frames -- that's a fresher look at the same evidence, not a collision.
+never lets one video's frames overwrite another's. A `fine` pass is further scoped
+under its own `[start, end]` window subdirectory, so running several fine passes
+over *different* windows of the *same* source (e.g. `55-85s`, then later `120-150s`)
+never overwrites each other either. Re-running the exact same source's `coarse` pass,
+or a `fine` pass over the exact same window, again is expected to overwrite its own
+previous frames -- that's a fresher look at the same evidence, not a collision.
 
 This tool only produces frames to look at -- it never writes `asset_inventory.json`
 and never derives a `usable_segments` entry automatically. Recording a segment is

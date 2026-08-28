@@ -23,10 +23,13 @@ source file (its filename stem plus a short hash of its resolved path), never
 directly into `out_dir` itself -- so inspecting several different source videos
 into the same base inspection directory (e.g.
 `episodes/<id>/media/inspection/`) can never let one video's frames overwrite
-another's, regardless of generic `coarse_000...`/`fine_000...` naming. Re-inspecting
-the SAME source (the same window or the whole video again) intentionally overwrites
-its own previous frames -- ffmpeg's `-y` -- since that's just a fresher look at the
-same evidence, not a collision.
+another's, regardless of generic `coarse_000...`/`fine_000...` naming. A `fine`
+pass is further scoped under its own `[start_sec, end_sec]` window subdirectory
+(e.g. `fine_0055.00_0085.00/`), so a later fine pass over a DIFFERENT window of the
+SAME source can't overwrite an earlier window's evidence either. Re-inspecting the
+exact same source (a `coarse` pass, or a `fine` pass over the exact same window)
+intentionally overwrites its own previous frames -- ffmpeg's `-y` -- since that's
+just a fresher look at the same evidence, not a collision.
 
 This tool only produces evidence for Agent B to look at. It never writes
 asset_inventory.json itself, and it never invents timestamps -- usable_segments must
@@ -143,9 +146,11 @@ def _source_scoped_dir(path: str, base_out_dir: str) -> Path:
     return Path(base_out_dir) / f"{safe_stem}_{short_hash}"
 
 
-def _extract_frames(path: str, timestamps: list, out_dir: str, prefix: str) -> list:
+def _extract_frames(path: str, timestamps: list, out_dir: str, prefix: str, window_subdir: str = None) -> list:
     _require_binary("ffmpeg")
     out = _source_scoped_dir(path, out_dir)
+    if window_subdir:
+        out = out / window_subdir
     out.mkdir(parents=True, exist_ok=True)
     frame_paths = []
     for i, ts in enumerate(timestamps):
@@ -204,7 +209,11 @@ def fine_contact_sheet(
 
     Frames are written under the same per-source subdirectory as coarse_contact_sheet
     (see _source_scoped_dir) -- safe to pass the same base out_dir across many
-    inspections of many different source videos.
+    inspections of many different source videos -- AND further under a
+    window-scoped subdirectory keyed to [start_sec, end_sec] (e.g.
+    fine_0055.00_0085.00/), so a later fine pass over a DIFFERENT window of the same
+    source never overwrites an earlier window's frames. Re-running the exact same
+    window again intentionally overwrites its own previous frames.
 
     Returns a list of {timestamp_sec, frame_path}.
     """
@@ -219,7 +228,8 @@ def fine_contact_sheet(
         timestamps.append(round(min(t, end_sec - 0.02), 2))
         t += interval
 
-    return _extract_frames(path, timestamps, out_dir, prefix="fine")
+    window_subdir = f"fine_{start_sec:07.2f}_{end_sec:07.2f}"
+    return _extract_frames(path, timestamps, out_dir, prefix="fine", window_subdir=window_subdir)
 
 
 def _main() -> int:
