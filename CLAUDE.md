@@ -47,7 +47,10 @@ status says so.
    or `final_script.json` that isn't traceable to a `fact_pack.json` claim_id.
 2. **The quirk is a lead, not a conclusion.** `episode_brief.json`'s `quirk` seeds
    research; it must never be auto-promoted into the thesis or into a claim without
-   independent verification (see `fact_pack.json`'s `quirk_lead`).
+   independent verification (see `fact_pack.json`'s `quirk_lead`). The thesis is an
+   *output* of A1/A2 evidence collection, not an input Agent A searches to confirm:
+   collect broadly, verify claims, find the strongest evidenced contradiction or
+   mechanism, and build the thesis from that.
 3. **Fact pack before outline.** `fact_pack.json` must reach `status: "verified"`
    (A2's adversarial pass done) before `producer_outline.json` is built from it.
 4. **Real asset coverage before final script.** `final_script.json` (A4) must not be
@@ -109,6 +112,20 @@ status says so.
     `producer_outline.json`'s `estimated_runtime_sec`, set by Agent A during A3 after
     the beats exist — never hardcoded. Length follows evidence density, story
     density, and expected visual density; never pad a thin story to hit a number.
+16. **Claim strength must never exceed the evidence, including after paraphrasing.**
+    "Approximately"/"reportedly"/"one source says" must not quietly become
+    "exactly"/"definitely"/"everyone" anywhere downstream — in `safe_wording`, in the
+    outline, or eventually in narration. This is the single most common way a fact
+    pack degrades and gets checked explicitly in A2's adversarial pass.
+17. **A derived claim can never be stronger than its weakest input.** If any
+    `source_claim_ids` input to a `derived_comparison` claim has
+    `allowed_in_narration: false`, the derived claim must too, regardless of whether
+    the arithmetic itself is correct. Mechanically checked by
+    `scripts/validate_episode.py`.
+
+These invariants are topic-independent by design — none of them may be relaxed or
+overridden for a specific episode's subject matter. `agents/agent_a_producer_writer.md`
+has the full editorial detail; this list is the index.
 
 ## Layout
 
@@ -122,6 +139,11 @@ status says so.
 - `schemas/` — JSON Schema (draft-07) for every episode state file. Validate against
   these before an agent hands off to the next stage.
 - `run_episode.py` — CLI. Currently one command: `init`.
+- `scripts/validate_episode.py` — deterministic validator for one episode: schema
+  shape (if `jsonschema` is installed; skipped with a note otherwise) plus
+  cross-file/reference checks no schema can express (claim-reference integrity, the
+  derived-claim-capped-by-inputs rule, arithmetic, the A4 asset-coverage gate,
+  runtime-vs-policy). Run it after A2 and after A3; it has no episode-specific logic.
 
 ## Language architecture
 

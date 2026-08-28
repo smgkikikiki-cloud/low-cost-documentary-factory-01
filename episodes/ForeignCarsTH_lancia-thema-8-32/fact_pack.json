@@ -1,0 +1,350 @@
+{
+  "episode_id": "ForeignCarsTH_lancia-thema-8-32",
+  "status": "verified",
+  "research_language": "auto",
+  "working_language": "en",
+  "quirk_lead": {
+    "text": "A conservative Italian executive sedan fitted with a Ferrari-derived V8",
+    "note": "Research lead only. Evidence supports something sharper: the engine wasn't loosely 'Ferrari-derived' -- it was genuinely Ferrari-cast (eng01) -- but it was also substantially reengineered specifically to not behave like a contemporary Ferrari (eng02). Neither 'just a Ferrari engine' nor 'merely derived' is quite right."
+  },
+  "claims": [
+    {
+      "claim_id": "eng01_ferrari_cast_origin",
+      "normalized_claim": "The Thema 8.32's 2,927cc V8 (Tipo F105L) was cast at Ferrari's Maranello plant and based on the engine used in the Ferrari 308 GTB/GT4 and Mondial Quattrovalvole -- a genuine Ferrari-cast unit, not a loose lookalike.",
+      "claim_type": "fact",
+      "time_context": "1986",
+      "sources": [
+        {"url": "https://en.wikipedia.org/wiki/Lancia_Thema", "title": "Lancia Thema", "publisher": "Wikipedia", "source_language": "en", "source_classification": "reference_source", "access_status": "read_full", "evidence_note": "Engine 'based on the unit used in the Ferrari 308 GTB and Mondial Quattrovalvole', castings from Maranello."},
+        {"url": "https://www.hotcars.com/lancias-thema-832-is-criminally-underrated/", "title": "Lancia's Thema 8.32 Is Criminally Underrated", "publisher": "HotCars", "source_language": "en", "source_classification": "reputable_secondary", "access_status": "read_full", "evidence_note": "Independently: 'Tipo F105L Ferrari V8... based on the engine used in the Ferrari 308 and the Ferrari Mondial Quattrovalvole.'"},
+        {"url": "https://www.autoevolution.com/news/lancia-thema-832-the-forgotten-italian-sleeper-with-a-ferrari-sourced-v8-under-the-hood-197915.html", "title": "Lancia Thema 8.32: The Forgotten Italian Sleeper", "publisher": "autoevolution", "source_language": "en", "source_classification": "reputable_secondary", "access_status": "read_full", "evidence_note": "Same engine code and lineage, independently."}
+      ],
+      "perspective": "timeless_or_historical_fact",
+      "confidence": "high",
+      "allowed_in_narration": true,
+      "safe_wording": "A genuine Ferrari-cast V8, code F105L, based on the 308/Mondial Quattrovalvole engine -- cast at Maranello, not a badge-engineered imitation.",
+      "forbidden_or_unsupported_inference": ["Implying it was identical to a contemporary Ferrari road-car engine -- see eng02"],
+      "conflicting_evidence": [],
+      "notes": "Three independent sources agree on the same engine code -- strong for a claim this central."
+    },
+    {
+      "claim_id": "eng02_deferraried_modifications",
+      "normalized_claim": "For the Thema, the engine got a cross-plane crankshaft in place of the flat-plane crank used in contemporary Ferrari road cars, plus smaller valves and a different firing order, to suit a front-wheel-drive saloon rather than a mid-engine sports car.",
+      "claim_type": "fact",
+      "time_context": "1986",
+      "sources": [
+        {"url": "https://en.wikipedia.org/wiki/Lancia_Thema", "title": "Lancia Thema", "publisher": "Wikipedia", "source_language": "en", "source_classification": "reference_source", "access_status": "read_full", "evidence_note": "'Cross-plane type crankshaft rather than the usual flat-plane crankshaft, smaller valves and a different firing order.'"},
+        {"url": "https://lanciamc.co.uk/lancia-thema-8-32/", "title": "Lancia Thema 8.32", "publisher": "Lancia Motor Club (UK)", "source_language": "en", "source_classification": "reputable_secondary", "access_status": "read_full", "evidence_note": "Confirms the same three changes independently."},
+        {"url": "https://www.autoevolution.com/news/lancia-thema-832-the-forgotten-italian-sleeper-with-a-ferrari-sourced-v8-under-the-hood-197915.html", "title": "Lancia Thema 8.32: The Forgotten Italian Sleeper", "publisher": "autoevolution", "source_language": "en", "source_classification": "reputable_secondary", "access_status": "read_full", "evidence_note": "Attributes the crank change to fitting transverse mounting; Ducati did the work with Ferrari castings."}
+      ],
+      "perspective": "timeless_or_historical_fact",
+      "confidence": "high",
+      "allowed_in_narration": true,
+      "safe_wording": "Lancia and Ducati changed the crank, valves and firing order so it wouldn't behave like a Ferrari -- a flat-plane V8 gives a Ferrari its snarl; the cross-plane swap trades that for a smoother, torquier saloon-car character.",
+      "forbidden_or_unsupported_inference": ["Calling the resulting engine 'not really Ferrari' -- eng01 establishes genuine Ferrari casting; this is about what was changed, not authenticity"],
+      "conflicting_evidence": [],
+      "notes": "The episode's central engineering irony, and the claim that corrects both the quirk's 'derived' undersell and the common 'just a Ferrari engine' oversell. Three sources agree on the same three specific changes."
+    },
+    {
+      "claim_id": "eng03_assembly_process",
+      "normalized_claim": "Cast at Maranello, assembled by Ducati, fitted to the car at Lancia's San Paolo plant in Turin.",
+      "claim_type": "fact",
+      "time_context": "1986-1992",
+      "sources": [
+        {"url": "https://en.wikipedia.org/wiki/Lancia_Thema", "title": "Lancia Thema", "publisher": "Wikipedia", "source_language": "en", "source_classification": "reference_source", "access_status": "read_full", "evidence_note": "Ducati assembly from Maranello castings."},
+        {"url": "https://lanciamc.co.uk/lancia-thema-8-32/", "title": "Lancia Thema 8.32", "publisher": "Lancia Motor Club (UK)", "source_language": "en", "source_classification": "reputable_secondary", "access_status": "read_full", "evidence_note": "Confirms Ducati assembly and Turin final build."}
+      ],
+      "perspective": "timeless_or_historical_fact",
+      "confidence": "high",
+      "allowed_in_narration": true,
+      "safe_wording": "Ferrari cast it, Ducati assembled it, Lancia's Turin plant built it into the car.",
+      "forbidden_or_unsupported_inference": [],
+      "conflicting_evidence": [],
+      "notes": "Ordinary, uncontested manufacturing-chain fact."
+    },
+    {
+      "claim_id": "eng04_power_output",
+      "normalized_claim": "Non-catalyzed: 215 PS (212 hp) at 6,750 rpm. Catalyzed: 205 PS (202 hp).",
+      "claim_type": "statistic",
+      "time_context": "1986-1992",
+      "sources": [
+        {"url": "https://en.wikipedia.org/wiki/Lancia_Thema", "title": "Lancia Thema", "publisher": "Wikipedia", "source_language": "en", "source_classification": "reference_source", "access_status": "read_full", "evidence_note": "215 PS (158 kW) non-cat, 205 PS (151 kW) cat."},
+        {"url": "https://www.autoevolution.com/news/lancia-thema-832-the-forgotten-italian-sleeper-with-a-ferrari-sourced-v8-under-the-hood-197915.html", "title": "Lancia Thema 8.32: The Forgotten Italian Sleeper", "publisher": "autoevolution", "source_language": "en", "source_classification": "reputable_secondary", "access_status": "read_full", "evidence_note": "212 hp non-cat / 202 hp cat -- same figures as Wikipedia's PS numbers converted to SAE hp, not an independent conflicting measurement."}
+      ],
+      "perspective": "timeless_or_historical_fact",
+      "confidence": "high",
+      "allowed_in_narration": true,
+      "safe_wording": "215 PS (about 212 hp) without a catalytic converter, 205 PS (about 202 hp) with one.",
+      "forbidden_or_unsupported_inference": ["Treating the PS and hp figures as two agreeing measurements rather than one figure in two units"],
+      "conflicting_evidence": [],
+      "notes": "Checked the unit math (215 x 0.9863 = 212.1) before treating these as agreeing rather than a false conflict."
+    },
+    {
+      "claim_id": "perf01_acceleration_top_speed",
+      "normalized_claim": "0-100 km/h in 6.8s / 240 km/h top speed (non-cat); 7.2s / 235 km/h (cat), per Lancia Motor Club.",
+      "claim_type": "statistic",
+      "time_context": "1986-1992",
+      "sources": [
+        {"url": "https://lanciamc.co.uk/lancia-thema-8-32/", "title": "Lancia Thema 8.32", "publisher": "Lancia Motor Club (UK)", "source_language": "en", "source_classification": "reputable_secondary", "access_status": "read_full", "evidence_note": "Gives both figure pairs directly."}
+      ],
+      "perspective": "timeless_or_historical_fact",
+      "confidence": "medium",
+      "allowed_in_narration": true,
+      "safe_wording": "Under seven seconds to 100 km/h uncatalyzed -- brisk for a mid-1980s four-door.",
+      "forbidden_or_unsupported_inference": ["Presenting as independently tested rather than one club's published spec"],
+      "conflicting_evidence": [],
+      "notes": "Single source -- medium pending a second (e.g. a period road test)."
+    },
+    {
+      "claim_id": "dev01_chardonnet_attribution",
+      "normalized_claim": "Several French-language sources credit Andre Chardonnet, Lancia's independent French importer, with proposing the Ferrari-engine idea.",
+      "claim_type": "fact",
+      "time_context": "circa 1985",
+      "sources": [
+        {"url": "https://www.guideautoweb.com/articles/80161/lancia-thema-8.32-1986-1992-coeur-de-ferrari/", "title": "Lancia Thema 8.32 : coeur de Ferrari", "publisher": "Le Guide de l'Auto", "source_language": "fr", "source_classification": "discovery_only", "access_status": "search_snippet_only", "evidence_note": "One of several French sites in a search synthesis crediting Chardonnet; this specific page was never opened directly."}
+      ],
+      "perspective": "contemporary",
+      "confidence": "medium",
+      "allowed_in_narration": true,
+      "safe_wording": "By one account, repeated on several French motoring sites, the idea came from Andre Chardonnet, Lancia's French importer.",
+      "forbidden_or_unsupported_inference": ["Stating this as the sole/definitive origin -- see dev02, a different person entirely, unreconciled"],
+      "conflicting_evidence": ["dev02 credits a different individual (Vittorio Ghidella) for a different role (executive champion vs. proposer); no source reconciles the two."],
+      "notes": "discovery_only, not reference_source: the claim reaches me only via a search synthesis across several unopened pages, not one identified page."
+    },
+    {
+      "claim_id": "dev02_ghidella_attribution",
+      "normalized_claim": "An English-language source credits former Fiat Group CEO Vittorio Ghidella with championing the 8.32 and setting up its dedicated production line.",
+      "claim_type": "fact",
+      "time_context": "circa 1985-1986",
+      "sources": [
+        {"url": "https://www.retromotor.co.uk/features/lancia-thema-32-rowan-atkinson/", "title": "Lancia Thema 8.32: the sensible saloon with a Ferrari engine", "publisher": "RetroMotor", "source_language": "en", "source_classification": "reputable_secondary", "access_status": "read_full", "evidence_note": "Ghidella 'had the vision to build it' and 'created a separate production line' -- editorial framing, no cited source of its own."}
+      ],
+      "perspective": "contemporary",
+      "confidence": "medium",
+      "allowed_in_narration": true,
+      "safe_wording": "One English feature credits then-Fiat boss Vittorio Ghidella with championing the project and setting up its production line.",
+      "forbidden_or_unsupported_inference": ["Presenting this as the complete origin story -- see dev01"],
+      "conflicting_evidence": ["dev01 (French sources) credits Andre Chardonnet instead. Unreconciled -- kept as two competing attributions."],
+      "notes": "Single source with no citations of its own -- medium. Deliberately paired with dev01 as the clearest 'two sources, two people, neither resolved' case in this pack."
+    },
+    {
+      "claim_id": "prod01_series1_count",
+      "normalized_claim": "2,370 Series 1 units built 1986-1988.",
+      "claim_type": "statistic",
+      "time_context": "1986-1988",
+      "sources": [
+        {"url": "https://en.wikipedia.org/wiki/Lancia_Thema", "title": "Lancia Thema", "publisher": "Wikipedia", "source_language": "en", "source_classification": "reference_source", "access_status": "read_full", "evidence_note": "2,370 Series 1, 1986-1988."},
+        {"url": "https://lanciamc.co.uk/lancia-thema-8-32/", "title": "Lancia Thema 8.32", "publisher": "Lancia Motor Club (UK)", "source_language": "en", "source_classification": "reputable_secondary", "access_status": "read_full", "evidence_note": "Identical figure, independently."},
+        {"url": "https://www.autoevolution.com/news/lancia-thema-832-the-forgotten-italian-sleeper-with-a-ferrari-sourced-v8-under-the-hood-197915.html", "title": "Lancia Thema 8.32: The Forgotten Italian Sleeper", "publisher": "autoevolution", "source_language": "en", "source_classification": "reputable_secondary", "access_status": "read_full", "evidence_note": "Identical figure, independently."}
+      ],
+      "perspective": "timeless_or_historical_fact",
+      "confidence": "high",
+      "allowed_in_narration": true,
+      "safe_wording": "2,370 Series 1 cars, 1986-1988.",
+      "forbidden_or_unsupported_inference": [],
+      "conflicting_evidence": [],
+      "notes": "Three independent sources, exact agreement."
+    },
+    {
+      "claim_id": "prod02_series2_count",
+      "normalized_claim": "1,601 Series 2 units, ending 1992; sources split on whether the run started 1988 or 1989.",
+      "claim_type": "statistic",
+      "time_context": "1988/1989-1992",
+      "sources": [
+        {"url": "https://en.wikipedia.org/wiki/Lancia_Thema", "title": "Lancia Thema", "publisher": "Wikipedia", "source_language": "en", "source_classification": "reference_source", "access_status": "read_full", "evidence_note": "1,601 Series 2, dated 1989-1992."},
+        {"url": "https://lanciamc.co.uk/lancia-thema-8-32/", "title": "Lancia Thema 8.32", "publisher": "Lancia Motor Club (UK)", "source_language": "en", "source_classification": "reputable_secondary", "access_status": "read_full", "evidence_note": "Same count, same 1989-1992 dating."},
+        {"url": "https://www.autoevolution.com/news/lancia-thema-832-the-forgotten-italian-sleeper-with-a-ferrari-sourced-v8-under-the-hood-197915.html", "title": "Lancia Thema 8.32: The Forgotten Italian Sleeper", "publisher": "autoevolution", "source_language": "en", "source_classification": "reputable_secondary", "access_status": "read_full", "evidence_note": "Same count (1,601) but dated 1988-1992."}
+      ],
+      "perspective": "timeless_or_historical_fact",
+      "confidence": "high",
+      "allowed_in_narration": true,
+      "safe_wording": "1,601 Series 2 cars followed, into 1992.",
+      "forbidden_or_unsupported_inference": ["Stating a specific Series 2 start year as settled"],
+      "conflicting_evidence": ["1989 (Wikipedia, Lancia Motor Club) vs 1988 (autoevolution) for the Series 2 start year. Unit count not in dispute."],
+      "notes": "Count is high-confidence (3 sources exact); start year is the one genuinely unresolved detail."
+    },
+    {
+      "claim_id": "prod03_total_stated",
+      "normalized_claim": "All three production sources also directly state a total of 3,971 units.",
+      "claim_type": "statistic",
+      "time_context": "1986-1992",
+      "sources": [
+        {"url": "https://en.wikipedia.org/wiki/Lancia_Thema", "title": "Lancia Thema", "publisher": "Wikipedia", "source_language": "en", "source_classification": "reference_source", "access_status": "read_full", "evidence_note": "States total 3,971."},
+        {"url": "https://lanciamc.co.uk/lancia-thema-8-32/", "title": "Lancia Thema 8.32", "publisher": "Lancia Motor Club (UK)", "source_language": "en", "source_classification": "reputable_secondary", "access_status": "read_full", "evidence_note": "'Total: 3,971 units across both series. All were left-hand drive.'"},
+        {"url": "https://www.autoevolution.com/news/lancia-thema-832-the-forgotten-italian-sleeper-with-a-ferrari-sourced-v8-under-the-hood-197915.html", "title": "Lancia Thema 8.32: The Forgotten Italian Sleeper", "publisher": "autoevolution", "source_language": "en", "source_classification": "reputable_secondary", "access_status": "read_full", "evidence_note": "States total 3,971."}
+      ],
+      "perspective": "timeless_or_historical_fact",
+      "confidence": "high",
+      "allowed_in_narration": true,
+      "safe_wording": "Just under four thousand built in total -- 3,971.",
+      "forbidden_or_unsupported_inference": [],
+      "conflicting_evidence": [],
+      "notes": "Also: every car was left-hand drive only (relevant to own02)."
+    },
+    {
+      "claim_id": "d01_total_arithmetic_check",
+      "normalized_claim": "Series 1 + Series 2 counts sum to the stated total.",
+      "claim_type": "derived_comparison",
+      "time_context": "1986-1992",
+      "sources": [],
+      "source_claim_ids": ["prod01_series1_count", "prod02_series2_count"],
+      "calculation": "2370 + 1601",
+      "result": "3,971 -- matches prod03's directly-stated total exactly.",
+      "perspective": "timeless_or_historical_fact",
+      "confidence": "high",
+      "allowed_in_narration": true,
+      "safe_wording": "(Consistency check, not narration text.) 2,370 + 1,601 = 3,971.",
+      "forbidden_or_unsupported_inference": [],
+      "conflicting_evidence": [],
+      "notes": "Used as a cross-check that the three production claims are consistent rather than three numbers that merely look similar. Both inputs high, so this is high."
+    },
+    {
+      "claim_id": "price01_uk_1988_price",
+      "normalized_claim": "UK, 1988: 8.32 priced at £37,500, vs £12,495 for a base Thema 2000ie in the same market/year.",
+      "claim_type": "statistic",
+      "time_context": "UK market, 1988",
+      "sources": [
+        {"url": "https://www.retromotor.co.uk/features/lancia-thema-32-rowan-atkinson/", "title": "Lancia Thema 8.32: the sensible saloon with a Ferrari engine", "publisher": "RetroMotor", "source_language": "en", "source_classification": "reputable_secondary", "access_status": "read_full", "evidence_note": "£37,500 in 1988, vs £12,495 for a base Thema 2000ie."}
+      ],
+      "perspective": "timeless_or_historical_fact",
+      "confidence": "medium",
+      "allowed_in_narration": true,
+      "safe_wording": "In Britain in 1988 it listed at £37,500 -- versus £12,495 for the cheapest Thema that year.",
+      "forbidden_or_unsupported_inference": ["Presenting £37,500 as the original Italian launch price -- LHD-only car (prod03), so this is necessarily a UK import-adjacent price, not confirmed as the domestic lira price"],
+      "conflicting_evidence": [],
+      "notes": "Single source, price bucket -- medium."
+    },
+    {
+      "claim_id": "d02_price_premium_vs_base",
+      "normalized_claim": "The UK 1988 price was roughly triple the base Thema's, same market/year.",
+      "claim_type": "derived_comparison",
+      "time_context": "UK market, 1988",
+      "sources": [],
+      "source_claim_ids": ["price01_uk_1988_price"],
+      "calculation": "(37500 - 12495) / 12495 * 100",
+      "result": "200.1% premium -- about three times the base Thema's price, not 'nearly double'.",
+      "perspective": "timeless_or_historical_fact",
+      "confidence": "medium",
+      "allowed_in_narration": true,
+      "safe_wording": "Against the cheapest Thema on sale in Britain that year, the 8.32 cost roughly three times as much.",
+      "forbidden_or_unsupported_inference": ["Dropping the market/year qualifier", "Calling a 200% premium 'nearly double' -- it's triple, not double"],
+      "conflicting_evidence": [],
+      "notes": "Single input (medium) -> capped at medium."
+    },
+    {
+      "claim_id": "eq01_standard_features",
+      "normalized_claim": "Driver-controlled retractable rear spoiler, ZF ABS, Servotronic steering, Bosch KE3 Jetronic injection, wood-and-Alcantara interior; 5-speed manual only, no automatic ever offered.",
+      "claim_type": "fact",
+      "time_context": "1986-1992",
+      "sources": [
+        {"url": "https://lanciamc.co.uk/lancia-thema-8-32/", "title": "Lancia Thema 8.32", "publisher": "Lancia Motor Club (UK)", "source_language": "en", "source_classification": "reputable_secondary", "access_status": "read_full", "evidence_note": "Lists all features named plus manual-only gearbox."}
+      ],
+      "perspective": "timeless_or_historical_fact",
+      "confidence": "high",
+      "allowed_in_narration": true,
+      "safe_wording": "A driver-operated retractable rear spoiler, ABS, power steering, a wood-and-Alcantara interior -- and manual only, no automatic ever offered.",
+      "forbidden_or_unsupported_inference": [],
+      "conflicting_evidence": [],
+      "notes": "Ordinary equipment-list territory, single source, proportionate at high."
+    },
+    {
+      "claim_id": "des01_designer_credit",
+      "normalized_claim": "Saloon body by Giorgetto Giugiaro/Italdesign; a separate Pininfarina-bodied Thema wagon existed.",
+      "claim_type": "fact",
+      "time_context": "1986",
+      "sources": [
+        {"url": "https://lanciamc.co.uk/lancia-thema-8-32/", "title": "Lancia Thema 8.32", "publisher": "Lancia Motor Club (UK)", "source_language": "en", "source_classification": "reputable_secondary", "access_status": "read_full", "evidence_note": "Credits Giugiaro/Italdesign (saloon) and Pininfarina (wagon variant)."}
+      ],
+      "perspective": "timeless_or_historical_fact",
+      "confidence": "high",
+      "allowed_in_narration": true,
+      "safe_wording": "A Giugiaro design; a separate Pininfarina-bodied wagon Thema existed alongside it.",
+      "forbidden_or_unsupported_inference": ["Implying the wagon also got the 8.32 drivetrain -- source describes it as a separate body style only"],
+      "conflicting_evidence": [],
+      "notes": "Ordinary design-credit fact."
+    },
+    {
+      "claim_id": "own01_enzo_ferrari_ownership",
+      "normalized_claim": "Enzo Ferrari owned a Thema 8.32 as his personal car in his later years.",
+      "claim_type": "context",
+      "time_context": "circa 1986-1988 (Enzo Ferrari died Aug 1988)",
+      "sources": [
+        {"url": "https://en.wikipedia.org/wiki/Lancia_Thema", "title": "Lancia Thema", "publisher": "Wikipedia", "source_language": "en", "source_classification": "reference_source", "access_status": "read_full", "evidence_note": "'Towards the end of his life, Enzo Ferrari owned an 8.32 as his personal transport.'"},
+        {"url": "https://www.hotcars.com/lancias-thema-832-is-criminally-underrated/", "title": "Lancia's Thema 8.32 Is Criminally Underrated", "publisher": "HotCars", "source_language": "en", "source_classification": "reputable_secondary", "access_status": "read_full", "evidence_note": "Independently: 'Mr Enzo Ferrari himself had one for many years as his personal car.'"}
+      ],
+      "perspective": "timeless_or_historical_fact",
+      "confidence": "high",
+      "allowed_in_narration": true,
+      "safe_wording": "Enzo Ferrari himself reportedly kept one as his personal car in his final years.",
+      "forbidden_or_unsupported_inference": ["Adding detail beyond ownership itself -- neither source goes further"],
+      "conflicting_evidence": [],
+      "notes": "Anecdote, but two independently-read sources agree -- high rather than the medium a single-sourced anecdote would get. Neutral biographical fact reported later = timeless_or_historical_fact, not retrospective_judgment (contrast rec01, an actual evaluation)."
+    },
+    {
+      "claim_id": "own02_uk_lhd_only",
+      "normalized_claim": "Every 8.32 was left-hand drive; no factory RHD version existed.",
+      "claim_type": "fact",
+      "time_context": "1986-1992",
+      "sources": [
+        {"url": "https://lanciamc.co.uk/lancia-thema-8-32/", "title": "Lancia Thema 8.32", "publisher": "Lancia Motor Club (UK)", "source_language": "en", "source_classification": "reputable_secondary", "access_status": "read_full", "evidence_note": "'All were left-hand drive.'"}
+      ],
+      "perspective": "timeless_or_historical_fact",
+      "confidence": "medium",
+      "allowed_in_narration": true,
+      "safe_wording": "No right-hand-drive version was ever built at the factory.",
+      "forbidden_or_unsupported_inference": ["Concluding how UK cars got there -- private import is plausible but not separately confirmed"],
+      "conflicting_evidence": [],
+      "notes": "Single source for a manufacturing-scope claim -- medium."
+    },
+    {
+      "claim_id": "rec01_road_and_track_retrospective",
+      "normalized_claim": "Road & Track, in later retrospective coverage, called it 'one of the weirder sleepers to come out of the 1980s.'",
+      "claim_type": "quote",
+      "time_context": "Retrospective, exact date not established",
+      "sources": [
+        {"url": "https://lanciamc.co.uk/lancia-thema-8-32/", "title": "Lancia Thema 8.32", "publisher": "Lancia Motor Club (UK)", "source_language": "en", "source_classification": "reputable_secondary", "access_status": "read_full", "evidence_note": "Quotes Road & Track directly: 'one of the weirder sleepers to come out of the 1980s.'"}
+      ],
+      "perspective": "retrospective_judgment",
+      "confidence": "medium",
+      "allowed_in_narration": true,
+      "safe_wording": "Road & Track later called it 'one of the weirder sleepers to come out of the 1980s' -- looking back, not at launch.",
+      "forbidden_or_unsupported_inference": ["Presenting as a contemporary 1986-88 reaction -- 'out of the 1980s' is itself retrospective framing"],
+      "conflicting_evidence": [],
+      "notes": "Searched for the original Road & Track piece directly; not locatable at roadandtrack.com. Kept via the secondary reprint, held at medium."
+    },
+    {
+      "claim_id": "rec02_quattroruote_existence",
+      "normalized_claim": "Quattroruote (Italy's leading car magazine) published a road test of the 8.32 in June 1987.",
+      "claim_type": "quote",
+      "time_context": "June 1987",
+      "sources": [
+        {"url": "https://www.youtube.com/watch?v=0qKOdopaK2s", "title": "06/1987: LANCIA THEMA 8.32 (QUATTRORUOTE, prova su strada)", "publisher": "Quattroruote (via YouTube upload)", "source_language": "it", "source_classification": "discovery_only", "access_status": "unavailable", "evidence_note": "A video titled as this road test confirms it exists and its date; content not reviewable in this environment (no video transcription available)."}
+      ],
+      "perspective": "contemporary",
+      "confidence": "unresolved",
+      "allowed_in_narration": false,
+      "safe_wording": "Do not state what the review said. At most: 'Italy's own Quattroruote tested it within a year of launch' -- without characterizing the verdict.",
+      "forbidden_or_unsupported_inference": ["Inferring the review's tone from the car's general reputation"],
+      "conflicting_evidence": [],
+      "notes": "Found that a contemporary primary source exists but couldn't read it -- recorded as unresolved/unusable-for-content rather than guessed or silently dropped."
+    },
+    {
+      "claim_id": "comp01_retrospective_rivals",
+      "normalized_claim": "A UK enthusiast-club source names the 8.32's rivals, across its whole run, as including the Audi 100 Quattro, BMW M535i, Ford Sierra RS Cosworth, Saab 9000 2.3 Turbo S, and the Vauxhall Lotus Carlton/Opel Lotus Omega.",
+      "claim_type": "reputation_assessment",
+      "time_context": "Retrospective characterization of the 1986-1992 run",
+      "sources": [
+        {"url": "https://lanciamc.co.uk/lancia-thema-8-32/", "title": "Lancia Thema 8.32", "publisher": "Lancia Motor Club (UK)", "source_language": "en", "source_classification": "reputable_secondary", "access_status": "read_full", "evidence_note": "Names all five rivals in one sentence."}
+      ],
+      "perspective": "retrospective_judgment",
+      "confidence": "medium",
+      "allowed_in_narration": true,
+      "safe_wording": "One retrospective source frames its rivals, across the whole run, as cars like the Audi 100 Quattro, BMW M535i, Sierra Cosworth, Saab 9000 Turbo, and -- by the early '90s -- the Lotus Carlton/Omega.",
+      "forbidden_or_unsupported_inference": [
+        "Presenting this as Lancia's own contemporary marketing positioning -- it's a modern site's retrospective comparison, a different evidence category",
+        "Implying the Lotus Carlton/Omega was a rival at the 1986 launch -- it wasn't built until 1990, so this only applies to the tail of the run"
+      ],
+      "conflicting_evidence": [],
+      "notes": "Caught on the adversarial pass: the rival list spans a period the 8.32 predates for one entry (Lotus Carlton/Omega, 1990-on). Flagged explicitly rather than silently dropped or silently accepted as period-accurate."
+    }
+  ]
+}
