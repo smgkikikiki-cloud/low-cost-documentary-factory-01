@@ -1,0 +1,395 @@
+{
+  "episode_id": "ForeignCarsTH_jeep-grand-cherokee-1990",
+  "status": "verified",
+  "research_language": "auto",
+  "working_language": "en",
+  "quirk_lead": {
+    "text": "Its 1992 Detroit Auto Show unveiling reportedly involved driving the new Jeep through a plate-glass window with Chrysler's chairman aboard",
+    "note": "Research lead only -- not a verified fact. Must not be assumed as the thesis until supported by claims in this fact pack. RESEARCH FINDING: this lead was specifically wrong -- no chairman was in the vehicle; see reveal02/reveal03."
+  },
+  "claims": [
+    {
+      "claim_id": "topic01_no_1990_existence",
+      "normalized_claim": "No Jeep Grand Cherokee existed in 1990. The nameplate was first shown to the public on January 7, 1992 and went on sale for the 1993 model year.",
+      "claim_type": "fact",
+      "time_context": "1990-1993",
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/Jeep_Grand_Cherokee_(ZJ)",
+          "title": "Jeep Grand Cherokee (ZJ)",
+          "publisher": "Wikipedia",
+          "source_language": "en",
+          "source_classification": "reference_source",
+          "access_status": "read_full",
+          "evidence_note": "States the ZJ was introduced at the 1992 Detroit auto show for model year 1993; no earlier model year is listed."
+        }
+      ],
+      "perspective": "timeless_or_historical_fact",
+      "confidence": "high",
+      "allowed_in_narration": true,
+      "safe_wording": "There was no Grand Cherokee in 1990 -- the nameplate didn't exist yet. It debuted in January 1992, for the 1993 model year.",
+      "forbidden_or_unsupported_inference": ["That a 1990 Grand Cherokee model exists and this pack is simply about an early example of it"],
+      "conflicting_evidence": [],
+      "notes": "The episode brief's topic string specifies '1990'; this is the single most important finding of A-PRE research and must be addressed head-on in the episode rather than silently corrected. See open_questions in producer_outline."
+    },
+    {
+      "claim_id": "dev01_amc_chrysler_origin",
+      "normalized_claim": "Development of what became the Grand Cherokee began under American Motors Corporation (AMC) around 1985, as a planned successor to the compact Jeep Cherokee (XJ) and the aging full-size Wagoneer (SJ). Chrysler acquired AMC in 1987 and continued the program through to its 1992 launch -- a development period of roughly seven years.",
+      "claim_type": "fact",
+      "time_context": "1985-1992",
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/Jeep_Grand_Cherokee_(ZJ)",
+          "title": "Jeep Grand Cherokee (ZJ)",
+          "publisher": "Wikipedia",
+          "source_language": "en",
+          "source_classification": "reference_source",
+          "access_status": "read_full",
+          "evidence_note": "Describes AMC-era origin, 1987 Chrysler acquisition, and continuation of the program."
+        },
+        {
+          "url": "https://journal.classiccars.com/2026/03/11/the-1993-jeep-grand-cherokee-was-a-game-changer/",
+          "title": "The 1993 Jeep Grand Cherokee Was a Game-Changer",
+          "publisher": "ClassicCars.com Journal",
+          "source_language": "en",
+          "source_classification": "reputable_secondary",
+          "access_status": "search_snippet_only",
+          "evidence_note": "Independently characterizes the ZJ as '7+ years in the making,' corroborating the AMC-era start date."
+        }
+      ],
+      "perspective": "timeless_or_historical_fact",
+      "confidence": "high",
+      "allowed_in_narration": true,
+      "safe_wording": "The project actually started under American Motors, years before Chrysler owned Jeep at all -- Chrysler bought AMC in 1987 and inherited a program already underway.",
+      "forbidden_or_unsupported_inference": ["That Chrysler conceived the Grand Cherokee from scratch"],
+      "conflicting_evidence": [],
+      "notes": ""
+    },
+    {
+      "claim_id": "dev02_shinoda_design_dispute",
+      "normalized_claim": "Stylist Larry Shinoda produced an early prototype design for the Grand Cherokee in 1985. AMC initially claimed the design as its own work, which led to litigation; after Chrysler's acquisition of AMC, Chrysler settled with Shinoda's estate for more than $200,000.",
+      "claim_type": "fact",
+      "time_context": "1985-1990s",
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/Jeep_Grand_Cherokee_(ZJ)",
+          "title": "Jeep Grand Cherokee (ZJ)",
+          "publisher": "Wikipedia",
+          "source_language": "en",
+          "source_classification": "reference_source",
+          "access_status": "read_full",
+          "evidence_note": "Only source found describing the Shinoda design-credit dispute and settlement amount."
+        }
+      ],
+      "perspective": "timeless_or_historical_fact",
+      "confidence": "medium",
+      "allowed_in_narration": true,
+      "safe_wording": "According to Wikipedia's account, designer Larry Shinoda's 1985 prototype touched off a design-credit dispute that Chrysler eventually settled with his estate for over $200,000.",
+      "forbidden_or_unsupported_inference": ["That the dispute was resolved in court rather than by settlement", "That Shinoda's design is exactly what reached production unmodified"],
+      "conflicting_evidence": [],
+      "notes": "Reputation-sensitive claim (legal dispute) resting on a single reference source -- did not find independent corroboration within the research budget for this test run. Kept airable but hedged with clear attribution rather than stated as flat fact."
+    },
+    {
+      "claim_id": "reveal01_debut_date_venue",
+      "normalized_claim": "The Grand Cherokee debuted publicly on January 7, 1992 at the North American International Auto Show in Detroit (Cobo Hall), ahead of 1993 model year sales.",
+      "claim_type": "fact",
+      "time_context": "1992",
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/Jeep_Grand_Cherokee_(ZJ)",
+          "title": "Jeep Grand Cherokee (ZJ)",
+          "publisher": "Wikipedia",
+          "source_language": "en",
+          "source_classification": "reference_source",
+          "access_status": "read_full",
+          "evidence_note": "Confirms January 1992 introduction date at Detroit auto show."
+        },
+        {
+          "url": "https://www.wardsauto.com/jeep/jeep-celebrates-past-looks-to-electrified-future-at-detroit-auto-show",
+          "title": "Jeep Celebrates Past, Looks to Electrified Future at Detroit Auto Show",
+          "publisher": "WardsAuto",
+          "source_language": "en",
+          "source_classification": "reputable_secondary",
+          "access_status": "search_snippet_only",
+          "evidence_note": "Independently places the debut at the 1992 Detroit show at Cobo Hall."
+        }
+      ],
+      "perspective": "timeless_or_historical_fact",
+      "confidence": "high",
+      "allowed_in_narration": true,
+      "safe_wording": "It was unveiled on January 7, 1992, at the Detroit auto show, months before the 1993 models reached showrooms.",
+      "forbidden_or_unsupported_inference": [],
+      "conflicting_evidence": [],
+      "notes": ""
+    },
+    {
+      "claim_id": "reveal02_stunt_core",
+      "normalized_claim": "At the Cobo Hall unveiling, a Chrysler executive drove a Grand Cherokee up a flight of steps and through a plate-glass window, having driven it from the Jefferson North Assembly Plant with Detroit Mayor Coleman Young riding along and a police escort; the glass was fake theatrical 'sugar glass' rather than real glazing.",
+      "claim_type": "fact",
+      "time_context": "1992",
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/Jeep_Grand_Cherokee_(ZJ)",
+          "title": "Jeep Grand Cherokee (ZJ)",
+          "publisher": "Wikipedia",
+          "source_language": "en",
+          "source_classification": "reference_source",
+          "access_status": "read_full",
+          "evidence_note": "Names the executive, Mayor Coleman Young as passenger, the Jefferson North starting point, and Cobo Hall as the venue."
+        },
+        {
+          "url": "https://jeep.fandom.com/wiki/Jeep_Grand_Cherokee",
+          "title": "Jeep Grand Cherokee",
+          "publisher": "Jeep Wiki (Fandom)",
+          "source_language": "en",
+          "source_classification": "reference_source",
+          "access_status": "search_snippet_only",
+          "evidence_note": "Independently corroborates the stunt and adds that the shattered glass was fake 'sugar glass' used for stage effects."
+        }
+      ],
+      "perspective": "timeless_or_historical_fact",
+      "confidence": "high",
+      "allowed_in_narration": true,
+      "safe_wording": "A Chrysler executive drove a Grand Cherokee up the steps of Cobo Hall and straight through a plate-glass window -- with Detroit's mayor riding along and a police escort the whole way. The glass shattering was a stage trick, not real glazing.",
+      "forbidden_or_unsupported_inference": ["That the stunt used real glass or put anyone at genuine risk", "That the driver was Chrysler's chairman/CEO -- see reveal03 for who it actually was"],
+      "conflicting_evidence": [],
+      "notes": "This corrects the episode_brief's seeded quirk_lead, which assumed 'Chrysler's chairman' was aboard -- research shows the driver was Chrysler's president (Bob Lutz, see reveal03), not the chairman, and the passenger was Detroit's mayor, not a Chrysler executive at all."
+    },
+    {
+      "claim_id": "reveal03_lutz_title",
+      "normalized_claim": "The executive who drove through the window was Bob Lutz, who held the title of Chrysler President at the time (Lee Iacocca remained Chrysler's Chairman/CEO until Robert Eaton succeeded him on January 1, 1993).",
+      "claim_type": "fact",
+      "time_context": "1992",
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/Bob_Lutz_(businessman)",
+          "title": "Bob Lutz (businessman)",
+          "publisher": "Wikipedia",
+          "source_language": "en",
+          "source_classification": "reference_source",
+          "access_status": "search_snippet_only",
+          "evidence_note": "Career timeline places Lutz as Chrysler president in this period, before his later vice-chairman role."
+        },
+        {
+          "url": "https://www.wardsauto.com/chrysler/so-long-bob-hello-bob-chrysler-s-lutz-isn-t-ready-to-settle-down",
+          "title": "So Long, Bob. Hello Bob: Chrysler's Lutz isn't ready to settle down",
+          "publisher": "WardsAuto",
+          "source_language": "en",
+          "source_classification": "reputable_secondary",
+          "access_status": "search_snippet_only",
+          "evidence_note": "Confirms Lutz remained Chrysler president through the Eaton transition on January 1, 1993, i.e. was president, not CEO, in January 1992."
+        }
+      ],
+      "perspective": "timeless_or_historical_fact",
+      "confidence": "medium",
+      "allowed_in_narration": true,
+      "safe_wording": "That driver was Bob Lutz, Chrysler's president at the time -- not the company's chairman, who was still Lee Iacocca.",
+      "forbidden_or_unsupported_inference": ["That Iacocca personally drove or rode in the stunt vehicle"],
+      "conflicting_evidence": [
+        "One search-engine synthesis of the Wikipedia ZJ article's content labeled Lutz 'CEO' at the time of the stunt; that label conflicts with Lutz's own career timeline (Wikipedia bio) and a WardsAuto retrospective, both of which place him as president in this period with Iacocca still chairman/CEO. Titled him 'president' here as the better-corroborated reading."
+      ],
+      "notes": "Kept at medium rather than high because the two supporting sources are both search-snippet-only, and one competing summary used a different title -- exactly the kind of role/title detail that's easy to blur."
+    },
+    {
+      "claim_id": "reveal04_iacocca_role_unresolved",
+      "normalized_claim": "One source states that Lee Iacocca personally delayed the Grand Cherokee's release until late 1992.",
+      "claim_type": "context",
+      "time_context": "1991-1992",
+      "sources": [
+        {
+          "url": "https://www.hagerty.com/media/automotive-history/jeeps-original-grand-cherokee-tackled-country-roads-and-country-clubs/",
+          "title": "Jeep's Original Grand Cherokee Tackled Country Roads and Country Clubs",
+          "publisher": "Hagerty Media",
+          "source_language": "en",
+          "source_classification": "reputable_secondary",
+          "access_status": "unavailable",
+          "evidence_note": "Direct fetch returned HTTP 403; this claim is only known via an aggregated search-engine synthesis, not from reading the article itself."
+        }
+      ],
+      "perspective": "contemporary",
+      "confidence": "unresolved",
+      "allowed_in_narration": false,
+      "safe_wording": "Unresolved -- do not assert. If mentioned at all, frame only as 'according to one account' with no causal claim about why the timing happened.",
+      "forbidden_or_unsupported_inference": ["That Iacocca masterminded the launch timing", "That Iacocca was personally involved in the plate-glass stunt itself"],
+      "conflicting_evidence": ["Not mentioned in the more detailed Wikipedia AMC/Chrysler development-timeline account, which attributes the multi-year delay to the AMC-to-Chrysler transition generally rather than to an Iacocca decision specifically."],
+      "notes": "The source that raised this claim could not be read directly (403) and the claim wasn't independently corroborated within this test run's research budget -- recorded honestly as unresolved rather than dropped silently or guessed at."
+    },
+    {
+      "claim_id": "eng01_engine_lineup",
+      "normalized_claim": "Across its 1993-1998 run the Grand Cherokee (ZJ) offered a 4.0L AMC-designed inline-six (190 hp for 1993-1995, 185 hp for 1996-1998), an optional 5.2L Magnum V8 (225 hp), a 5.9L Magnum V8 (245 hp, 1998 Limited only), and a 2.5L VM Motori diesel four-cylinder for export markets.",
+      "claim_type": "statistic",
+      "time_context": "1993-1998",
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/Jeep_Grand_Cherokee_(ZJ)",
+          "title": "Jeep Grand Cherokee (ZJ)",
+          "publisher": "Wikipedia",
+          "source_language": "en",
+          "source_classification": "reference_source",
+          "access_status": "read_full",
+          "evidence_note": "Engine table with displacement, horsepower and model-year applicability."
+        }
+      ],
+      "perspective": "timeless_or_historical_fact",
+      "confidence": "high",
+      "allowed_in_narration": true,
+      "safe_wording": "Engines ranged from a 190-horsepower inline-six up to a 245-horsepower V8 in the last model year, plus a diesel option sold only outside the US.",
+      "forbidden_or_unsupported_inference": [],
+      "conflicting_evidence": [],
+      "notes": "Ordinary spec background -- reference source alone is sufficient per evidence-proportionality guidance."
+    },
+    {
+      "claim_id": "tech01_firsts_claims",
+      "normalized_claim": "The Grand Cherokee launched with a standard driver-side airbag on every model, was positioned as the first mid-size SUV to offer V8 power as an option, and introduced Jeep's Quadra-Trac full-time four-wheel-drive system.",
+      "claim_type": "reputation_assessment",
+      "time_context": "1993",
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/Jeep_Grand_Cherokee_(ZJ)",
+          "title": "Jeep Grand Cherokee (ZJ)",
+          "publisher": "Wikipedia",
+          "source_language": "en",
+          "source_classification": "reference_source",
+          "access_status": "read_full",
+          "evidence_note": "Lists these as notable firsts for the model."
+        }
+      ],
+      "perspective": "timeless_or_historical_fact",
+      "confidence": "medium",
+      "allowed_in_narration": true,
+      "safe_wording": "It came with a driver's airbag as standard on every model, was marketed as the first mid-size SUV you could get with a V8, and introduced Jeep's full-time Quadra-Trac 4WD.",
+      "forbidden_or_unsupported_inference": ["That it was the first SUV of any kind or any size with a driver airbag or V8 -- the claim is specific to the mid-size SUV segment", "That Quadra-Trac itself was a brand-new Jeep invention rather than a system introduced on this model"],
+      "conflicting_evidence": [],
+      "notes": "'Firsts' claims are marketing-adjacent and single-sourced -- kept airable but scoped tightly to what the source actually says (segment-specific), not broadened."
+    },
+    {
+      "claim_id": "price01_launch_price_range",
+      "normalized_claim": "Sources disagree on the exact 1993 Grand Cherokee base MSRP: figures found range from about $18,990 to $21,898 depending on trim and which aggregator is cited, with the Laredo 4-door specifically listed around $19,930.",
+      "claim_type": "statistic",
+      "time_context": "1993",
+      "sources": [
+        {
+          "url": "https://www.thecarconnection.com/specifications/jeep_grand-cherokee_1993",
+          "title": "1993 Jeep Grand Cherokee Specifications",
+          "publisher": "The Car Connection",
+          "source_language": "en",
+          "source_classification": "reputable_secondary",
+          "access_status": "search_snippet_only",
+          "evidence_note": "One of several pricing figures found in aggregated search results; did not resolve to one canonical number."
+        },
+        {
+          "url": "https://www.theautopian.com/the-2024-jeep-grand-cherokee-is-over-9000-cheaper-than-a-1993-model-how-much-better-is-it/",
+          "title": "The 2024 Jeep Grand Cherokee Is Over $9,000 Cheaper Than A 1993 Model, How Much Better Is It?",
+          "publisher": "The Autopian",
+          "source_language": "en",
+          "source_classification": "reputable_secondary",
+          "access_status": "search_snippet_only",
+          "evidence_note": "Cites the higher-end figure used for its inflation-adjusted comparison."
+        }
+      ],
+      "perspective": "timeless_or_historical_fact",
+      "confidence": "medium",
+      "allowed_in_narration": true,
+      "safe_wording": "Depending on trim, it launched at roughly $19,000 to $22,000 -- no single 'the' base price reconciles every source found.",
+      "forbidden_or_unsupported_inference": ["Any single exact price stated without the 'roughly/depending on trim' hedge"],
+      "conflicting_evidence": ["$21,898 vs. $18,990 vs. Laredo-specific $19,930 -- not resolved within this test run's research budget; may reflect base 2-door vs. loaded 4-door confusion across aggregator sites rather than a genuine primary-source conflict."],
+      "notes": "Did not chase a KBB primary figure further -- direct fetch was blocked (403) and this is a background/color number, not the thesis, so proportional effort stops here per the soft research budget."
+    },
+    {
+      "claim_id": "prod01_total_production",
+      "normalized_claim": "Total ZJ-generation production across the 1993-1998 model years was 1,251,473 units.",
+      "claim_type": "statistic",
+      "time_context": "1993-1998",
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/Jeep_Grand_Cherokee_(ZJ)",
+          "title": "Jeep Grand Cherokee (ZJ)",
+          "publisher": "Wikipedia",
+          "source_language": "en",
+          "source_classification": "reference_source",
+          "access_status": "read_full",
+          "evidence_note": "States total production figure in the infobox/body."
+        }
+      ],
+      "perspective": "timeless_or_historical_fact",
+      "confidence": "medium",
+      "allowed_in_narration": true,
+      "safe_wording": "Over its six model years, Jeep built more than 1.25 million of them.",
+      "forbidden_or_unsupported_inference": [],
+      "conflicting_evidence": [],
+      "notes": "Single-sourced; did not find independent corroboration within this test run's budget. Kept at medium rather than high for that reason alone."
+    },
+    {
+      "claim_id": "prod02_grand_wagoneer_variant",
+      "normalized_claim": "Of the roughly 1.25 million ZJs built, only 6,378 were the top-spec Grand Wagoneer trim, which was offered solely for the 1993 model year.",
+      "claim_type": "statistic",
+      "time_context": "1993",
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/Jeep_Grand_Cherokee_(ZJ)",
+          "title": "Jeep Grand Cherokee (ZJ)",
+          "publisher": "Wikipedia",
+          "source_language": "en",
+          "source_classification": "reference_source",
+          "access_status": "read_full",
+          "evidence_note": "States the Grand Wagoneer variant's production count and single-model-year availability."
+        }
+      ],
+      "perspective": "timeless_or_historical_fact",
+      "confidence": "medium",
+      "allowed_in_narration": true,
+      "safe_wording": "Only 6,378 were the range-topping Grand Wagoneer trim, and it was gone again after just one model year.",
+      "forbidden_or_unsupported_inference": [],
+      "conflicting_evidence": [],
+      "notes": "Single-sourced, same caveat as prod01."
+    },
+    {
+      "claim_id": "plant01_global_production",
+      "normalized_claim": "Beyond the primary Jefferson North Assembly Plant in Detroit, the ZJ was also produced for local/export markets in Graz, Austria (by Magna Steyr), Cordoba, Argentina, and Valencia, Venezuela.",
+      "claim_type": "fact",
+      "time_context": "1993-1998",
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/Jeep_Grand_Cherokee_(ZJ)",
+          "title": "Jeep Grand Cherokee (ZJ)",
+          "publisher": "Wikipedia",
+          "source_language": "en",
+          "source_classification": "reference_source",
+          "access_status": "read_full",
+          "evidence_note": "Lists assembly locations."
+        }
+      ],
+      "perspective": "timeless_or_historical_fact",
+      "confidence": "medium",
+      "allowed_in_narration": true,
+      "safe_wording": "It wasn't just a Detroit product -- it was also assembled in Austria, Argentina, and Venezuela for those local markets.",
+      "forbidden_or_unsupported_inference": ["That non-US plants used identical specification/build to the Detroit-built trucks"],
+      "conflicting_evidence": [],
+      "notes": "Single-sourced background fact, ordinary per evidence-proportionality guidance."
+    },
+    {
+      "claim_id": "gen01_predecessor_context",
+      "normalized_claim": "The Grand Cherokee was positioned as a new, larger model sitting above the compact Jeep Cherokee (XJ), aimed at eventually taking over the role of the aging, truck-based Wagoneer (SJ) lineage -- rather than replacing the Cherokee (XJ) outright, which continued in production alongside it.",
+      "claim_type": "context",
+      "time_context": "1993",
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/Jeep_Grand_Cherokee_(ZJ)",
+          "title": "Jeep Grand Cherokee (ZJ)",
+          "publisher": "Wikipedia",
+          "source_language": "en",
+          "source_classification": "reference_source",
+          "access_status": "read_full",
+          "evidence_note": "Describes the intended relationship to the XJ Cherokee and SJ Wagoneer."
+        }
+      ],
+      "perspective": "timeless_or_historical_fact",
+      "confidence": "medium",
+      "allowed_in_narration": true,
+      "safe_wording": "It slotted in above the smaller Cherokee, which kept selling alongside it, effectively taking over the role the old, truck-based Wagoneer had held.",
+      "forbidden_or_unsupported_inference": ["That the compact Cherokee (XJ) was discontinued when the Grand Cherokee arrived -- it was not"],
+      "conflicting_evidence": [],
+      "notes": ""
+    }
+  ]
+}
