@@ -4,5 +4,11 @@
   "working_language": "en",
   "output_language": "th",
   "narration_register": "natural_spoken_thai",
-  "target_audience": "Thai car enthusiasts interested in obscure foreign automotive history"
+  "target_audience": "Thai car enthusiasts interested in obscure foreign automotive history",
+  "runtime_policy": {
+    "preferred_minutes": 12,
+    "normal_range_minutes": [10, 15],
+    "longform_range_minutes": [16, 22],
+    "never_pad_to_target": true
+  }
 }

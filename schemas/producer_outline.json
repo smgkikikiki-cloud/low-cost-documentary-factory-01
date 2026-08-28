@@ -35,7 +35,12 @@
     },
     "estimated_runtime_sec": {
       "type": "integer",
-      "minimum": 0
+      "minimum": 0,
+      "description": "Set by Agent A during A3, after fact_pack.json and the beat structure exist -- never hardcoded. Should sit near the channel's runtime_policy.preferred_minutes (config/channels/<channel_id>.json) as a center of gravity, not a fixed target; actual length follows evidence density, story density, and expected visual density. Never pad to a target."
+    },
+    "runtime_rationale": {
+      "type": "string",
+      "description": "Why this runtime, in terms of evidence density / story density / visual density -- not required, but keeps the estimate auditable instead of a bare number"
     },
     "open_questions": {
       "type": "array",

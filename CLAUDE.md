@@ -68,29 +68,47 @@ status says so.
    `fact_pack.json` claims with `allowed_in_narration: true`. Only pure transitions/
    banter that assert no fact may have an empty list. The same rule binds the
    outline's `thesis_claim_ids` and `hook_claim_ids`.
-10. **Source quality and source accessibility are separate axes.** In
-    `fact_pack.json`, `source_classification` grades the source itself and
-    `access_status` records how much of it was actually read. A strong source that
-    returned HTTP 403 stays strong and is marked `unavailable`; the claim's
-    `confidence` absorbs the uncertainty. Wikipedia, mirrors, wikis, aggregators and
-    search snippets are `reference_only` by default.
-11. **Claims are atomic.** One independently falsifiable assertion per claim, small
-    enough that one `confidence` and one `allowed_in_narration` apply to all of it.
-    Never fuse a contemporary account with a later reassessment of it.
-12. **`perspective` is about the claim's era, not the evidence's publication date.**
-    A 1982 figure compiled by a modern site is a `contemporary` claim; the modern date
-    belongs in that source's `publication_date`.
-13. **Discovery is not verification.** In `asset_inventory.json`,
-    `exact_subject_match: true` requires `verification_method: visually_inspected`,
-    and video timestamps may only be recorded for footage actually inspected. Titles,
-    captions and search snippets establish what an asset *claims* to show, never what
-    it shows.
 8. **Rendering is deterministic and comes much later.** Don't build FFmpeg/Remotion
    code speculatively.
 9. **Two AI agents, not more.** Keep the architecture at Agent A + Agent B unless a
    demonstrated bottleneck later proves a third agent is necessary — research,
    fact-checking, translation, and QA are internal stages of Agent A, not separate
    agents.
+10. **Evidence proportionality, not source purity.** Reference sources like Wikipedia
+    are allowed and useful for ordinary, non-controversial background (chronology,
+    platform sharing, model names, basic specs). Reserve stronger corroboration for
+    claims central to the hook/thesis, surprising claims, prices, sales/production
+    figures central to the story, quotes, causal claims, and disputed or
+    reputation-sensitive claims. A real but imperfect source beats an invented one —
+    never fill a gap from model memory.
+11. **Source quality and source accessibility are separate axes.** In
+    `fact_pack.json`, `source_classification` (`contemporary_primary`,
+    `later_primary`, `authoritative_secondary`, `reputable_secondary`,
+    `reference_source`, `discovery_only`) grades the source itself; `access_status`
+    (`read_full`, `read_partial`, `search_snippet_only`, `unavailable`) records how
+    much of it was actually read. A strong source that returned HTTP 403 stays strong
+    and is marked `unavailable`; the claim's `confidence` absorbs the uncertainty.
+12. **Claims are atomic.** One independently falsifiable assertion per claim, small
+    enough that one `confidence` and one `allowed_in_narration` apply to all of it.
+    Never fuse a contemporary account with a later reassessment of it.
+13. **`perspective` is about the claim's era and character, not the evidence's
+    publication date.** `contemporary` is an opinion/reaction/quote/pitch expressed
+    at the time (e.g. a 1982 road test); `retrospective_judgment` is a later
+    evaluation of the fact (e.g. a 2007 "worst cars" list); `timeless_or_historical_fact`
+    is a fixed data point — a price, a production figure, a date, a spec — regardless
+    of how recently it was compiled. A 1982 production figure compiled by a modern
+    site is `timeless_or_historical_fact` about 1982, not `retrospective_judgment`;
+    the modern date belongs in that source's `publication_date`.
+14. **Discovery is not verification.** In `asset_inventory.json`,
+    `exact_subject_match: true` requires `verification_method: visually_inspected`,
+    and video timestamps may only be recorded for footage actually inspected. Titles,
+    captions and search snippets establish what an asset *claims* to show, never what
+    it shows.
+15. **Runtime is a center of gravity, not a padded target.** A channel's
+    `runtime_policy.preferred_minutes` (`config/channels/<channel_id>.json`) guides
+    `producer_outline.json`'s `estimated_runtime_sec`, set by Agent A during A3 after
+    the beats exist — never hardcoded. Length follows evidence density, story
+    density, and expected visual density; never pad a thin story to hit a number.
 
 ## Layout
 
@@ -98,8 +116,9 @@ status says so.
   files above. `episode_id` is `<channel_id>_<slugified-topic>`.
 - `agents/` — role specs for Agent A and Agent B (prompts, not code, for now).
 - `config/channels/<channel_id>.json` — per-channel defaults (`research_language`,
-  `working_language`, `output_language`, `narration_register`, `target_audience`)
-  used when initializing an episode.
+  `working_language`, `output_language`, `narration_register`, `target_audience`,
+  `runtime_policy`) used when initializing an episode and, for `runtime_policy`, when
+  Agent A estimates runtime during A3.
 - `schemas/` — JSON Schema (draft-07) for every episode state file. Validate against
   these before an agent hands off to the next stage.
 - `run_episode.py` — CLI. Currently one command: `init`.

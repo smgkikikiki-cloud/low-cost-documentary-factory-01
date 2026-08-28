@@ -17,6 +17,21 @@ Research in any language (`research_language` on the brief may be `auto`). Write
 atomic claims into `fact_pack.json`, normalized into `working_language`, each with
 structured source provenance and an honest `perspective` and `confidence`.
 
+**Governing principle: evidence proportionality, not source purity.** The goal is a
+documentary that's accurate enough, resistant to hallucination, and practical to
+produce at scale -- not an academic citation exercise. Wikipedia and similar
+reference sources are allowed and useful. Use them freely for ordinary,
+non-controversial background: model years, basic platform sharing, basic engine
+lineup, company ownership, production location, common chronology, model names,
+generation relationships. Reserve stronger corroboration for claims that are central
+to the hook or thesis, surprising, important numerical comparisons, prices,
+sales/production figures central to the story, direct quotes, causal claims
+("why the company did X"), claims about contemporary belief, or disputed/
+reputation-sensitive claims. If stronger evidence can't reasonably be found for one
+of those, do not invent one and do not fill the gap from model memory -- keep the
+real, imperfect source with an honestly hedged `confidence` and careful
+`safe_wording`. A real but imperfect source beats an unsupported inference.
+
 **Claims must be atomic.** A claim is one independently falsifiable assertion, small
 enough that a single `confidence` and a single `allowed_in_narration` value apply
 coherently to all of it. Equipment changes, suspension changes, and shared platform
@@ -28,22 +43,44 @@ split it rather than averaging the confidence.
 **Source quality and source accessibility are independent axes.** Each source records
 both:
 
-- `source_classification` — intrinsic quality. Wikipedia, its mirrors, wikis, generic
-  aggregators, spec-scraper sites and search-result snippets are `reference_only` by
-  default. Never grade Wikipedia `high_quality_secondary`.
+- `source_classification` — intrinsic quality, not colored by whether it could be
+  fetched: `contemporary_primary` (a primary document from the claim's own era — a
+  manufacturer brochure, a period price sheet), `later_primary` (a primary document
+  from after the era — a later interview with someone involved, or the origin of a
+  later judgment), `authoritative_secondary` (a major established specialist
+  publication), `reputable_secondary` (a solid but less authoritative secondary
+  source), `reference_source` (Wikipedia and similar general references — allowed,
+  useful, not automatically distrusted, but not sufficient alone for a
+  stronger-corroboration claim), `discovery_only` (a search-engine snippet or
+  synthesized answer not confidently attributable to one specific, independently
+  opened page).
 - `access_status` — how much was actually read: `read_full`, `read_partial`,
   `search_snippet_only`, `unavailable`.
 
-A first-rate source that returned HTTP 403 does not become `reference_only` — it stays
-first-rate with `access_status: unavailable`, and the claim's *confidence* absorbs the
-uncertainty. Conversely, fully reading an aggregator does not promote it. Record
-`evidence_note` (exactly what this source supports) and `evidence_location` (page,
-section, table, timestamp) so a later reader can retrace the find.
+A first-rate source that returned HTTP 403 does not become weaker on the quality
+axis — it stays `contemporary_primary`/`authoritative_secondary`/whatever it is, with
+`access_status: unavailable`, and the claim's *confidence* absorbs the uncertainty.
+Conversely, fully reading a `reference_source` does not promote its classification.
+Record `evidence_note` (exactly what this source supports) and `evidence_location`
+(page, section, table, timestamp) so a later reader can retrace the find.
 
-**`perspective` describes the claim's era, not the evidence's publication date.** A
-1982 production figure compiled by a website in 2019 is a `contemporary` claim about
-1982; the 2019 date belongs in that source's `publication_date`. Reserve
-`retrospective` for claims that are themselves later judgments or reassessments.
+**`perspective` describes the claim's era, not the evidence's publication date, and
+is distinct from whether the claim expresses an opinion.**
+
+- `contemporary` — an opinion, reaction, quote, or positioning that was itself
+  expressed at the claim's `time_context` (a period review, a warning from an
+  executive, a marketing pitch). Example: "Road & Track criticized the car in 1982."
+- `retrospective_judgment` — an evaluation or reassessment made after the fact, about
+  the fact. Example: "TIME called it one of the worst cars in 2007."
+- `timeless_or_historical_fact` — a fixed historical data point with no
+  expressed-opinion character: a price, a sales/production figure, a date, a spec, a
+  platform-sharing fact — regardless of how recently it was compiled. Example:
+  "Production ended in 1988" is `timeless_or_historical_fact` even though the source
+  reporting it is a 2020s website.
+
+A 1982 production figure compiled by a website in 2019 is `timeless_or_historical_fact`
+about 1982, not `retrospective_judgment` — the 2019 date belongs in that source's
+`publication_date`, not in `perspective`.
 
 ## A2 — Verified Claim Registry / Adversarial Check
 
@@ -56,15 +93,18 @@ the A1 output. For every claim, ask:
 - Do any sources conflict with it? (If so, record them in `conflicting_evidence` --
   never silently resolve a conflict for narrative convenience.)
 - Does a numerical comparison mix mismatched years, trims, or definitions?
-- Does an important/disputed claim rest on only one weak (`reference_only`) source
-  when a stronger one could reasonably be found?
+- Does an important/disputed claim rest on only one weak (`reference_source` or
+  `discovery_only`) source when a stronger one could reasonably be found? (This is
+  a proportionality check, not a blanket ban -- an ordinary background fact resting
+  on a `reference_source` is fine; a hook/thesis-central or disputed claim resting on
+  one is a real gap.)
 - Did the claim get stronger during paraphrasing than the underlying evidence
   supports?
 
 Set `confidence: "unresolved"` and `allowed_in_narration: false` for anything that
 fails this check. Retrospective judgments (a "worst car" list, a reputation that
-solidified decades later) must be tagged `perspective: "retrospective"` and must
-never be projected backward as if it were the contemporary reaction -- that's a
+solidified decades later) must be tagged `perspective: "retrospective_judgment"` and
+must never be projected backward as if it were the contemporary reaction -- that's a
 separate, `perspective: "contemporary"` claim, sourced separately.
 
 **Numerical claim rule:** numbers must not be turned into dramatic adjectives
@@ -103,6 +143,25 @@ For each beat, write structured `visual_requests` describing what footage/imager
 
 Story quality must come from selecting and arranging strong facts, not from
 exaggerating weak ones.
+
+**Runtime is set here, after the beats exist -- never hardcoded.** Read the channel's
+`runtime_policy` from `config/channels/<channel_id>.json` (`preferred_minutes` is a
+center of gravity, not a fixed target; `normal_range_minutes` and
+`longform_range_minutes` bound how far the episode can reasonably drift;
+`never_pad_to_target` means exactly that). Set `estimated_runtime_sec` from the
+beats actually written, and record the reasoning in `runtime_rationale`: what
+evidence density, story density, and expected visual density this episode has, and
+why that supports this length. Longer is not automatically better -- never manufacture
+minutes from a thin story by adding generic background, repetitive explanation, or
+loosely related biography. A longform runtime only happens when the evidence and
+story genuinely fill it.
+
+**Story density: a beat must earn its place.** A normal episode runs roughly 5-8
+beats. Each one must do at least one of: introduce a problem, reveal a decision,
+explain an important mechanism, show a surprising contrast, create a story turn, show
+consequences, or resolve the episode's core question. A beat that only repeats an
+earlier beat's idea gets merged or cut. This is a documentary, not an encyclopedia
+entry -- an interesting fact does not automatically earn screen time.
 
 ## A4 — Localized Final Writing
 

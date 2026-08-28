@@ -2,7 +2,7 @@
   "$schema": "http://json-schema.org/draft-07/schema#",
   "$id": "fact_pack.schema.json",
   "title": "FactPack",
-  "description": "Agent A's (A1 Evidence Collection / A2 Verified Claim Registry) evidence boundary between research and storytelling. producer_outline.json may only cite claim_ids that exist here; final_script.json narration may only assert claims marked allowed_in_narration.",
+  "description": "Agent A's (A1 Evidence Collection / A2 Verified Claim Registry) evidence boundary between research and storytelling. producer_outline.json may only cite claim_ids that exist here; final_script.json narration may only assert claims marked allowed_in_narration. Governing principle: EVIDENCE PROPORTIONALITY, NOT SOURCE PURITY. Reference sources like Wikipedia are allowed and useful for ordinary, non-controversial background (chronology, platform sharing, model names, basic specs). Claims central to the hook/thesis, surprising claims, prices, sales/production figures, quotes, causal claims, and disputed or reputation-sensitive claims need stronger corroboration. A real but imperfect source beats an invented one -- never fill a gap from model memory.",
   "type": "object",
   "required": ["episode_id", "status", "claims"],
   "additionalProperties": false,
@@ -70,7 +70,7 @@
           },
           "sources": {
             "type": "array",
-            "description": "Structured provenance, one entry per source. Source QUALITY (source_classification) and source ACCESSIBILITY (access_status) are independent: a strong source that could not be fetched stays strong but is marked unavailable; it does not become reference_only. May be empty for a derived_comparison claim, which cites source_claim_ids instead.",
+            "description": "Structured provenance, one entry per source. Source QUALITY (source_classification) and source ACCESSIBILITY (access_status) are independent: a strong source that could not be fetched stays strong but is marked unavailable; it is not downgraded on the quality axis. May be empty for a derived_comparison claim, which cites source_claim_ids instead.",
             "items": {
               "type": "object",
               "required": [
@@ -96,8 +96,8 @@
                 "source_language": { "type": "string" },
                 "source_classification": {
                   "type": "string",
-                  "enum": ["contemporary_primary", "later_primary", "high_quality_secondary", "reference_only"],
-                  "description": "Intrinsic quality of the source, independent of whether it could be fetched. Wikipedia, Wikipedia mirrors, wikis, generic aggregators, spec-scraper sites and search-result snippets are reference_only by default and must never be classified high_quality_secondary."
+                  "enum": ["contemporary_primary", "later_primary", "authoritative_secondary", "reputable_secondary", "reference_source", "discovery_only"],
+                  "description": "Intrinsic quality of the source, independent of whether it could be fetched. contemporary_primary: a primary document from the claim's own era (manufacturer brochure, period price sheet, contemporaneous filing). later_primary: a primary document from after the era, e.g. a later interview with someone involved, or a publication that is itself the origin of a later judgment. authoritative_secondary: a major established specialist publication (e.g. a mainstream automotive title, a long-running specialist outlet). reputable_secondary: a solid but less authoritative secondary source (a serious enthusiast/history site or blog). reference_source: general reference material -- Wikipedia and similar. Allowed and useful for ordinary background, not automatically distrusted, but not sufficient alone for claims needing stronger corroboration (see the top-level description). discovery_only: a search-engine snippet or synthesized answer not attributable to one clearly identified, independently opened page -- weaker than reference_source precisely because even the source's own identity is uncertain."
                 },
                 "access_status": {
                   "type": "string",
@@ -117,8 +117,8 @@
           },
           "perspective": {
             "type": "string",
-            "enum": ["contemporary", "retrospective", "timeless"],
-            "description": "What era/viewpoint the CLAIM IS ABOUT -- never when the evidence page was published. A historical production or price figure compiled by a modern source is still contemporary (or timeless) to its era; the modern publication date belongs in the source's publication_date. Use retrospective only when the claim is itself a later judgment, reassessment or reputation formed after the fact."
+            "enum": ["contemporary", "retrospective_judgment", "timeless_or_historical_fact"],
+            "description": "What era/viewpoint the CLAIM IS ABOUT -- never when the evidence page was published. contemporary: an opinion, reaction, quote, or positioning that was itself expressed at the claim's time_context (a period review, a remark, a marketing pitch). retrospective_judgment: an evaluation or reassessment made after the fact and about the fact (a 'worst cars' list, a later regret). timeless_or_historical_fact: a fixed historical data point with no expressed-opinion character -- a price, a sales/production figure, a date, a spec, a platform-sharing fact -- regardless of how recently it was compiled. Example: 'Road & Track criticized the car in 1982' is contemporary; 'TIME called it one of the worst cars in 2007' is retrospective_judgment; 'production ended in 1988' is timeless_or_historical_fact even if the source compiling that fact is a 2020s website."
           },
           "confidence": {
             "type": "string",

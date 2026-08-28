@@ -5,7 +5,7 @@
   "working_language": "en",
   "quirk_lead": {
     "text": "Cadillac's infamous attempt to turn the GM J-car into a luxury compact",
-    "note": "Research lead only -- not a verified fact. Evidence supports a narrower thesis (Cadillac made real, documented changes but joined the J-car program too late to differentiate enough) rather than the quirk's blunter 'infamous attempt' framing. 'Infamous' is a retrospective reputation (see r01/r02), not a contemporary fact."
+    "note": "Research lead only -- not a verified fact. Evidence supports a narrower thesis (Cadillac made real, documented changes but joined the J-car program too late to differentiate enough) rather than the quirk's blunter 'infamous attempt' framing. 'Infamous' is a retrospective judgment (see l01/r02), not a contemporary fact."
   },
   "claims": [
     {
@@ -19,7 +19,7 @@
           "title": "Cadillac Cimarron",
           "publisher": "Wikipedia",
           "source_language": "en",
-          "source_classification": "reference_only",
+          "source_classification": "reference_source",
           "access_status": "read_full",
           "evidence_note": "Gives the 1982 list price as $12,181.",
           "evidence_location": "Article body, first-generation / pricing discussion"
@@ -29,13 +29,13 @@
           "title": "Cadillac's Small Mistake: The 1982-1988 Cimarron",
           "publisher": "Mac's Motor City Garage",
           "source_language": "en",
-          "source_classification": "high_quality_secondary",
+          "source_classification": "reputable_secondary",
           "access_status": "read_full",
           "evidence_note": "Gives base price $12,131 at introduction, dated to May 21, 1981.",
           "evidence_location": "Article body, introduction/pricing paragraph"
         }
       ],
-      "perspective": "contemporary",
+      "perspective": "timeless_or_historical_fact",
       "confidence": "high",
       "allowed_in_narration": true,
       "safe_wording": "The 1982 Cimarron launched at roughly $12,100-12,200.",
@@ -45,7 +45,7 @@
       "conflicting_evidence": [
         "Wikipedia gives $12,181; Mac's Motor City Garage gives $12,131. A $50 gap, likely a rounding or mid-year adjustment difference. Both retained rather than silently resolved."
       ],
-      "notes": "Derived comparisons below deliberately use the LOWER figure ($12,131) so the computed premium is the conservative one."
+      "notes": "Price is a category the audit flags as needing stronger corroboration; two independent sources converging within $50 on a claim this central to the episode is proportional support. Derived comparisons below deliberately use the LOWER figure ($12,131) so the computed premium is the conservative one."
     },
     {
       "claim_id": "p02_cavalier_cl_sedan_price",
@@ -58,13 +58,13 @@
           "title": "1982 Chevrolet Cavalier Trim and Specs",
           "publisher": "CarGurus",
           "source_language": "en",
-          "source_classification": "reference_only",
+          "source_classification": "reference_source",
           "access_status": "read_full",
           "evidence_note": "Full 1982 Cavalier trim table explicitly labeled 'Original MSRP'; CL Sedan FWD listed at $8,499.",
           "evidence_location": "Trims table, CL Sedan FWD row"
         }
       ],
-      "perspective": "contemporary",
+      "perspective": "timeless_or_historical_fact",
       "confidence": "medium",
       "allowed_in_narration": true,
       "safe_wording": "A top-trim Cavalier CL sedan listed at $8,499 that year.",
@@ -74,7 +74,7 @@
       "conflicting_evidence": [
         "A prior research pass attributed $8,137 as the Cavalier CL starting price to Curbside Classic via a search snippet. That figure is contradicted by this readable Original-MSRP table and is not used."
       ],
-      "notes": "Confidence medium not high: aggregator-sourced (reference_only) historical MSRP table, readable and internally consistent across all 11 trims, but not cross-checked against a period Chevrolet price list."
+      "notes": "Price is a category needing stronger corroboration; this rests on a single reference-grade aggregator table, so confidence stays medium rather than high even though the table is internally consistent and was read in full. Proportional treatment: not blocked (nothing disputes it, it's not surprising), but not treated as fully settled either."
     },
     {
       "claim_id": "p03_cavalier_cadet_coupe_price",
@@ -87,13 +87,13 @@
           "title": "1982 Chevrolet Cavalier Trim and Specs",
           "publisher": "CarGurus",
           "source_language": "en",
-          "source_classification": "reference_only",
+          "source_classification": "reference_source",
           "access_status": "read_full",
           "evidence_note": "Cadet Coupe FWD listed at $6,648 as the lowest of eleven 1982 Cavalier trims.",
           "evidence_location": "Trims table, Cadet Coupe FWD row"
         }
       ],
-      "perspective": "contemporary",
+      "perspective": "timeless_or_historical_fact",
       "confidence": "medium",
       "allowed_in_narration": true,
       "safe_wording": "The cheapest Cavalier, the stripped Cadet coupe, started at $6,648.",
@@ -112,7 +112,7 @@
       "source_claim_ids": ["p01_cimarron_price", "p02_cavalier_cl_sedan_price"],
       "calculation": "(12131 - 8499) / 8499 * 100",
       "result": "42.7% premium (a $3,632 gap) using the lower Cimarron figure; 43.3% ($3,682) using the higher one. Both trims at their own base MSRP, no options on either side.",
-      "perspective": "contemporary",
+      "perspective": "timeless_or_historical_fact",
       "confidence": "medium",
       "allowed_in_narration": true,
       "safe_wording": "Against the most expensive Cavalier sedan you could buy, the Cimarron cost roughly 43% more -- about $3,600.",
@@ -132,7 +132,7 @@
       "source_claim_ids": ["p01_cimarron_price", "p03_cavalier_cadet_coupe_price"],
       "calculation": "(12131 - 6648) / 6648 * 100",
       "result": "82.5% premium (a $5,483 gap) using the lower Cimarron figure; 83.2% ($5,533) using the higher one -- close to double, but only against the cheapest, most stripped-out Cavalier body style.",
-      "perspective": "contemporary",
+      "perspective": "timeless_or_historical_fact",
       "confidence": "medium",
       "allowed_in_narration": true,
       "safe_wording": "Set against the cheapest Cavalier on the lot -- the stripped Cadet coupe -- the Cimarron cost about 83% more, close to double.",
@@ -156,13 +156,13 @@
           "title": "Vintage Reviews: Cadillac Cimarron 1982-1985 - Clippings From The Mediocrity Files",
           "publisher": "Curbside Classic",
           "source_language": "en",
-          "source_classification": "high_quality_secondary",
+          "source_classification": "reputable_secondary",
           "access_status": "search_snippet_only",
           "evidence_note": "A search-engine summary attributes to this page a Cavalier CL base of $8,137 optioned to $9,712. The page itself returned HTTP 403 on every fetch attempt and has never been read.",
           "evidence_location": "Unknown -- page not accessible"
         }
       ],
-      "perspective": "contemporary",
+      "perspective": "timeless_or_historical_fact",
       "confidence": "unresolved",
       "allowed_in_narration": false,
       "safe_wording": "Do not state an equipment-matched Cavalier price or the percentage derived from it. If the episode needs a like-for-like price comparison, use d01 (base trim vs base trim), which is verified.",
@@ -173,7 +173,7 @@
       "conflicting_evidence": [
         "The same snippet's companion figure -- $8,137 as the Cavalier CL starting price -- is directly contradicted by a readable Original-MSRP table giving $8,499 (see p02). That a verifiable half of the snippet turned out wrong is itself reason to distrust the unverifiable half."
       ],
-      "notes": "Kept unresolved per the audit. Note the source is graded high_quality_secondary on QUALITY (Curbside Classic reprints period road tests and is a serious outlet) while its ACCESS is search_snippet_only -- the 403 does not degrade the source, it degrades what we can honestly claim from it. The episode has been restructured so nothing depends on this claim."
+      "notes": "Kept unresolved. This is a case where proportionality still says no: this exact number would be central to the price comparison if used, and the only source is graded reputable_secondary on QUALITY (Curbside Classic is a serious outlet) but access_status is search_snippet_only, and the one piece of it that IS checkable turned out wrong. The episode has been restructured so nothing depends on this claim -- d01 does the same narrative job on verified ground."
     },
     {
       "claim_id": "u02_premium_vs_equipped_cl",
@@ -184,7 +184,7 @@
       "source_claim_ids": ["p01_cimarron_price", "u01_cavalier_cl_equipped_price"],
       "calculation": "(12131 - 9712) / 9712 * 100",
       "result": "24.9% (a $2,419 gap) -- BLOCKED: rests on u01, which is unverified.",
-      "perspective": "contemporary",
+      "perspective": "timeless_or_historical_fact",
       "confidence": "unresolved",
       "allowed_in_narration": false,
       "safe_wording": "Do not air this figure. Use d01 (~43% against the top Cavalier sedan trim) instead.",
@@ -213,7 +213,7 @@
           "evidence_location": "Cutaway spread (brochure pages 5-6 of the scanned PDF) and the 'Nimble. Road-hugging.' interior spread"
         }
       ],
-      "perspective": "contemporary",
+      "perspective": "timeless_or_historical_fact",
       "confidence": "high",
       "allowed_in_narration": true,
       "safe_wording": "Air conditioning, leather seating, a leather-wrapped wheel, a tachometer and full gauges, alloy wheels and deep-pile carpeting were all standard on the Cimarron.",
@@ -221,7 +221,7 @@
         "Claiming none of these could be optioned onto a Cavalier -- the claim is about what was STANDARD on the Cimarron, not about exclusivity (see x01)"
       ],
       "conflicting_evidence": [],
-      "notes": "Evidence upgraded from Wikipedia (reference_only) to the manufacturer's own 1982 brochure, obtained as a 12-page image scan and read page by page. This is the strongest-sourced claim in the pack."
+      "notes": "Evidence upgraded from Wikipedia (reference_source) to the manufacturer's own 1982 brochure, obtained as a 12-page image scan and read page by page. This is the strongest-sourced claim in the pack, appropriate given it carries thesis and hook weight."
     },
     {
       "claim_id": "e02_sound_insulation",
@@ -241,7 +241,7 @@
           "evidence_location": "'YOU ARE IN COMMAND' interior spread, body copy"
         }
       ],
-      "perspective": "contemporary",
+      "perspective": "timeless_or_historical_fact",
       "confidence": "high",
       "allowed_in_narration": true,
       "safe_wording": "Cadillac added an acoustical insulation package to quiet the car down.",
@@ -269,13 +269,14 @@
           "evidence_location": "'QUICK-HANDLING...ROAD-HUGGING...RESPONSIVE.' spread, body copy; and 'Nimble. Road-hugging.' spread"
         }
       ],
-      "perspective": "contemporary",
+      "perspective": "timeless_or_historical_fact",
       "confidence": "high",
       "allowed_in_narration": true,
       "safe_wording": "Cadillac gave the car its own tuned touring suspension, which it advertised as exclusive to the Cimarron.",
       "forbidden_or_unsupported_inference": [
         "Claiming the suspension used different hardware from other J-cars -- the evidence is about TUNING and one specific bushing change (e04), on a shared architecture (a01)",
-        "Presenting the manufacturer's word 'exclusive' as independently verified rather than as Cadillac's own marketing claim"
+        "Presenting the manufacturer's word 'exclusive' as independently verified rather than as Cadillac's own marketing claim",
+        "Concluding this tuning was necessarily perceptible to an ordinary driver -- the claim is that Cadillac tuned and marketed it, not that the car drove noticeably differently"
       ],
       "conflicting_evidence": [],
       "notes": "This is Cadillac asserting it in its own brochure -- excellent evidence that the claim was MADE and that tuning work was done, but it is the seller's characterisation. Safe_wording keeps the attribution."
@@ -298,7 +299,7 @@
           "evidence_location": "Cutaway spread, 'OTHER STANDARD FEATURES INCLUDE...' column"
         }
       ],
-      "perspective": "contemporary",
+      "perspective": "timeless_or_historical_fact",
       "confidence": "high",
       "allowed_in_narration": true,
       "safe_wording": "Down to the rear axle arm bushings, Cadillac specified its own parts.",
@@ -330,13 +331,13 @@
           "title": "Cadillac's Small Mistake: The 1982-1988 Cimarron",
           "publisher": "Mac's Motor City Garage",
           "source_language": "en",
-          "source_classification": "high_quality_secondary",
+          "source_classification": "reputable_secondary",
           "access_status": "read_full",
           "evidence_note": "States the Cimarron used the same McPherson strut front / torsion-beam rear layout as the rest of the J family, with Cadillac tuning on top.",
           "evidence_location": "Article body, engineering paragraph"
         }
       ],
-      "perspective": "timeless",
+      "perspective": "timeless_or_historical_fact",
       "confidence": "high",
       "allowed_in_narration": true,
       "safe_wording": "Underneath, it was the J-car layout: front-wheel drive, MacPherson struts up front, a semi-independent rear end, rack and pinion steering.",
@@ -344,7 +345,7 @@
         "Concluding from shared architecture that Cadillac changed nothing -- e01-e04 document real changes on top of it"
       ],
       "conflicting_evidence": [],
-      "notes": "Deliberately paired with e01-e04 so the 'shared platform' and 'real changes' halves of the story are separate, independently checkable claims rather than one compound assertion."
+      "notes": "Deliberately paired with e01-e04 so the 'shared platform' and 'real changes' halves of the story are separate, independently checkable claims rather than one compound assertion. This is squarely 'ordinary, non-controversial background' territory per the proportionality principle -- a primary source plus a secondary agreeing is more than enough."
     },
     {
       "claim_id": "a02_jcar_siblings",
@@ -357,7 +358,7 @@
           "title": "Cadillac Cimarron",
           "publisher": "Wikipedia",
           "source_language": "en",
-          "source_classification": "reference_only",
+          "source_classification": "reference_source",
           "access_status": "read_full",
           "evidence_note": "Background section names the Chevrolet Cavalier, Buick Skyhawk, Oldsmobile Firenza and Pontiac J2000 as the North American J-car variants alongside the Cimarron.",
           "evidence_location": "Background section"
@@ -367,19 +368,19 @@
           "title": "Ladder to Oblivion: The 1982 General Motors J-Cars",
           "publisher": "Consumer Guide",
           "source_language": "en",
-          "source_classification": "high_quality_secondary",
+          "source_classification": "reputable_secondary",
           "access_status": "search_snippet_only",
           "evidence_note": "Corroborates that every GM division, Cadillac included, marketed a variant of the 1982 J-car.",
           "evidence_location": "Article body -- seen via search summary only, page not fetched"
         }
       ],
-      "perspective": "timeless",
+      "perspective": "timeless_or_historical_fact",
       "confidence": "high",
       "allowed_in_narration": true,
       "safe_wording": "Five GM divisions sold a version of the J-car: Chevrolet's Cavalier, Pontiac's J2000, Buick's Skyhawk, Oldsmobile's Firenza, and Cadillac's Cimarron.",
       "forbidden_or_unsupported_inference": [],
       "conflicting_evidence": [],
-      "notes": "Confidence stays high despite reference_only + snippet sourcing: this is an uncontested, trivially checkable enumeration that no source disputes, and two independent sources agree. Classification of the sources has been corrected downward even though the claim itself is solid -- source grade and claim confidence are separate axes."
+      "notes": "This is exactly the kind of ordinary, non-controversial background fact (model names, generation relationships) the proportionality principle says a reference source can carry at high confidence: nothing about it is surprising, disputed, central to the hook/thesis, or a number that needs precision. Two independent sources agreeing is a bonus, not a requirement here."
     },
     {
       "claim_id": "t01_estes_warning",
@@ -392,7 +393,7 @@
           "title": "Cadillac Cimarron",
           "publisher": "Wikipedia",
           "source_language": "en",
-          "source_classification": "reference_only",
+          "source_classification": "reference_source",
           "access_status": "read_full",
           "evidence_note": "Background section carries the quote verbatim and names both Estes (GM president) and Kennard (Cadillac general manager). Attributed to the article's reference [9], which was not itself retrieved.",
           "evidence_location": "Background section, cited to footnote [9]"
@@ -402,7 +403,7 @@
           "title": "Ladder to Oblivion: The 1982 General Motors J-Cars",
           "publisher": "Consumer Guide",
           "source_language": "en",
-          "source_classification": "high_quality_secondary",
+          "source_classification": "reputable_secondary",
           "access_status": "search_snippet_only",
           "evidence_note": "Carries the same warning, and the surrounding claim that Cadillac joined the J-car project about eleven months before launch.",
           "evidence_location": "Article body -- seen via search summary only, page not fetched"
@@ -417,7 +418,7 @@
         "Using it to imply GM leadership broadly opposed the Cimarron; it is one remark by one executive"
       ],
       "conflicting_evidence": [],
-      "notes": "Source classification corrected: previously graded high_quality_secondary on Wikipedia alone, which the audit correctly rejected. Wikipedia is now reference_only. Confidence held at medium (not raised) because both available sources trace back toward the same underlying account and neither original was read. The 'reportedly' hedge in safe_wording is mandatory."
+      "notes": "Direct quotes are in the stronger-corroboration bucket regardless of how ordinary the surrounding facts are. Confidence held at medium because both available sources trace back toward the same underlying account and neither original was read. The 'reportedly' hedge in safe_wording is mandatory."
     },
     {
       "claim_id": "t02_late_entry",
@@ -430,13 +431,13 @@
           "title": "Ladder to Oblivion: The 1982 General Motors J-Cars",
           "publisher": "Consumer Guide",
           "source_language": "en",
-          "source_classification": "high_quality_secondary",
+          "source_classification": "reputable_secondary",
           "access_status": "search_snippet_only",
           "evidence_note": "States the Cimarron joined the project eleven months before the J-cars arrived in showrooms, and that Cadillac had very little involvement in the program.",
           "evidence_location": "Article body -- seen via search summary only, page not fetched"
         }
       ],
-      "perspective": "contemporary",
+      "perspective": "timeless_or_historical_fact",
       "confidence": "medium",
       "allowed_in_narration": true,
       "safe_wording": "Cadillac came to the J-car program late -- by one account about eleven months before launch.",
@@ -444,7 +445,7 @@
         "Stating 'eleven months' as a precisely documented figure rather than a single source's account"
       ],
       "conflicting_evidence": [],
-      "notes": "Split out from the Estes quote (t01): the timeline and the remark are independently falsifiable and were previously fused into one claim. Only ever read as a search snippet -- the safe_wording hedge ('by one account') is required."
+      "notes": "Split out from the Estes quote (t01): the timeline and the remark are independently falsifiable and were previously fused into one claim. This is a specific, load-bearing number for beat b3's causal argument (why the car turned out the way it did), so it stays medium rather than being waved through as 'ordinary chronology' -- it is single-sourced and only ever read as a search snippet. The safe_wording hedge ('by one account') is required."
     },
     {
       "claim_id": "r01_rt_performance",
@@ -457,7 +458,7 @@
           "title": "Cadillac's Small Mistake: The 1982-1988 Cimarron",
           "publisher": "Mac's Motor City Garage",
           "source_language": "en",
-          "source_classification": "high_quality_secondary",
+          "source_classification": "reputable_secondary",
           "access_status": "read_full",
           "evidence_note": "Cites Road & Track's recorded 0-60 of 15.9 seconds and quotes 'Painfully slow' on the drivetrain.",
           "evidence_location": "Article body, performance paragraph"
@@ -472,7 +473,7 @@
         "Generalising it into 'the press panned the car' -- r02 shows contemporary praise existed alongside this"
       ],
       "conflicting_evidence": [],
-      "notes": "The quote reaches us through Mac's Motor City Garage rather than from the Road & Track issue itself; that intermediary was read in full."
+      "notes": "A direct quote, so normally in the stronger-corroboration bucket, but this one is specific, concrete (a numeric time plus a short quoted phrase), and reached through a fully-read intermediary rather than a snippet -- proportionate to call this high rather than escalate to demanding the original Road & Track issue for an uncontested, checkable figure."
     },
     {
       "claim_id": "r02_cd_review_favorable",
@@ -497,7 +498,7 @@
           "title": "Vintage Reviews: Cadillac Cimarron 1982-1985 - Clippings From The Mediocrity Files",
           "publisher": "Curbside Classic",
           "source_language": "en",
-          "source_classification": "high_quality_secondary",
+          "source_classification": "reputable_secondary",
           "access_status": "search_snippet_only",
           "evidence_note": "Describes the August 1981 Car and Driver test as notably positive and names Rich Ceppos as its author. Page returned HTTP 403 on every fetch attempt.",
           "evidence_location": "Unknown -- page not accessible"
@@ -512,7 +513,7 @@
         "Claiming the entire contemporary press was positive; r01 documents simultaneous criticism"
       ],
       "conflicting_evidence": [],
-      "notes": "Per the audit, the original publication was searched for directly rather than leaving this unresolved on a secondary 403. Result: Car and Driver's own republication was located by title and standfirst, but caranddriver.com blocks this crawler outright, so access_status is unavailable while source_classification stays contemporary_primary -- exactly the quality/accessibility separation the audit required. The claim is now supported by the primary publisher's own framing plus an independent secondary, which is enough for medium confidence on the review's TONE, though not for any verbatim quote."
+      "notes": "This claim carries both hook and thesis weight, so per the proportionality principle it needed stronger sourcing than the earlier single reputable-secondary snippet alone. The original publication was searched for directly rather than accepted as permanently unresolved: Car and Driver's own republication was located by title and standfirst, but caranddriver.com blocks this crawler outright, so access_status is unavailable while source_classification stays contemporary_primary -- quality and accessibility are independent. Medium confidence reflects that the review's TONE is now supported by the primary publisher's own framing plus an independent secondary, though no verbatim quote is."
     },
     {
       "claim_id": "r03_ceppos_regret",
@@ -536,13 +537,13 @@
           "title": "Vintage Reviews: Cadillac Cimarron 1982-1985 - Clippings From The Mediocrity Files",
           "publisher": "Curbside Classic",
           "source_language": "en",
-          "source_classification": "high_quality_secondary",
+          "source_classification": "reputable_secondary",
           "access_status": "search_snippet_only",
           "evidence_note": "States Ceppos later felt embarrassed for having 'effused' over the car.",
           "evidence_location": "Unknown -- page not accessible"
         }
       ],
-      "perspective": "retrospective",
+      "perspective": "retrospective_judgment",
       "confidence": "medium",
       "allowed_in_narration": true,
       "safe_wording": "The writer later said he was embarrassed by how warmly he'd received it.",
@@ -551,7 +552,7 @@
         "Dating the retraction precisely"
       ],
       "conflicting_evidence": [],
-      "notes": "Deliberately split from r02: the 1981 review's tone (contemporary) and the writer's later regret (retrospective) are different claims about different eras and were previously fused into one, which the audit flagged. Fusing them also risked letting the retrospective regret colour the account of contemporary reception."
+      "notes": "Deliberately split from r02: the 1981 review's tone (contemporary) and the writer's later regret (retrospective_judgment) are different claims about different eras and were previously fused into one. Fusing them also risked letting the retrospective regret colour the account of contemporary reception."
     },
     {
       "claim_id": "q01_cd_boldest_moves_quote",
@@ -564,7 +565,7 @@
           "title": "Vintage Reviews: Cadillac Cimarron 1982-1985 - Clippings From The Mediocrity Files",
           "publisher": "Curbside Classic",
           "source_language": "en",
-          "source_classification": "high_quality_secondary",
+          "source_classification": "reputable_secondary",
           "access_status": "search_snippet_only",
           "evidence_note": "A search summary of this page attributes the phrasing to the original review. The page returned HTTP 403 on every fetch attempt; the wording has never been read in context, in this source or any other.",
           "evidence_location": "Unknown -- page not accessible"
@@ -579,7 +580,7 @@
         "Paraphrasing it loosely ('C&D called it one of the boldest things any carmaker had ever done') -- the paraphrase inherits the same unverified specificity"
       ],
       "conflicting_evidence": [],
-      "notes": "Split out from r02 so that the review's TONE (supported, airable) is no longer held hostage to this one VERBATIM STRING (unsupported, blocked). Both Car and Driver directly and accessible reprints were searched; the magazine's domain is blocked to this crawler and no other source carries the sentence in readable form."
+      "notes": "Split out from r02 so that the review's TONE (supported, airable) is no longer held hostage to this one VERBATIM STRING (unsupported, blocked). Direct quotes are exactly the category proportionality treats strictly regardless of how ordinary the surrounding claim is. Both Car and Driver directly and accessible reprints were searched; the magazine's domain is blocked to this crawler and no other source carries the sentence in readable form."
     },
     {
       "claim_id": "s01_yearly_sales_wikipedia",
@@ -592,13 +593,13 @@
           "title": "Cadillac Cimarron",
           "publisher": "Wikipedia",
           "source_language": "en",
-          "source_classification": "reference_only",
+          "source_classification": "reference_source",
           "access_status": "read_full",
           "evidence_note": "Table headed 'Yearly American sales' carrying these seven figures; the article separately gives 132,499 as the total across 1982-1988.",
           "evidence_location": "'Yearly American sales' section table"
         }
       ],
-      "perspective": "contemporary",
+      "perspective": "timeless_or_historical_fact",
       "confidence": "medium",
       "allowed_in_narration": true,
       "safe_wording": "By the most widely cited tally, Cadillac moved about 132,500 Cimarrons over seven model years -- from roughly 26,000 in the first year down to 6,454 in the last.",
@@ -610,7 +611,7 @@
       "conflicting_evidence": [
         "GoodCarBadCar publishes a materially different US sales series for the same car -- 1981: 14,600; 1982: 13,774; 1983: 19,188; 1984: 18,014; 1985: 23,754; 1986: 23,435; 1987: 12,295; 1988: 5,884; 1989: 240 -- summing to 131,184 across nine years rather than seven. Its 1982 figure (13,774) is barely half this series' (25,968). The two are irreconcilable without knowing whether each counts calendar-year or model-year, and US-only or North American. Preserved, not resolved."
       ],
-      "notes": "AUDIT FIX (item A): the previous fact pack recorded 1986 as 25,534. That was a transcription error -- the correct figure is 24,534, and the error was self-revealing, because 25,534 makes the seven years sum to 133,499 rather than the stated 132,499. With 24,534 the series sums to exactly 132,499. Arithmetic consistency was used as the check.",
+      "notes": "AUDIT FIX (item A): the previous fact pack recorded 1986 as 25,534. That was a transcription error -- the correct figure is 24,534, and the error was self-revealing, because 25,534 makes the seven years sum to 133,499 rather than the stated 132,499. With 24,534 the series sums to exactly 132,499. Arithmetic consistency was used as the check. Sales/production figures central to the story are a stronger-corroboration category, and this one has an unresolved conflict with an independent source (s02), so it stays medium and hedged rather than high despite being fully read from a reference source.",
       "source_claim_ids": []
     },
     {
@@ -624,13 +625,13 @@
           "title": "Cadillac Cimarron Sales Figures",
           "publisher": "GoodCarBadCar",
           "source_language": "en",
-          "source_classification": "reference_only",
+          "source_classification": "reference_source",
           "access_status": "read_full",
           "evidence_note": "Table headed 'US Annual Sales': 1981: 14,600; 1982: 13,774; 1983: 19,188; 1984: 18,014; 1985: 23,754; 1986: 23,435; 1987: 12,295; 1988: 5,884; 1989: 240. The page states no total and describes the data as sales, not production.",
           "evidence_location": "'Cadillac Cimarron U.S Sales Data & Charts' / 'US Annual Sales' table"
         }
       ],
-      "perspective": "contemporary",
+      "perspective": "timeless_or_historical_fact",
       "confidence": "medium",
       "allowed_in_narration": false,
       "safe_wording": "Do not air either series as the definitive numbers. If the episode needs the shape of the decline, use s01's safe_wording, which is hedged as 'the most widely cited tally', or state only the final-year figure both series roughly agree is small.",
@@ -641,7 +642,7 @@
       "conflicting_evidence": [
         "Conflicts with s01 throughout; see that claim's conflicting_evidence for the detail."
       ],
-      "notes": "AUDIT FIX (item B): the previous fact pack cited this GoodCarBadCar page as the source for figures it does not contain. The page is a SALES page whose numbers differ substantially from the production/sales figures previously attributed to it -- the old c5/c6 numbers actually came from Wikipedia's table. Recorded here as its own claim so the conflict is visible rather than hidden by a bad citation. allowed_in_narration is false not because this source is worse than s01's, but because airing either series as settled would misrepresent an unresolved conflict."
+      "notes": "AUDIT FIX (item B): the previous fact pack cited this GoodCarBadCar page as the source for figures it does not contain. The page is a SALES page whose numbers differ substantially from the production/sales figures previously attributed to it -- the old figures actually came from Wikipedia's table. Recorded here as its own claim so the conflict is visible rather than hidden by a bad citation. allowed_in_narration is false not because this source is worse than s01's -- both are reference_source, read in full -- but because airing either series as settled would misrepresent a genuine, unresolved conflict on a story-important number. Per the audit's guidance on disagreeing sources: preserved, explained, not resolved by fiat."
     },
     {
       "claim_id": "s03_sales_vs_production_ambiguity",
@@ -654,7 +655,7 @@
           "title": "Cadillac Cimarron",
           "publisher": "Wikipedia",
           "source_language": "en",
-          "source_classification": "reference_only",
+          "source_classification": "reference_source",
           "access_status": "read_full",
           "evidence_note": "Presents the series under a 'Yearly American sales' heading while the 132,499 total is discussed in production terms.",
           "evidence_location": "'Yearly American sales' section vs. article body"
@@ -664,13 +665,13 @@
           "title": "Cadillac Cimarron - Model Information",
           "publisher": "Conceptcarz",
           "source_language": "en",
-          "source_classification": "reference_only",
+          "source_classification": "reference_source",
           "access_status": "read_full",
           "evidence_note": "Uses 'produced' and 'sold' interchangeably for the same figures; gives 25,698 for the first year where Wikipedia gives 25,968 -- an apparent digit transposition somewhere in the chain.",
           "evidence_location": "Model overview body text"
         }
       ],
-      "perspective": "timeless",
+      "perspective": "timeless_or_historical_fact",
       "confidence": "high",
       "allowed_in_narration": false,
       "safe_wording": "Not for narration -- this is a research caveat governing how s01 may be worded, not a point for the audience.",
@@ -691,7 +692,7 @@
           "title": "Cadillac Cimarron",
           "publisher": "Wikipedia",
           "source_language": "en",
-          "source_classification": "reference_only",
+          "source_classification": "reference_source",
           "access_status": "read_full",
           "evidence_note": "Gives 6,454 for 1988, the lowest year in its series.",
           "evidence_location": "'Yearly American sales' table, 1988 row"
@@ -701,7 +702,7 @@
           "title": "Cadillac Cimarron Sales Figures",
           "publisher": "GoodCarBadCar",
           "source_language": "en",
-          "source_classification": "reference_only",
+          "source_classification": "reference_source",
           "access_status": "read_full",
           "evidence_note": "Independently gives 5,884 for 1988, likewise its lowest full year.",
           "evidence_location": "'US Annual Sales' table, 1988 row"
@@ -711,13 +712,13 @@
           "title": "Cadillac Cimarron - Model Information",
           "publisher": "Conceptcarz",
           "source_language": "en",
-          "source_classification": "reference_only",
+          "source_classification": "reference_source",
           "access_status": "read_full",
           "evidence_note": "Describes a final-year run of only 6,454 units.",
           "evidence_location": "Model overview body text"
         }
       ],
-      "perspective": "contemporary",
+      "perspective": "timeless_or_historical_fact",
       "confidence": "high",
       "allowed_in_narration": true,
       "safe_wording": "In its last year, 1988, Cadillac moved only around six thousand of them.",
@@ -727,7 +728,7 @@
       "conflicting_evidence": [
         "6,454 (Wikipedia, Conceptcarz) vs 5,884 (GoodCarBadCar). About a 10% spread."
       ],
-      "notes": "Carved out of the disputed series specifically because all three independent sources agree on the SHAPE here -- the final year was far and away the weakest, at roughly six thousand cars. This is the one volume statement the episode can make safely, and it is why the outline leans on it rather than on a year-by-year table."
+      "notes": "Carved out of the disputed series specifically because all three independent sources agree on the SHAPE here -- the final year was far and away the weakest, at roughly six thousand cars. This is the one volume statement the episode can make safely, and it is why the outline leans on it rather than on a year-by-year table. Three reference-grade sources converging is proportionate support for a hedged, rounded figure."
     },
     {
       "claim_id": "m01_v6_option",
@@ -740,7 +741,7 @@
           "title": "1985 Cadillac Cimarron",
           "publisher": "Conceptcarz",
           "source_language": "en",
-          "source_classification": "reference_only",
+          "source_classification": "reference_source",
           "access_status": "search_snippet_only",
           "evidence_note": "States the 2.8-litre V6 arrived as an option for 1985 and became standard in 1987, around 125-130 hp.",
           "evidence_location": "Model year overview -- seen via search summary"
@@ -750,14 +751,14 @@
           "title": "Cadillac Cimarron",
           "publisher": "Wikipedia",
           "source_language": "en",
-          "source_classification": "reference_only",
+          "source_classification": "reference_source",
           "access_status": "read_full",
           "evidence_note": "Corroborates the V6's introduction as an option and later standardisation.",
           "evidence_location": "Model year changes / engines discussion"
         }
       ],
-      "perspective": "contemporary",
-      "confidence": "medium",
+      "perspective": "timeless_or_historical_fact",
+      "confidence": "high",
       "allowed_in_narration": true,
       "safe_wording": "A 2.8-litre V6 arrived as an option in 1985, and by 1987 it was standard.",
       "forbidden_or_unsupported_inference": [
@@ -765,7 +766,7 @@
         "Presenting the V6 as a response to any specific criticism; no source documents the causal link"
       ],
       "conflicting_evidence": [],
-      "notes": "Confidence lowered from the previous pack's 'high' to medium: both sources are reference_only and the primary one was only ever seen as a search snippet. The claim is uncontested but under-sourced."
+      "notes": "UPGRADED (evidence proportionality re-audit): a prior pass held this at medium purely because the sourcing was reference-grade and partly snippet-only. That was source-purity thinking. This is 'basic engine lineup' -- explicitly the kind of ordinary, uncontested chronology the proportionality principle says a reference source can carry at high confidence: nothing about it is surprising, disputed, or central to the hook/thesis, and two independent reference sources agree with no conflicting evidence anywhere. Raised to high."
     },
     {
       "claim_id": "m02_production_ended_1988",
@@ -778,7 +779,7 @@
           "title": "Cadillac Cimarron",
           "publisher": "Wikipedia",
           "source_language": "en",
-          "source_classification": "reference_only",
+          "source_classification": "reference_source",
           "access_status": "read_full",
           "evidence_note": "Gives the model's run as 1982-1988 over a single generation.",
           "evidence_location": "Infobox and lead"
@@ -788,13 +789,13 @@
           "title": "Cadillac's Small Mistake: The 1982-1988 Cimarron",
           "publisher": "Mac's Motor City Garage",
           "source_language": "en",
-          "source_classification": "high_quality_secondary",
+          "source_classification": "reputable_secondary",
           "access_status": "read_full",
           "evidence_note": "Title and body both frame the car's life as 1982-1988.",
           "evidence_location": "Title and article body"
         }
       ],
-      "perspective": "contemporary",
+      "perspective": "timeless_or_historical_fact",
       "confidence": "high",
       "allowed_in_narration": true,
       "safe_wording": "Cadillac killed the Cimarron after 1988.",
@@ -802,7 +803,7 @@
       "conflicting_evidence": [
         "GoodCarBadCar lists 240 units sold in 1989, which is consistent with leftover 1988 stock being retailed into the following calendar year rather than with continued production."
       ],
-      "notes": "Split from the volume statistics: when production ended is a separate, far better-evidenced fact than how many were made."
+      "notes": "Split from the volume statistics: when production ended is a separate, far better-evidenced fact than how many were made. This is the exact category of claim the audit used as its own worked example -- a historical fact ('production ended in 1988') classified timeless_or_historical_fact regardless of the modern publication date of the sources reporting it."
     },
     {
       "claim_id": "c01_brochure_positioning",
@@ -830,7 +831,7 @@
         "Inferring from this that Cadillac's buyer base was in fact aging or that the company was in fact losing younger buyers -- the brochure evidences the PITCH, not the market conditions behind it (see x02)"
       ],
       "conflicting_evidence": [],
-      "notes": "This claim exists to give the outline's 'why did Cadillac do this' beat something genuinely evidenced to stand on, replacing the unsourced aging-buyer-base assertion the audit flagged."
+      "notes": "This claim exists to give the outline's 'why did Cadillac do this' beat something genuinely evidenced to stand on, replacing the unsourced aging-buyer-base assertion the audit flagged. A marketing pitch is an expressed, dated act -- perspective contemporary, not a historical data point -- which is why it's classified differently from the spec claims (e01-e04) even though they share a source."
     },
     {
       "claim_id": "c02_named_rivals",
@@ -843,7 +844,7 @@
           "title": "The Infamous Cadillac Cimarron Was a Bad Caddy but Not as Awful a Car as You Think",
           "publisher": "The Drive",
           "source_language": "en",
-          "source_classification": "high_quality_secondary",
+          "source_classification": "authoritative_secondary",
           "access_status": "read_full",
           "evidence_note": "States that the marketing brochure touted the competitors as 'Volvo GL, Saab 900S and BMW 320i'.",
           "evidence_location": "Article body, positioning paragraph"
@@ -860,7 +861,7 @@
       "conflicting_evidence": [
         "The 1982 Cimarron dealer brochure obtained and read in full for this episode (see e01-e04, a01, c01) does NOT name any competitor. Either The Drive is describing a different piece of Cadillac marketing -- another brochure, an advertisement, or a press kit -- or the attribution is loose. The claim is retained because The Drive was read in full and is specific, but confidence is capped at medium and it cannot be attributed to 'the brochure' generically."
       ],
-      "notes": "Confidence deliberately NOT raised despite having a primary brochure in hand, because the primary document contradicts the expectation by omission. This is recorded rather than smoothed over -- checking the primary source made this claim weaker, not stronger, and that is the honest outcome."
+      "notes": "Confidence deliberately NOT raised despite The Drive being a fully-read authoritative_secondary outlet, because the primary document contradicts the expectation by omission. This is recorded rather than smoothed over -- checking the primary source made this claim weaker, not stronger, and that is the honest outcome."
     },
     {
       "claim_id": "u03_audi_accord_rivals",
@@ -873,10 +874,10 @@
           "title": "Cadillac Cimarron 1982",
           "publisher": "Amazing Classic Cars",
           "source_language": "en",
-          "source_classification": "reference_only",
+          "source_classification": "discovery_only",
           "access_status": "search_snippet_only",
-          "evidence_note": "A search summary attributes to this page the claim that the Cimarron was more expensive than the Audi or Honda Accord by about $2,000. The page was never fetched.",
-          "evidence_location": "Unknown -- page not fetched"
+          "evidence_note": "A synthesized search answer attributes to this page the claim that the Cimarron was more expensive than the Audi or Honda Accord by about $2,000, among several links returned. The page was never opened, and the answer is not confidently attributable to this URL specifically rather than another in the same results list.",
+          "evidence_location": "Unknown -- page not fetched, and attribution to this specific page is itself uncertain"
         }
       ],
       "perspective": "contemporary",
@@ -888,7 +889,7 @@
         "Softening this to 'often compared to' and airing it anyway -- an unverified comparison is not rescued by a vaguer verb"
       ],
       "conflicting_evidence": [],
-      "notes": "AUDIT FIX (item 5): the previous thesis named Audi even though this claim was already unresolved. The revised thesis does not."
+      "notes": "Reclassified from reference_source to discovery_only: unlike u01/q01, where a specific known page's content couldn't be fetched, here even the attribution to this one page (versus another link in the same search results) is uncertain -- that is precisely what discovery_only is for. AUDIT FIX (carried forward): the previous thesis named Audi even though this claim was already unresolved. The current thesis does not."
     },
     {
       "claim_id": "x01_cavalier_optionability",
@@ -901,13 +902,13 @@
           "title": "Cadillac Cimarron",
           "publisher": "Wikipedia",
           "source_language": "en",
-          "source_classification": "reference_only",
+          "source_classification": "reference_source",
           "access_status": "read_full",
           "evidence_note": "States that with the exception of upholstery and model-specific suspension tuning, J-platform sedans from other GM divisions could be optioned nearly identically to a Cimarron.",
           "evidence_location": "Design section"
         }
       ],
-      "perspective": "contemporary",
+      "perspective": "timeless_or_historical_fact",
       "confidence": "medium",
       "allowed_in_narration": true,
       "safe_wording": "Much of what the Cimarron made standard could be ordered on its GM siblings -- the upholstery and Cadillac's own suspension tuning were the real exceptions.",
@@ -916,7 +917,7 @@
         "Concluding a comparably-optioned Cavalier cost the same; that price is precisely what remains unverified (u01)"
       ],
       "conflicting_evidence": [],
-      "notes": "This is the honest counterweight to e01: Cadillac made those items standard, but standard is not the same as exclusive. Single reference_only source, hence medium."
+      "notes": "This is the honest counterweight to e01, and it is one of thesis_claim_ids -- so under proportionality it ought to have stronger-than-single-source backing. It currently rests on one reference_source claim only. Nothing about it is surprising or contradicted, so it stays medium and airable rather than blocked, but a second, independent source (a period comparison test that actually cross-shopped options) would be worth finding before this episode locks its script -- flagged in producer_outline.json's open_questions."
     },
     {
       "claim_id": "x02_aging_buyer_base",
@@ -924,7 +925,7 @@
       "claim_type": "context",
       "time_context": "late 1970s - early 1980s",
       "sources": [],
-      "perspective": "contemporary",
+      "perspective": "timeless_or_historical_fact",
       "confidence": "unresolved",
       "allowed_in_narration": false,
       "safe_wording": "Do not assert Cadillac's demographic motive as fact. What IS evidenced is how Cadillac PITCHED the car -- use c01 ('a new kind of Cadillac for a new kind of Cadillac owner') and c02 (the named rivals), which show the intent through the marketing without asserting the underlying market data.",
@@ -932,7 +933,7 @@
         "Presenting aging demographics, CAFE pressure, or lost younger buyers as documented causes of the Cimarron program"
       ],
       "conflicting_evidence": [],
-      "notes": "AUDIT FIX (item 5): beat b2 previously asserted an aging buyer base and fuel-economy/downsizing pressure with no supporting claim at all. Rather than delete the idea silently, it is recorded here as an explicitly unsourced, unresolved claim with zero sources, so the gap is visible and a later research pass can close it. The outline beat has been rewritten to stand on c01/c02 instead."
+      "notes": "Causal claims about why a company made a decision are explicitly in the stronger-corroboration bucket, and this one has zero sources -- not a proportionality judgment call, just missing. Rather than delete the idea silently, it is recorded here as an explicitly unsourced, unresolved claim, so the gap is visible and a later research pass can close it. The outline beat has been rewritten to stand on c01/c02 instead."
     },
     {
       "claim_id": "x03_1983_engine_and_suspension_updates",
@@ -945,13 +946,13 @@
           "title": "1988 Cadillac Cimarron: Tweaking the Usual Suspects Since 1982",
           "publisher": "Hagerty",
           "source_language": "en",
-          "source_classification": "high_quality_secondary",
+          "source_classification": "authoritative_secondary",
           "access_status": "search_snippet_only",
           "evidence_note": "A search summary attributes to this page a 1985 revised suspension with optional Bilstein shocks and a touring suspension with gas-charged shocks, thicker front anti-roll bar and stiffer springs. Page returned HTTP 403 on direct fetch. The 1983 2.0-litre engine detail appeared only in an aggregated search summary with no single attributable page.",
           "evidence_location": "Unknown -- page not accessible"
         }
       ],
-      "perspective": "contemporary",
+      "perspective": "timeless_or_historical_fact",
       "confidence": "unresolved",
       "allowed_in_narration": false,
       "safe_wording": "Do not state the 1983 2.0-litre engine or the Bilstein/touring suspension upgrades. m01 (the 1985 V6 becoming standard by 1987) is the airable version of 'Cadillac kept revising the car'.",
@@ -959,7 +960,7 @@
         "Listing specific mid-life mechanical updates beyond the V6 in m01"
       ],
       "conflicting_evidence": [],
-      "notes": "AUDIT FIX (item 5): beat b6 previously asserted both of these with no supporting claim. Recorded here as unresolved rather than quietly dropped, and the beat now rests on m01 alone."
+      "notes": "Even though this is 'ordinary' spec/chronology in the same family as m01 (which was upgraded to high), it stays unresolved: Hagerty here was only ever a search snippet on a page that 403s, and the 1983 engine detail has no attributable page at all -- there's nothing to weigh, unlike m01's two independently read/snippeted sources agreeing. Recorded here rather than quietly dropped, and beat b6 now rests on m01 alone."
     },
     {
       "claim_id": "l01_time_worst_cars",
@@ -979,7 +980,7 @@
           "evidence_location": "Dedicated Cimarron entry in the 50 Worst Cars feature"
         }
       ],
-      "perspective": "retrospective",
+      "perspective": "retrospective_judgment",
       "confidence": "high",
       "allowed_in_narration": true,
       "safe_wording": "In 2007, TIME put the Cimarron on its list of the fifty worst cars ever made.",
@@ -988,7 +989,7 @@
         "Treating one magazine list as objective consensus"
       ],
       "conflicting_evidence": [],
-      "notes": "Classified later_primary rather than high_quality_secondary: for the claim 'TIME made this judgment', TIME's own page IS the primary document. This is a case where perspective (retrospective -- the judgment is about looking back) and source_classification (later_primary) correctly differ."
+      "notes": "Classified later_primary rather than authoritative_secondary: for the claim 'TIME made this judgment', TIME's own page IS the primary document. This is the pack's worked example of perspective and source_classification correctly differing -- retrospective_judgment (the judgment is about looking back) and later_primary (TIME is the origin of that judgment) are not the same axis."
     },
     {
       "claim_id": "l02_howell_photo",
@@ -1001,13 +1002,13 @@
           "title": "The Infamous Cadillac Cimarron Was a Bad Caddy but Not as Awful a Car as You Think",
           "publisher": "The Drive",
           "source_language": "en",
-          "source_classification": "high_quality_secondary",
+          "source_classification": "authoritative_secondary",
           "access_status": "read_full",
           "evidence_note": "Reports that former Cadillac product director John Howell kept a photo of a Cimarron in his office, referencing a Car and Driver piece as its own source.",
           "evidence_location": "Article body, legacy paragraph"
         }
       ],
-      "perspective": "retrospective",
+      "perspective": "retrospective_judgment",
       "confidence": "medium",
       "allowed_in_narration": true,
       "safe_wording": "One former Cadillac product director is said to have kept a picture of a Cimarron in his office, as a reminder.",
@@ -1016,7 +1017,7 @@
         "Generalising one person's habit into official Cadillac policy or company-wide sentiment"
       ],
       "conflicting_evidence": [],
-      "notes": "Single-source second-hand anecdote (The Drive citing Car and Driver); the underlying Car and Driver piece is on a domain blocked to this crawler. Medium confidence, hedge mandatory."
+      "notes": "Reputation-sensitive anecdotes are a stronger-corroboration category; single-source second-hand (The Drive citing Car and Driver, the latter on a domain blocked to this crawler). Medium confidence, hedge mandatory."
     }
   ]
 }
