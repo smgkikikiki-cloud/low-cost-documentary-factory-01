@@ -1,0 +1,228 @@
+#!/usr/bin/env python3
+"""Deterministic media-inspection helper for Agent B (B-DISCOVER).
+
+Thin wrapper around ffprobe/ffmpeg -- no computer vision, no embeddings, no
+scene-understanding model. It gives Agent B two things it needs to honestly fill in
+asset_inventory.json's video fields (duration_sec, usable_segments) without watching
+every frame of a long source video:
+
+  1. probe(path)              -- duration/dimensions/fps/codec via ffprobe
+  2. coarse_contact_sheet(...) -- a handful of frames spread across the WHOLE video,
+                                   for a first pass ("where does anything interesting
+                                   happen?")
+  3. fine_contact_sheet(...)  -- a handful of frames spread across ONE time window,
+                                   for a closer look once the coarse pass suggests a
+                                   region is worth recording as a usable_segment
+
+Frame counts are adaptive (target ~20-30 frames, never below a minimum interval)
+rather than a hardcoded "every 5 seconds" rule, so a 2-minute clip and a 20-minute
+clip both get a sensible, bounded number of frames to look at.
+
+This tool only produces evidence for Agent B to look at. It never writes
+asset_inventory.json itself, and it never invents timestamps -- usable_segments must
+still be recorded by hand (by the agent, after actually viewing the frames this
+produces), never derived automatically from this tool's output.
+
+Requires ffprobe and ffmpeg on PATH. Neither is required to import this module --
+only to actually call probe()/contact sheet functions, which raise a clear
+FileNotFoundError-derived error if the binaries are missing.
+
+CLI usage:
+    python scripts/media_probe.py probe <path>
+    python scripts/media_probe.py contact-sheet <path> --out-dir DIR [--target-frames 25] [--min-interval 1.0]
+    python scripts/media_probe.py contact-sheet <path> --out-dir DIR --start 55 --end 85 [--target-frames 12] [--min-interval 0.5]
+"""
+import argparse
+import json
+import shutil
+import subprocess
+import sys
+from pathlib import Path
+
+
+class MediaProbeError(RuntimeError):
+    pass
+
+
+def _require_binary(name: str) -> None:
+    if shutil.which(name) is None:
+        raise MediaProbeError(
+            f"'{name}' was not found on PATH. This environment does not have it installed; "
+            f"install ffmpeg (which provides both ffprobe and ffmpeg) before calling this function."
+        )
+
+
+def probe(path: str) -> dict:
+    """Return duration_sec, width, height, fps, codec_name, format_name for a media file.
+
+    Raises MediaProbeError if ffprobe is missing or the file can't be probed.
+    """
+    _require_binary("ffprobe")
+    p = Path(path)
+    if not p.exists():
+        raise MediaProbeError(f"No such file: {path}")
+
+    cmd = [
+        "ffprobe", "-v", "error",
+        "-show_entries", "format=duration,format_name",
+        "-show_entries", "stream=codec_type,codec_name,width,height,r_frame_rate",
+        "-of", "json",
+        str(p),
+    ]
+    try:
+        result = subprocess.run(cmd, capture_output=True, text=True, check=True, timeout=60)
+    except subprocess.CalledProcessError as e:
+        raise MediaProbeError(f"ffprobe failed on {path}: {e.stderr.strip()}") from e
+    except subprocess.TimeoutExpired as e:
+        raise MediaProbeError(f"ffprobe timed out on {path}") from e
+
+    data = json.loads(result.stdout)
+    fmt = data.get("format", {})
+    streams = data.get("streams", [])
+    video_stream = next((s for s in streams if s.get("codec_type") == "video"), None)
+
+    fps = None
+    if video_stream and video_stream.get("r_frame_rate"):
+        num, _, den = video_stream["r_frame_rate"].partition("/")
+        try:
+            den_f = float(den) if den else 1.0
+            fps = float(num) / den_f if den_f else None
+        except ValueError:
+            fps = None
+
+    return {
+        "path": str(p),
+        "duration_sec": float(fmt["duration"]) if fmt.get("duration") else None,
+        "format_name": fmt.get("format_name"),
+        "width": video_stream.get("width") if video_stream else None,
+        "height": video_stream.get("height") if video_stream else None,
+        "fps": fps,
+        "codec_name": video_stream.get("codec_name") if video_stream else None,
+    }
+
+
+def compute_sample_interval(duration_sec: float, target_frames: int = 25, min_interval_sec: float = 1.0) -> float:
+    """Adaptive sampling interval: spread ~target_frames frames across duration_sec,
+    but never sample more densely than min_interval_sec apart.
+
+    Pure arithmetic, no I/O -- deterministic and unit-testable without ffmpeg.
+    """
+    if duration_sec <= 0 or target_frames <= 0:
+        return min_interval_sec
+    return max(duration_sec / target_frames, min_interval_sec)
+
+
+def _extract_frames(path: str, timestamps: list, out_dir: str, prefix: str) -> list:
+    _require_binary("ffmpeg")
+    out = Path(out_dir)
+    out.mkdir(parents=True, exist_ok=True)
+    frame_paths = []
+    for i, ts in enumerate(timestamps):
+        frame_path = out / f"{prefix}_{i:03d}_t{ts:07.2f}.jpg"
+        cmd = [
+            "ffmpeg", "-y", "-v", "error",
+            "-ss", str(ts),
+            "-i", str(path),
+            "-frames:v", "1",
+            "-q:v", "3",
+            str(frame_path),
+        ]
+        try:
+            subprocess.run(cmd, capture_output=True, text=True, check=True, timeout=30)
+        except subprocess.CalledProcessError as e:
+            raise MediaProbeError(f"ffmpeg frame extraction failed at t={ts}s on {path}: {e.stderr.strip()}") from e
+        except subprocess.TimeoutExpired as e:
+            raise MediaProbeError(f"ffmpeg timed out extracting frame at t={ts}s on {path}") from e
+        frame_paths.append({"timestamp_sec": ts, "frame_path": str(frame_path)})
+    return frame_paths
+
+
+def coarse_contact_sheet(path: str, out_dir: str, target_frames: int = 25, min_interval_sec: float = 1.0) -> list:
+    """Sample frames across the FULL duration of the video for a first-pass look.
+
+    Returns a list of {timestamp_sec, frame_path}. Does not write asset_inventory.json
+    or record any usable_segments -- that remains a judgment call made after actually
+    looking at these frames.
+    """
+    info = probe(path)
+    duration = info["duration_sec"]
+    if not duration or duration <= 0:
+        raise MediaProbeError(f"Could not determine a usable duration for {path}")
+
+    interval = compute_sample_interval(duration, target_frames, min_interval_sec)
+    timestamps = []
+    t = 0.0
+    while t < duration:
+        timestamps.append(round(min(t, max(duration - 0.05, 0)), 2))
+        t += interval
+
+    return _extract_frames(path, timestamps, out_dir, prefix="coarse")
+
+
+def fine_contact_sheet(
+    path: str, start_sec: float, end_sec: float, out_dir: str,
+    target_frames: int = 12, min_interval_sec: float = 0.5,
+) -> list:
+    """Sample frames across ONE time window for a closer look, after a coarse pass
+    suggested that window contains useful material.
+
+    Returns a list of {timestamp_sec, frame_path}.
+    """
+    if end_sec <= start_sec:
+        raise MediaProbeError(f"end_sec ({end_sec}) must exceed start_sec ({start_sec})")
+
+    window = end_sec - start_sec
+    interval = compute_sample_interval(window, target_frames, min_interval_sec)
+    timestamps = []
+    t = start_sec
+    while t < end_sec:
+        timestamps.append(round(min(t, end_sec - 0.02), 2))
+        t += interval
+
+    return _extract_frames(path, timestamps, out_dir, prefix="fine")
+
+
+def _main() -> int:
+    parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
+    sub = parser.add_subparsers(dest="command", required=True)
+
+    p_probe = sub.add_parser("probe", help="Print duration/dimensions/fps/codec as JSON")
+    p_probe.add_argument("path")
+
+    p_sheet = sub.add_parser("contact-sheet", help="Extract a coarse or fine contact sheet of frames")
+    p_sheet.add_argument("path")
+    p_sheet.add_argument("--out-dir", required=True)
+    p_sheet.add_argument("--start", type=float, default=None, help="Window start (sec). Omit for a coarse full-video pass.")
+    p_sheet.add_argument("--end", type=float, default=None, help="Window end (sec). Required if --start is given.")
+    p_sheet.add_argument("--target-frames", type=int, default=None)
+    p_sheet.add_argument("--min-interval", type=float, default=None)
+
+    args = parser.parse_args()
+
+    try:
+        if args.command == "probe":
+            print(json.dumps(probe(args.path), indent=2))
+        elif args.command == "contact-sheet":
+            if args.start is not None:
+                if args.end is None:
+                    parser.error("--end is required when --start is given")
+                frames = fine_contact_sheet(
+                    args.path, args.start, args.end, args.out_dir,
+                    target_frames=args.target_frames or 12,
+                    min_interval_sec=args.min_interval if args.min_interval is not None else 0.5,
+                )
+            else:
+                frames = coarse_contact_sheet(
+                    args.path, args.out_dir,
+                    target_frames=args.target_frames or 25,
+                    min_interval_sec=args.min_interval if args.min_interval is not None else 1.0,
+                )
+            print(json.dumps(frames, indent=2))
+    except MediaProbeError as e:
+        print(f"error: {e}", file=sys.stderr)
+        return 1
+    return 0
+
+
+if __name__ == "__main__":
+    sys.exit(_main())

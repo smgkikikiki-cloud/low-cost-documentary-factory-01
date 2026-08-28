@@ -6,8 +6,9 @@ Usage:
     python scripts/validate_episode.py episodes/<episode_id>   # also accepted
 
 Checks (all topic-independent -- nothing here knows about any specific episode):
-  - schema shape for all six files (if the `jsonschema` package is installed;
-    skipped with a note otherwise -- it is not a declared project dependency)
+  - schema shape for all six required files, plus tts_manifest.json if present (if
+    the `jsonschema` package is installed; skipped with a note otherwise -- it is not
+    a declared project dependency)
   - fact_pack.json: no duplicate claim_ids, unresolved confidence implies
     allowed_in_narration=false, derived_comparison claims reference real
     source_claim_ids and are never more airable than their weakest input, and
@@ -15,20 +16,37 @@ Checks (all topic-independent -- nothing here knows about any specific episode):
   - producer_outline.json: thesis_claim_ids / hook_claim_ids / every beat's
     supporting_claim_ids resolve to allowed claims; every unresolved_claim_ids
     entry resolves to a claim that is NOT allowed; visual_request request_id
-    values are unique and beat_id-consistent; beat count against the 5-8
-    story-density guidance (warning only -- not a hard rule)
+    values are unique and beat_id-consistent; beat count against the 5-8 (or 8-12
+    for act-structured outlines) story-density guidance (warning only)
   - estimated_runtime_sec against the channel's runtime_policy, if both exist
-  - the A4 gate (beat-centric, B-DISCOVER V0): whether asset_inventory.status +
-    beat_coverage currently permit Agent A's A4 stage -- every producer_outline.json
-    beat has exactly one beat_coverage entry, coverage_ratio matches
-    planned_visual_sec/target_visual_sec, coverage_status matches the V0 thresholds
-    (sufficient >= 0.90, partial >= 0.60, critical_gap < 0.60), and allocations
-    reference real asset_ids (informational -- False is a normal, correct state
-    before Agent B has run). request_coverage, if present, is optional/secondary and
-    only checked for its own internal consistency (found_*/not_found vs asset_ids)
-  - asset_inventory.json: exact_subject_match=true requires
-    verification_method=visually_inspected; usable_start_sec/usable_end_sec only on
-    visually_inspected assets and usable_end_sec must exceed usable_start_sec
+  - the A4 gate (beat/runtime-centric, B-DISCOVER V0): every producer_outline.json
+    beat has EXACTLY ONE beat_coverage entry (missing/duplicate/unknown beat_ids are
+    all errors, never silently collapsed); target_visual_sec matches the outline
+    beat's estimated_narration_sec when present; planned_visual_sec equals
+    sum(allocations[].planned_sec); coverage_ratio and coverage_status are
+    mathematically consistent with the V0 thresholds (sufficient >= 0.90,
+    partial >= 0.60, critical_gap < 0.60); allocations reference real asset_ids (and,
+    for video, a real segment_id on that asset, with planned_sec not exceeding that
+    segment's duration); relevance: exact requires the asset's exact_subject_match to
+    be true. The gate itself additionally requires overall_effective_coverage
+    (sum(min(planned, target)) / sum(target) across beats) >= 0.90 -- see
+    agents/agent_a_producer_writer.md. (informational -- False is a normal, correct
+    state before Agent B has run.) request_coverage, if present, is optional/
+    secondary and only checked for its own found_*/not_found-vs-asset_ids
+    consistency.
+  - asset_inventory.json assets: exact_subject_match=true requires
+    verification_method=visually_inspected; usable_segments only on
+    visually_inspected video assets, with unique segment_ids episode-wide,
+    end_sec > start_sec >= 0, and end_sec <= duration_sec when known
+  - edit_plan.json, if it has clips: clip_ids unique; block_ids resolve to
+    final_script.json; asset_ids resolve to asset_inventory.json; video clips
+    reference a real segment_id whose usable_segment bounds contain
+    [source_start_sec, source_end_sec]; non-video clips carry no segment_id/source
+    range; timeline_end_sec > timeline_start_sec; clips are ordered by
+    timeline_start_sec with no overlap; and, when tts_manifest.json gives measured
+    per-block durations, each clip's timeline range stays inside its block's
+    cumulative timing window (block N starts where block N-1 ended, in
+    final_script.json's block order)
 
 Exits nonzero only on hard ERRORs. WARNINGs are printed but don't fail the run --
 they flag things worth a human/Agent-A look, not necessarily defects.
@@ -44,6 +62,7 @@ EPISODES_DIR = ROOT / "episodes"
 CHANNELS_DIR = ROOT / "config" / "channels"
 
 FILES = ["episode_brief", "fact_pack", "producer_outline", "asset_inventory", "final_script", "edit_plan"]
+OPTIONAL_FILES = ["tts_manifest"]
 
 
 class Report:
@@ -92,6 +111,18 @@ def validate_schemas(ep_dir: Path, report: Report) -> None:
             report.error(f"{name}.json is missing")
             continue
         schema = load(schema_path)
+        doc = load(doc_path)
+        try:
+            jsonschema.validate(doc, schema)
+            report.note(f"schema valid: {name}.json")
+        except jsonschema.ValidationError as e:
+            report.error(f"{name}.json fails schema: {e.message} (at {list(e.absolute_path)})")
+
+    for name in OPTIONAL_FILES:
+        doc_path = ep_dir / f"{name}.json"
+        if not doc_path.exists():
+            continue
+        schema = load(SCHEMAS_DIR / f"{name}.json")
         doc = load(doc_path)
         try:
             jsonschema.validate(doc, schema)
@@ -269,30 +300,85 @@ def validate_runtime(po: dict, episode_brief: dict, report: Report) -> None:
         report.warn("estimated_runtime_sec is exactly 480 -- verify this was actually estimated, not left at an old default")
 
 
-def validate_a4_gate(ai: dict, beats: list, report: Report) -> bool:
-    """Beat-centric A4 gate (B-DISCOVER V0): coverage is planned per beat against
-    that beat's estimated_narration_sec, not per visual_request. See
-    schemas/asset_inventory.json's beat_coverage and agents/agent_b_archive_visual_editor.md.
-    """
-    asset_ids = {a.get("asset_id") for a in ai.get("assets", [])}
-    beat_ids = [b.get("beat_id") for b in beats]
-    coverage_by_beat = {c.get("beat_id"): c for c in ai.get("beat_coverage", [])}
+def _expected_coverage_status(ratio: float) -> str:
+    if ratio >= 0.90:
+        return "sufficient"
+    if ratio >= 0.60:
+        return "partial"
+    return "critical_gap"
 
-    missing = [bid for bid in beat_ids if bid not in coverage_by_beat]
-    extra = [bid for bid in coverage_by_beat if bid not in beat_ids]
+
+def validate_a4_gate(ai: dict, beats: list, report: Report) -> bool:
+    """Beat/runtime-centric A4 gate (B-DISCOVER V0). See schemas/asset_inventory.json's
+    beat_coverage and agents/agent_b_archive_visual_editor.md for the full contract
+    this enforces: target_visual_sec must follow the outline, planned_visual_sec must
+    equal the sum of its allocations, exactly one entry per beat, honest 'exact'
+    relevance, real asset locations/segments, and an episode-level
+    overall_effective_coverage >= 0.90 on top of the per-beat thresholds.
+    """
+    assets = {a.get("asset_id"): a for a in ai.get("assets", [])}
+    outline_beat_ids = [b.get("beat_id") for b in beats]
+    outline_target = {b.get("beat_id"): b.get("estimated_narration_sec") for b in beats}
+    entries = ai.get("beat_coverage", [])
+
+    # 3. exactly one entry per beat -- check the raw list, never a beat_id-keyed dict
+    # that would silently collapse a duplicate into "the last one wins".
+    seen_beat_ids = [e.get("beat_id") for e in entries]
+    dupes = {b for b in seen_beat_ids if seen_beat_ids.count(b) > 1}
+    if dupes:
+        report.error(f"asset_inventory: duplicate beat_coverage entries for beat_id(s): {sorted(dupes)}")
+    missing = [bid for bid in outline_beat_ids if bid not in seen_beat_ids]
+    extra = sorted({bid for bid in seen_beat_ids if bid not in outline_beat_ids})
     if extra:
         report.error(f"asset_inventory: beat_coverage references beat_id(s) not in producer_outline.json: {extra}")
 
-    critical_gaps = []
-    for bid, cov in coverage_by_beat.items():
-        target = cov.get("target_visual_sec")
-        planned = cov.get("planned_visual_sec")
-        ratio = cov.get("coverage_ratio")
-        status = cov.get("coverage_status")
+    # Global segment_id uniqueness across the whole file.
+    segment_owners = {}
+    for a in ai.get("assets", []):
+        for seg in a.get("usable_segments", []) or []:
+            sid = seg.get("segment_id")
+            segment_owners.setdefault(sid, []).append(a.get("asset_id"))
+    for sid, owners in segment_owners.items():
+        if len(owners) > 1:
+            report.error(f"asset_inventory: segment_id {sid!r} is not unique across assets (used by {owners})")
 
-        if target is not None and target > 0 and planned is not None and ratio is not None:
+    critical_gap_beats = set()
+    total_target = 0.0
+    total_effective = 0.0
+
+    for e in entries:
+        bid = e.get("beat_id")
+        target = e.get("target_visual_sec")
+        planned = e.get("planned_visual_sec")
+        ratio = e.get("coverage_ratio")
+        status = e.get("coverage_status")
+        allocations = e.get("allocations", [])
+
+        # 1. target must follow Agent A.
+        outline_est = outline_target.get(bid)
+        if outline_est is not None:
+            if target != outline_est:
+                report.error(
+                    f"asset_inventory: beat_coverage[{bid!r}].target_visual_sec={target} does not match "
+                    f"producer_outline beat.estimated_narration_sec={outline_est}"
+                )
+        elif bid in outline_target and not e.get("notes"):
+            report.warn(
+                f"asset_inventory: beat_coverage[{bid!r}] has no matching estimated_narration_sec in the "
+                f"outline and no notes explaining the fallback target_visual_sec"
+            )
+
+        # 2. planned_visual_sec must equal sum(allocations.planned_sec).
+        alloc_sum = sum(a.get("planned_sec") or 0 for a in allocations)
+        if planned is None or abs(planned - alloc_sum) > 0.01:
+            report.error(
+                f"asset_inventory: beat_coverage[{bid!r}].planned_visual_sec={planned} does not equal "
+                f"sum(allocations[].planned_sec)={alloc_sum}"
+            )
+
+        if target is not None and target > 0 and planned is not None:
             expected_ratio = planned / target
-            if abs(ratio - expected_ratio) > 0.01:
+            if ratio is None or abs(ratio - expected_ratio) > 0.01:
                 report.error(
                     f"asset_inventory: beat_coverage[{bid!r}].coverage_ratio={ratio} does not match "
                     f"planned_visual_sec/target_visual_sec={expected_ratio:.3f}"
@@ -301,7 +387,7 @@ def validate_a4_gate(ai: dict, beats: list, report: Report) -> bool:
             report.warn(f"asset_inventory: beat_coverage[{bid!r}] has target_visual_sec=0, expected coverage_ratio=1.0")
 
         if ratio is not None:
-            expected_status = "sufficient" if ratio >= 0.90 else "partial" if ratio >= 0.60 else "critical_gap"
+            expected_status = _expected_coverage_status(ratio)
             if status != expected_status:
                 report.error(
                     f"asset_inventory: beat_coverage[{bid!r}] coverage_status={status!r} doesn't match "
@@ -309,21 +395,73 @@ def validate_a4_gate(ai: dict, beats: list, report: Report) -> bool:
                 )
 
         if status == "critical_gap":
-            critical_gaps.append(bid)
-        elif not cov.get("allocations"):
+            critical_gap_beats.add(bid)
+        elif not allocations:
             report.error(f"asset_inventory: beat_coverage[{bid!r}] has status={status!r} but no allocations")
 
-        for alloc in cov.get("allocations", []):
+        for alloc in allocations:
             aid = alloc.get("asset_id")
-            if aid not in asset_ids:
+            asset = assets.get(aid)
+            if asset is None:
                 report.error(f"asset_inventory: beat_coverage[{bid!r}] allocation references missing asset_id {aid!r}")
+                continue
+
+            seg_id = alloc.get("segment_id")
+            planned_sec = alloc.get("planned_sec") or 0
+            if asset.get("asset_type") == "video":
+                if not seg_id:
+                    report.error(
+                        f"asset_inventory: beat_coverage[{bid!r}] allocation of video asset {aid!r} has no segment_id"
+                    )
+                else:
+                    seg = next((s for s in asset.get("usable_segments", []) or [] if s.get("segment_id") == seg_id), None)
+                    if seg is None:
+                        report.error(
+                            f"asset_inventory: beat_coverage[{bid!r}] allocation references segment_id {seg_id!r} "
+                            f"not found on asset {aid!r}"
+                        )
+                    else:
+                        seg_dur = (seg.get("end_sec") or 0) - (seg.get("start_sec") or 0)
+                        if planned_sec > seg_dur + 0.01:
+                            report.error(
+                                f"asset_inventory: beat_coverage[{bid!r}] allocation planned_sec={planned_sec} exceeds "
+                                f"segment {seg_id!r}'s own duration={seg_dur} on asset {aid!r}"
+                            )
+            elif seg_id:
+                report.error(
+                    f"asset_inventory: beat_coverage[{bid!r}] allocation references segment_id on non-video "
+                    f"asset {aid!r} ({asset.get('asset_type')!r})"
+                )
+
+            # 5. relevance: exact must be honest.
+            if alloc.get("relevance") == "exact" and not asset.get("exact_subject_match"):
+                report.error(
+                    f"asset_inventory: beat_coverage[{bid!r}] allocation of asset {aid!r} claims relevance=exact "
+                    f"but the asset's exact_subject_match is not true"
+                )
+
+        if target is not None:
+            total_target += target
+            if planned is not None:
+                total_effective += min(planned, target)
+
+    # 4. episode-level effective coverage -- min() so excess in one beat can't paper
+    # over a shortfall in another.
+    overall_effective_coverage = (total_effective / total_target) if total_target > 0 else 1.0
 
     status_ok = ai.get("status") in ("gathered", "approved")
-    gate_open = status_ok and not missing and not critical_gaps
+    gate_open = (
+        status_ok
+        and not missing
+        and not dupes
+        and not extra
+        and not critical_gap_beats
+        and overall_effective_coverage >= 0.90
+    )
     report.note(
         f"A4 gate: asset_inventory.status={ai.get('status')!r}, "
-        f"{len(missing)}/{len(beat_ids)} beats uncovered, {len(critical_gaps)} critical_gap beat(s) "
-        f"-> A4 permitted = {gate_open}"
+        f"{len(missing)}/{len(outline_beat_ids)} beats uncovered, {len(critical_gap_beats)} critical_gap beat(s), "
+        f"overall_effective_coverage={overall_effective_coverage:.3f} -> A4 permitted = {gate_open}"
     )
 
     for asset in ai.get("assets", []):
@@ -333,13 +471,23 @@ def validate_a4_gate(ai: dict, beats: list, report: Report) -> bool:
                 f"asset_inventory: asset {aid!r} has exact_subject_match=true but "
                 f"verification_method={asset.get('verification_method')!r} (requires visually_inspected)"
             )
-        if asset.get("verification_method") != "visually_inspected" and (
-            "usable_start_sec" in asset or "usable_end_sec" in asset
-        ):
-            report.error(f"asset_inventory: asset {aid!r} has usable timestamps but was not visually_inspected")
-        start, end = asset.get("usable_start_sec"), asset.get("usable_end_sec")
-        if start is not None and end is not None and end <= start:
-            report.error(f"asset_inventory: asset {aid!r} has usable_end_sec ({end}) <= usable_start_sec ({start})")
+        segments = asset.get("usable_segments") or []
+        if segments and asset.get("verification_method") != "visually_inspected":
+            report.error(f"asset_inventory: asset {aid!r} has usable_segments but was not visually_inspected")
+        if segments and asset.get("asset_type") != "video":
+            report.error(f"asset_inventory: asset {aid!r} has usable_segments but asset_type is not video")
+        duration = asset.get("duration_sec")
+        for seg in segments:
+            s0, s1 = seg.get("start_sec"), seg.get("end_sec")
+            sid = seg.get("segment_id")
+            if s0 is None or s1 is None or s1 <= s0:
+                report.error(f"asset_inventory: asset {aid!r} segment {sid!r} has invalid range [{s0}, {s1}]")
+            if s0 is not None and s0 < 0:
+                report.error(f"asset_inventory: asset {aid!r} segment {sid!r} has negative start_sec {s0}")
+            if duration is not None and s1 is not None and s1 > duration + 0.01:
+                report.error(
+                    f"asset_inventory: asset {aid!r} segment {sid!r} end_sec={s1} exceeds asset duration_sec={duration}"
+                )
 
     for coverage in ai.get("request_coverage", []) or []:
         status = coverage.get("coverage_status")
@@ -353,6 +501,97 @@ def validate_a4_gate(ai: dict, beats: list, report: Report) -> bool:
     return gate_open
 
 
+def validate_edit_plan(ep: dict, fs: dict, ai: dict, tts: dict, report: Report) -> None:
+    """Mathematical/reference integrity only for edit_plan.json -- never an editorial
+    quality score. See schemas/edit_plan.json and agents/agent_b_archive_visual_editor.md.
+    """
+    clips = ep.get("clips", [])
+    if not clips:
+        return
+
+    clip_ids = [c.get("clip_id") for c in clips]
+    dupes = {c for c in clip_ids if clip_ids.count(c) > 1}
+    if dupes:
+        report.error(f"edit_plan: duplicate clip_id(s): {sorted(dupes)}")
+
+    block_ids = {b.get("block_id") for b in fs.get("blocks", [])}
+    assets = {a.get("asset_id"): a for a in ai.get("assets", [])}
+
+    # Cumulative per-block timeline window from tts_manifest's MEASURED durations,
+    # walked in final_script.json's own block order (never tts_manifest's array order).
+    block_window = {}
+    if tts and tts.get("blocks"):
+        durations = {b.get("block_id"): b.get("duration_sec") for b in tts.get("blocks", [])}
+        cum = 0.0
+        for b in fs.get("blocks", []):
+            bid = b.get("block_id")
+            dur = durations.get(bid)
+            if dur is None:
+                continue
+            block_window[bid] = (cum, cum + dur)
+            cum += dur
+
+    prev_end = None
+    for c in clips:
+        cid = c.get("clip_id")
+        bid = c.get("block_id")
+        aid = c.get("asset_id")
+        seg_id = c.get("segment_id")
+        t0, t1 = c.get("timeline_start_sec"), c.get("timeline_end_sec")
+        s0, s1 = c.get("source_start_sec"), c.get("source_end_sec")
+
+        if bid not in block_ids:
+            report.error(f"edit_plan: clip {cid!r} references missing block_id {bid!r}")
+        asset = assets.get(aid)
+        if asset is None:
+            report.error(f"edit_plan: clip {cid!r} references missing asset_id {aid!r}")
+
+        if t0 is None or t1 is None or t1 <= t0:
+            report.error(f"edit_plan: clip {cid!r} has invalid timeline range [{t0}, {t1}]")
+        if prev_end is not None and t0 is not None and t0 < prev_end - 0.01:
+            report.error(
+                f"edit_plan: clip {cid!r} timeline_start_sec={t0} precedes the previous clip's "
+                f"timeline_end_sec={prev_end} -- clips must be ordered with no overlap"
+            )
+        if t1 is not None:
+            prev_end = t1 if prev_end is None else max(prev_end, t1)
+
+        if asset is not None:
+            if asset.get("asset_type") == "video":
+                if not seg_id:
+                    report.error(f"edit_plan: clip {cid!r} uses video asset {aid!r} but has no segment_id")
+                else:
+                    seg = next((s for s in asset.get("usable_segments", []) or [] if s.get("segment_id") == seg_id), None)
+                    if seg is None:
+                        report.error(
+                            f"edit_plan: clip {cid!r} references segment_id {seg_id!r} not found on asset {aid!r}"
+                        )
+                    elif s0 is None or s1 is None:
+                        report.error(f"edit_plan: clip {cid!r} is a video clip but missing source_start_sec/source_end_sec")
+                    else:
+                        if s1 <= s0:
+                            report.error(f"edit_plan: clip {cid!r} has source_end_sec ({s1}) <= source_start_sec ({s0})")
+                        seg_start, seg_end = seg.get("start_sec"), seg.get("end_sec")
+                        if s0 < seg_start - 0.01 or s1 > seg_end + 0.01:
+                            report.error(
+                                f"edit_plan: clip {cid!r} source range [{s0}, {s1}] falls outside usable_segment "
+                                f"{seg_id!r}'s range [{seg_start}, {seg_end}]"
+                            )
+            elif seg_id or s0 is not None or s1 is not None:
+                report.error(
+                    f"edit_plan: clip {cid!r} uses non-video asset {aid!r} but sets segment_id/source_start_sec/"
+                    f"source_end_sec, which only apply to video"
+                )
+
+        if bid in block_window:
+            b0, b1 = block_window[bid]
+            if t0 is not None and t1 is not None and (t0 < b0 - 0.5 or t1 > b1 + 0.5):
+                report.error(
+                    f"edit_plan: clip {cid!r} timeline range [{t0}, {t1}] falls outside its block {bid!r}'s "
+                    f"actual narration window [{b0:.2f}, {b1:.2f}] per tts_manifest.json"
+                )
+
+
 def validate_status_transitions(fp: dict, po: dict, fs: dict, gate_open: bool, report: Report) -> None:
     """Cheap sanity checks that a later stage isn't ahead of what an earlier stage's status allows."""
     if po.get("beats") and fp.get("status") != "verified":
@@ -364,8 +603,8 @@ def validate_status_transitions(fp: dict, po: dict, fs: dict, gate_open: bool, r
     if fs_has_content and not gate_open:
         report.error(
             "final_script.json has content (status != pending or non-empty blocks) but the A-FINAL gate "
-            "is not open -- asset_inventory.status must be gathered/approved with every beat covered and "
-            "no critical_gap beats in beat_coverage first"
+            "is not open -- asset_inventory.status must be gathered/approved with every beat covered exactly "
+            "once, no critical_gap beats, and overall_effective_coverage >= 0.90 first"
         )
 
 
@@ -384,12 +623,16 @@ def main() -> int:
     po_path = ep_dir / "producer_outline.json"
     ai_path = ep_dir / "asset_inventory.json"
     fs_path = ep_dir / "final_script.json"
+    ep_path = ep_dir / "edit_plan.json"
+    tts_path = ep_dir / "tts_manifest.json"
     brief_path = ep_dir / "episode_brief.json"
 
     fp = load(fp_path) if fp_path.exists() else {}
     po = load(po_path) if po_path.exists() else {}
     ai = load(ai_path) if ai_path.exists() else {}
     fs = load(fs_path) if fs_path.exists() else {}
+    ep_doc = load(ep_path) if ep_path.exists() else {}
+    tts = load(tts_path) if tts_path.exists() else {}
 
     claims = {}
     req_ids = []
@@ -406,10 +649,19 @@ def main() -> int:
     if fp_path.exists() and po_path.exists():
         validate_status_transitions(fp, po, fs, gate_open, report)
 
+    if ep_path.exists() and fs_path.exists() and ai_path.exists():
+        validate_edit_plan(ep_doc, fs, ai, tts, report)
+
     if fs_path.exists():
         report.note(f"final_script.status={fs.get('status')!r}, blocks={len(fs.get('blocks', []))}")
     if ai_path.exists():
         report.note(f"asset_inventory.status={ai.get('status')!r}, assets={len(ai.get('assets', []))}")
+    if ep_path.exists():
+        report.note(f"edit_plan.status={ep_doc.get('status')!r}, clips={len(ep_doc.get('clips', []))}")
+    if tts_path.exists():
+        report.note(f"tts_manifest.status={tts.get('status')!r}, blocks={len(tts.get('blocks', []))}")
+    else:
+        report.note("no tts_manifest.json found -- skipping B-EDIT actual-timing checks")
 
     print(f"=== validate_episode: {ep_dir.name} ===\n")
     if not args.quiet:

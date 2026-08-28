@@ -55,10 +55,13 @@ status says so.
    (A2's adversarial pass done) before `producer_outline.json` is built from it.
 4. **Real asset coverage before final script.** `final_script.json` (A4) must not be
    written until `asset_inventory.json`'s `status` is `gathered` or `approved` **and**
-   every beat in `producer_outline.json` has a `beat_coverage` entry with no
-   `critical_gap` among them. The file's mere existence gates nothing — the CLI
-   creates it as a `pending` stub at init. Coverage is planned per beat against that
-   beat's runtime (`beat_coverage[].target_visual_sec`, normally the beat's
+   every beat in `producer_outline.json` has exactly one `beat_coverage` entry with
+   no `critical_gap` among them **and** episode-level `overall_effective_coverage`
+   (`sum(min(planned_visual_sec, target_visual_sec)) / sum(target_visual_sec)` across
+   beats) is `>= 0.90` — a collection of barely-partial beats must not open A4. The
+   file's mere existence gates nothing — the CLI creates it as a `pending` stub at
+   init. Coverage is planned per beat against that beat's runtime
+   (`beat_coverage[].target_visual_sec`, normally the beat's
    `estimated_narration_sec`), not per individual `visual_request` — see
    `agents/agent_b_archive_visual_editor.md`. The outline's `visual_requests` are
    search hints for Agent B, not a per-request checklist; the outline may *request*

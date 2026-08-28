@@ -2,7 +2,7 @@
   "$schema": "http://json-schema.org/draft-07/schema#",
   "$id": "edit_plan.schema.json",
   "title": "EditPlan",
-  "description": "The deterministic, machine-executable timeline handed to the renderer (FFmpeg/Remotion). Generated from final_script.json + asset_inventory.json, no further creative decisions left to make.",
+  "description": "B-EDIT's deterministic, machine-executable timeline handed to the renderer (FFmpeg/Remotion). Built from final_script.json's blocks (positioned on the timeline using ACTUAL measured narration timing from tts_manifest.json, not the estimated_duration_sec Agent A guessed) plus asset_inventory.json's beat_coverage allocations. No creative decisions remain for the renderer -- it only executes. Every clip distinguishes TWO timelines: timeline_start_sec/timeline_end_sec (where the clip appears in the FINAL DOCUMENTARY) versus source_start_sec/source_end_sec (which range is taken from the SOURCE asset, video only). A usable_segment recorded during B-DISCOVER is a permitted source RANGE, not an indivisible clip -- B-EDIT may use any subrange of it, or several different subranges across different clips, as long as each stays inside the segment's own start_sec/end_sec.",
   "type": "object",
   "required": ["episode_id", "status", "clips"],
   "additionalProperties": false,
@@ -17,10 +17,17 @@
     },
     "clips": {
       "type": "array",
+      "description": "The complete ordered visual timeline, sorted by timeline_start_sec ascending with no overlaps. Prefer fewer, longer, coherent clips over frequent cuts -- there is no 'change image every N seconds' rule; a strong clip may run long if it still supports the narration.",
       "items": {
         "type": "object",
-        "required": ["clip_id", "block_id", "asset_id", "start_sec", "end_sec"],
+        "required": ["clip_id", "block_id", "asset_id", "timeline_start_sec", "timeline_end_sec"],
         "additionalProperties": false,
+        "if": {
+          "required": ["segment_id"]
+        },
+        "then": {
+          "required": ["source_start_sec", "source_end_sec"]
+        },
         "properties": {
           "clip_id": { "type": "string" },
           "block_id": {
@@ -31,9 +38,35 @@
             "type": "string",
             "description": "References an asset_id from asset_inventory.json"
           },
-          "start_sec": { "type": "number", "minimum": 0 },
-          "end_sec": { "type": "number", "minimum": 0 },
-          "narration_audio_path": { "type": "string" },
+          "segment_id": {
+            "type": "string",
+            "description": "Video only. References one of the asset's usable_segments[].segment_id from asset_inventory.json. Required for a video clip; absent for a still/document clip."
+          },
+          "timeline_start_sec": {
+            "type": "number",
+            "minimum": 0,
+            "description": "Where this clip starts in the FINAL DOCUMENTARY (e.g. 202.0 = 03:22)."
+          },
+          "timeline_end_sec": {
+            "type": "number",
+            "minimum": 0,
+            "description": "Where this clip ends in the FINAL DOCUMENTARY. Must exceed timeline_start_sec."
+          },
+          "source_start_sec": {
+            "type": "number",
+            "minimum": 0,
+            "description": "Video only, required when segment_id is set. Where the used range starts WITHIN THE SOURCE asset. Must fall inside the referenced usable_segment's own [start_sec, end_sec] -- the segment is a permitted range, not a fixed clip; this may be any subrange of it."
+          },
+          "source_end_sec": {
+            "type": "number",
+            "minimum": 0,
+            "description": "Video only, required when segment_id is set. Must exceed source_start_sec and stay inside the referenced usable_segment."
+          },
+          "still_treatment": {
+            "type": "string",
+            "enum": ["static", "slow_zoom_in", "slow_zoom_out", "pan_left", "pan_right"],
+            "description": "Stills/documents only. Deliberately small enum -- not a motion-graphics system. The renderer executes exactly this, it does not choose."
+          },
           "caption_text": { "type": "string" }
         }
       }
