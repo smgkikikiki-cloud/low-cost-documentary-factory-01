@@ -96,6 +96,26 @@ Write directly in the channel's `output_language`/`narration_register`, not a
 translation pass. Every factual block cites `supporting_claim_ids` from airable
 claims; empty only for pure transitions/banter.
 
+## A-FINAL writing
+
+A-FINAL is an editor, not a fact-pack serializer.
+
+- **Airable means eligible, not mandatory.** `allowed_in_narration: true` means a
+  claim *may* be used -- not that it must appear, that every supporting claim needs
+  a sentence, or that every beat earns equal runtime. Select the smallest set of
+  facts that tells the strongest, clearest story: omit low-value or redundant
+  material, compress or effectively skip a beat whose evidence adds nothing, combine
+  neighboring material naturally. Never invent a fact to fill the gap. The result
+  should read as a documentary built from research, not research notes read aloud.
+- **Keep research uncertainty backstage unless the disagreement itself is part of
+  the story.** Don't narrate the research process -- what couldn't be accessed, that
+  only one source had something, what a confidence rating means, why a claim is
+  unresolved. If a weak or unresolved claim isn't needed, cut it rather than
+  explaining why it's shaky; omission usually beats narrating the verification
+  process. Narrate uncertainty only when it's itself historically interesting (e.g.
+  "accounts differ over who proposed it") -- and even then, use the minimum hedge
+  ("reportedly" / "around" / "one account says"), never a paragraph about method.
+
 ## Validation
 
 Run `python scripts/validate_episode.py <episode_id>` after A-PRE. It mechanically
