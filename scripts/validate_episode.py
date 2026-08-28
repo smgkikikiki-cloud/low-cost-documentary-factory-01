@@ -96,7 +96,11 @@ def resolve_episode_dir(arg: str) -> Path:
 
 
 def load(path: Path):
-    return json.loads(path.read_text())
+    # Explicit UTF-8: script_manifest.json (Thai narration_text) and friends must not
+    # depend on the platform's default text encoding -- Path.read_text() without
+    # encoding= uses locale.getpreferredencoding(False), which on Windows is commonly
+    # cp1252 and would silently corrupt multi-byte UTF-8 sequences on decode.
+    return json.loads(path.read_text(encoding="utf-8"))
 
 
 def validate_schemas(ep_dir: Path, report: Report) -> None:

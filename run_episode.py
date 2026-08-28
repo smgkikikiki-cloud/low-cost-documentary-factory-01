@@ -65,7 +65,7 @@ def load_channel(channel_id: str) -> dict:
         raise SystemExit(
             f"Unknown channel '{channel_id}': no config at {channel_path.relative_to(ROOT)}"
         )
-    return json.loads(channel_path.read_text())
+    return json.loads(channel_path.read_text(encoding="utf-8"))
 
 
 def resolve_episode_dir(episode_id: str) -> Path:
@@ -216,7 +216,11 @@ def compute_status(episode_dir: Path) -> str:
 
 
 def _write(path: Path, data: dict) -> None:
-    path.write_text(json.dumps(data, indent=2, ensure_ascii=False) + "\n")
+    # Explicit UTF-8: episode JSON (e.g. script_manifest.json's Thai narration_text)
+    # must not depend on the platform's default text encoding -- Path.write_text()
+    # without encoding= uses locale.getpreferredencoding(False), which on Windows is
+    # commonly cp1252 and cannot represent Thai characters at all.
+    path.write_text(json.dumps(data, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
 
 
 def main() -> int:

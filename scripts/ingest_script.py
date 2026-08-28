@@ -256,7 +256,10 @@ def _main() -> int:
         topic=args.topic,
     )
     out_path = episode_dir / "script_manifest.json"
-    out_path.write_text(json.dumps(manifest, indent=2, ensure_ascii=False) + "\n")
+    # Explicit UTF-8: this manifest carries the locked Thai narration_text verbatim
+    # -- Path.write_text() without encoding= would use the platform default (cp1252
+    # on Windows), which cannot represent Thai characters at all.
+    out_path.write_text(json.dumps(manifest, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
     print(f"Wrote {out_path} ({len(manifest['blocks'])} blocks, sha256={manifest['script_sha256'][:12]}...)")
     return 0
 
