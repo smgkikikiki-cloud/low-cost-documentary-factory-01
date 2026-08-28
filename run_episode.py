@@ -7,6 +7,7 @@ Usage:
         --quirk "Cadillac's infamous attempt to turn the GM J-car into a luxury compact"
 """
 import argparse
+import hashlib
 import json
 import re
 import sys
@@ -19,9 +20,18 @@ CHANNELS_DIR = ROOT / "config" / "channels"
 
 
 def slugify(text: str) -> str:
-    text = text.strip().lower()
-    text = re.sub(r"[^a-z0-9]+", "-", text)
-    return text.strip("-")
+    """Slugify a topic for use in a folder name.
+
+    Latin text slugifies normally. Non-Latin scripts (Thai, Japanese, Cyrillic, ...)
+    have no ASCII form here, so rather than collapsing to an empty string we fall
+    back to a short hash of the original topic -- deterministic, so re-running init
+    with the same topic still resolves to the same episode folder.
+    """
+    slug = re.sub(r"[^a-z0-9]+", "-", text.strip().lower()).strip("-")
+    if slug:
+        return slug
+    digest = hashlib.sha1(text.strip().encode("utf-8")).hexdigest()[:12]
+    return f"topic-{digest}"
 
 
 def load_channel(channel_id: str) -> dict:
@@ -54,7 +64,10 @@ def init_episode(channel_id: str, topic: str, quirk: str) -> Path:
         "quirk": quirk,
         "target_audience": channel["target_audience"],
         "created_at": datetime.now(timezone.utc).isoformat(),
-        "status": "draft",
+        # The CLI populates every brief field from the channel config and the
+        # command line, so the brief is complete on creation -- there is no further
+        # authoring step before Agent A can pick it up.
+        "status": "ready_for_producer",
     }
     _write(episode_dir / "episode_brief.json", episode_brief)
 

@@ -22,8 +22,11 @@ episode_brief -> Agent A (evidence) -> fact_pack
               -> Agent B (edit planning) -> edit_plan -> deterministic renderer later
 ```
 
-Key invariant: **`final_script.json` must not be written before `asset_inventory.json`
-exists.** The outline may request useful visuals; it must never assume they exist.
+Key invariant: **`final_script.json` must not be written until `asset_inventory.json`
+reaches `gathered`/`approved` and every `visual_request` has a `request_coverage`
+entry.** The file's existence proves nothing — the CLI creates it as a `pending` stub.
+A `not_found` result is valid coverage; silence is not. The outline may request useful
+visuals; it must never assume they exist.
 
 ## Layout
 

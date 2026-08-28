@@ -36,7 +36,7 @@
     },
     "claims": {
       "type": "array",
-      "description": "Atomic, independently traceable claims. Includes both sourced claims and derived_comparison claims (numbers computed from other claims -- see the numerical claim rule in agents/agent_a_producer_writer.md).",
+      "description": "Atomic, independently traceable claims. A claim must be small enough that one confidence value and one allowed_in_narration value apply coherently to the WHOLE claim -- if part of it is solid and part is shaky, split it. Includes both sourced claims and derived_comparison claims (numbers computed from other claims -- see the numerical claim rule in agents/agent_a_producer_writer.md).",
       "items": {
         "type": "object",
         "required": [
@@ -44,9 +44,7 @@
           "normalized_claim",
           "claim_type",
           "time_context",
-          "source_language",
           "sources",
-          "source_classification",
           "perspective",
           "confidence",
           "allowed_in_narration",
@@ -60,7 +58,7 @@
           "claim_id": { "type": "string" },
           "normalized_claim": {
             "type": "string",
-            "description": "The claim stated plainly in working_language, independent of any beat's phrasing"
+            "description": "ONE independently falsifiable assertion, stated plainly in working_language, independent of any beat's phrasing"
           },
           "claim_type": {
             "type": "string",
@@ -68,25 +66,59 @@
           },
           "time_context": {
             "type": "string",
-            "description": "The time period the claim is ABOUT, e.g. '1982', '1985-1987', '2007'"
-          },
-          "source_language": {
-            "type": "string",
-            "description": "Primary language of the source(s) used, e.g. 'en'"
+            "description": "The time period the claim is ABOUT, e.g. '1982', '1985-1987', '2007'. Not the publication date of the evidence -- that lives in each source's publication_date."
           },
           "sources": {
             "type": "array",
-            "items": { "type": "string" },
-            "description": "Source URLs (or citations) for this claim. May be empty for a derived_comparison claim, which cites source_claim_ids instead."
-          },
-          "source_classification": {
-            "type": "string",
-            "enum": ["contemporary_primary", "later_primary", "high_quality_secondary", "reference_only"]
+            "description": "Structured provenance, one entry per source. Source QUALITY (source_classification) and source ACCESSIBILITY (access_status) are independent: a strong source that could not be fetched stays strong but is marked unavailable; it does not become reference_only. May be empty for a derived_comparison claim, which cites source_claim_ids instead.",
+            "items": {
+              "type": "object",
+              "required": [
+                "url",
+                "title",
+                "publisher",
+                "source_language",
+                "source_classification",
+                "access_status",
+                "evidence_note",
+                "evidence_location"
+              ],
+              "additionalProperties": false,
+              "properties": {
+                "url": { "type": "string" },
+                "title": { "type": "string" },
+                "publisher": { "type": "string" },
+                "author": { "type": "string" },
+                "publication_date": {
+                  "type": "string",
+                  "description": "When the EVIDENCE was published. Distinct from the claim's time_context."
+                },
+                "source_language": { "type": "string" },
+                "source_classification": {
+                  "type": "string",
+                  "enum": ["contemporary_primary", "later_primary", "high_quality_secondary", "reference_only"],
+                  "description": "Intrinsic quality of the source, independent of whether it could be fetched. Wikipedia, Wikipedia mirrors, wikis, generic aggregators, spec-scraper sites and search-result snippets are reference_only by default and must never be classified high_quality_secondary."
+                },
+                "access_status": {
+                  "type": "string",
+                  "enum": ["read_full", "read_partial", "search_snippet_only", "unavailable"],
+                  "description": "How much of this source was actually read. search_snippet_only means only a search-engine summary was seen -- the page itself was never read."
+                },
+                "evidence_note": {
+                  "type": "string",
+                  "description": "Briefly, exactly what THIS source supports for THIS claim"
+                },
+                "evidence_location": {
+                  "type": "string",
+                  "description": "Where in the source the evidence sits -- page, section, table, timestamp -- as specifically as possible"
+                }
+              }
+            }
           },
           "perspective": {
             "type": "string",
             "enum": ["contemporary", "retrospective", "timeless"],
-            "description": "contemporary: asserted/observed at time_context. retrospective: a later judgment projected onto time_context -- must not be presented as what people thought at the time. timeless: not time-bound (e.g. platform-sharing fact)."
+            "description": "What era/viewpoint the CLAIM IS ABOUT -- never when the evidence page was published. A historical production or price figure compiled by a modern source is still contemporary (or timeless) to its era; the modern publication date belongs in the source's publication_date. Use retrospective only when the claim is itself a later judgment, reassessment or reputation formed after the fact."
           },
           "confidence": {
             "type": "string",
@@ -119,7 +151,7 @@
           },
           "calculation": {
             "type": "string",
-            "description": "For derived_comparison claims: the literal arithmetic performed, e.g. '(12131 - 9712) / 9712 * 100'"
+            "description": "For derived_comparison claims: the literal arithmetic performed, e.g. '(12131 - 8499) / 8499 * 100'"
           },
           "result": {
             "type": "string",

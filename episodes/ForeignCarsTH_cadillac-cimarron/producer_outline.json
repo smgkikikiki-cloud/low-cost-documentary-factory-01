@@ -1,192 +1,295 @@
 {
   "episode_id": "ForeignCarsTH_cadillac-cimarron",
   "status": "drafted",
-  "thesis": "In 1982, Cadillac tried to answer BMW, Volvo, Saab, and Audi's small sport sedans by building its own version of GM's new J-car, and made real (if late and limited) changes to trim, equipment, and suspension tuning. It cost meaningfully more than a base Cavalier, but because Cadillac joined the program too late to differentiate the car enough, it never fully shed its economy-car roots -- and it became a textbook case study in badge engineering.",
-  "hook": "In 1982, Cadillac took GM's new compact economy car, gave it leather seats and a script badge, and asked buyers to pay a real premium for it. It didn't work, and people inside GM remembered it for decades afterward.",
+  "thesis": "Cadillac did not simply glue its badge onto a Chevrolet: it made real, documented changes to the J-car -- standard leather and air conditioning, its own tuned touring suspension, even its own rear axle bushings -- and then asked about 43% more than the most expensive Cavalier sedan for them. The changes were real but narrow, and mostly invisible from the driver's seat, which is why a car the press initially liked ended up as the definitive cautionary tale about badge engineering.",
+  "thesis_claim_ids": [
+    "e01_standard_equipment",
+    "e03_suspension_tuning",
+    "e04_rear_axle_bushings",
+    "a01_shared_architecture",
+    "d01_premium_vs_cl_sedan",
+    "x01_cavalier_optionability",
+    "r02_cd_review_favorable",
+    "l01_time_worst_cars"
+  ],
+  "hook": "In 1982 Cadillac sold a car with leather seats, a tachometer, alloy wheels and its own specially tuned suspension -- and it is still remembered as one of the worst cars ever made.",
+  "hook_claim_ids": [
+    "e01_standard_equipment",
+    "e03_suspension_tuning",
+    "l01_time_worst_cars"
+  ],
   "estimated_runtime_sec": 480,
+  "open_questions": [
+    "The central price comparison now rests on d01 (base Cimarron vs base Cavalier CL sedan, ~43%). If a period Chevrolet price list or a readable Curbside Classic page later confirms u01's equipment-matched Cavalier figure, beat b4 should be revisited -- an equipment-matched premium would be the fairer number still, and would likely be smaller than 43%.",
+    "c02's named rivals (Volvo GL, Saab 900S, BMW 320i) come from The Drive, but the 1982 dealer brochure read in full for this episode names no competitors at all. Worth locating the specific Cadillac marketing piece The Drive is describing before b2 leans harder on that list.",
+    "Nothing in the fact pack evidences WHY Cadillac wanted a compact (x02 is unresolved with zero sources). Beat b2 currently works around this by describing the pitch rather than the motive. A period business-press source on Cadillac's early-1980s demographics would let b2 make the stronger causal argument it currently cannot."
+  ],
   "beats": [
     {
       "beat_id": "b1_cold_open",
-      "purpose": "Hook the viewer with the badge-on-an-economy-car premise before revealing the model name, and pose the question the episode answers.",
-      "summary": "Cold open: an established luxury brand puts its badge on a compact economy car and charges a real premium for it -- a decision people inside the company still cite as a cautionary tale.",
-      "supporting_claim_ids": ["c1"],
+      "purpose": "Open on the contradiction the episode resolves -- a genuinely well-equipped car that history records as a disaster -- and withhold the name to buy curiosity.",
+      "summary": "Cold open on the tension: a 1982 car with standard leather seating, full instrumentation including a tachometer, alloy wheels and a manufacturer-tuned touring suspension, which nonetheless landed on TIME's 2007 list of the fifty worst cars ever made.",
+      "supporting_claim_ids": [
+        "e01_standard_equipment",
+        "e03_suspension_tuning",
+        "l01_time_worst_cars"
+      ],
       "unresolved_claim_ids": [],
-      "narration_direction": "Lead with the badge-on-an-economy-car setup and withhold the model name 'Cimarron' for a beat. Gesture at 'a real premium' (c1 supports this) but do not put a percentage or 'nearly double' on it here -- that number is earned later, in b4, via d1/d2. End on a question: how does an established luxury brand end up here?",
+      "narration_direction": "Every factual detail here must come from e01 (leather, tach, alloys) and e03 (tuned touring suspension) -- both are from Cadillac's own brochure, so they are safe. Mark the 'worst cars' judgment as 2007, per l01's forbidden inferences: do NOT imply that was the 1982 verdict. Withhold the model name until the end of the beat. Do not state any price or premium here -- the numbers are earned in b4.",
       "visual_requests": [
         {
           "request_id": "V001",
           "beat_id": "b1_cold_open",
-          "subject": "1982 Cadillac Cimarron next to a same-year Chevrolet Cavalier",
-          "desired_asset_type": ["photo", "advertisement"],
-          "description": "Side-by-side still of a Cimarron and same-year Cavalier badge/grille close-up, plus a period Cimarron print ad for the opening graphic.",
+          "subject": "1982 Cadillac Cimarron interior showing leather seats and instrument cluster",
+          "desired_asset_type": ["photo", "brochure", "advertisement"],
+          "description": "Interior shot showing the leather seating, leather-wrapped wheel and tachometer/gauge cluster -- the specific equipment the cold open names. The 1982 dealer brochure contains exactly such an image if it can be licensed.",
           "priority": "high",
+          "exact_subject_required": true
+        },
+        {
+          "request_id": "V002",
+          "beat_id": "b1_cold_open",
+          "subject": "1982 Cadillac Cimarron exterior, name badge not yet visible",
+          "desired_asset_type": ["photo"],
+          "description": "Exterior shot framed so the Cimarron script badge is not legible, supporting the withheld-name structure of the cold open.",
+          "priority": "medium",
           "exact_subject_required": true
         }
       ]
     },
     {
-      "beat_id": "b2_cadillacs_problem",
-      "purpose": "Establish the legitimate business problem Cadillac was trying to solve, so the badge-engineering decision reads as a response to real pressure rather than pure carelessness.",
-      "summary": "By the early 1980s Cadillac's buyer base was aging, fuel-economy/downsizing pressure was real, and a wave of European compact sport sedans threatened to pull in younger buyers Cadillac wanted. Cadillac's own launch marketing named the Volvo GL, Saab 900S, and BMW 320i as the competition.",
-      "supporting_claim_ids": ["c11"],
-      "unresolved_claim_ids": ["c15"],
-      "narration_direction": "Use the confirmed competitive set from c11 (Volvo GL, Saab 900S, BMW 320i) as the concrete anchor. Audi 4000/Honda Accord (c15) may be mentioned only as a softer 'often compared to' aside, not asserted as confirmed brochure copy, until c15 is resolved.",
-      "visual_requests": [
-        {
-          "request_id": "V002",
-          "beat_id": "b2_cadillacs_problem",
-          "subject": "Contemporary BMW 320i, Volvo GL, and Saab 900S",
-          "desired_asset_type": ["photo", "advertisement"],
-          "description": "Period photos or ads of the BMW 320i, Volvo GL, and Saab 900S to establish the competitive set Cadillac was aiming at.",
-          "priority": "medium",
-          "exact_subject_required": false
-        }
-      ]
-    },
-    {
-      "beat_id": "b3_rushed_j_car",
-      "purpose": "Explain the mechanism behind the badge-engineering decision -- a rushed, top-down timing problem, not simply a lack of effort.",
-      "summary": "GM's 1982 J-car platform was shared across five divisions (Chevrolet Cavalier, Pontiac J2000, Buick Skyhawk, Oldsmobile Firenza, Cadillac Cimarron). Cadillac joined the program late, and GM president Pete Estes reportedly warned Cadillac general manager Edward Kennard that there wasn't enough time to turn it into a real Cadillac.",
-      "supporting_claim_ids": ["c2", "c3"],
-      "unresolved_claim_ids": [],
-      "narration_direction": "Use the Estes-to-Kennard warning (c2) as the pivot line, but flag it on screen as a widely repeated secondary account, not a primary transcript -- per c2's safe_wording, use 'reportedly.'",
+      "beat_id": "b2_what_cadillac_was_selling",
+      "purpose": "Establish what Cadillac said it was doing, using its own marketing -- replacing the previously unsourced claim about aging buyers with something actually evidenced.",
+      "summary": "Cadillac pitched the Cimarron as a deliberate reach for a different customer: its brochure opened with 'a new kind of Cadillac for a new kind of Cadillac owner', and its marketing named the Volvo GL, Saab 900S and BMW 320i as the cars it meant to take on.",
+      "supporting_claim_ids": [
+        "c01_brochure_positioning",
+        "c02_named_rivals"
+      ],
+      "unresolved_claim_ids": [
+        "x02_aging_buyer_base",
+        "u03_audi_accord_rivals"
+      ],
+      "narration_direction": "AUDIT FIX: this beat previously asserted an aging buyer base and fuel-economy/downsizing pressure with nothing behind them (now x02, unresolved, zero sources). Do NOT reinstate that. The move is to describe Cadillac's PITCH -- which is documented in its own brochure (c01) -- and let the audience infer the motive, rather than asserting a demographic cause we cannot source. Do not name the Audi 4000 or Honda Accord (u03 unresolved). Per c02's conflicting_evidence, attribute the rival list to 'Cadillac's marketing', not to 'the brochure' -- the brochure we actually hold names no rivals.",
       "visual_requests": [
         {
           "request_id": "V003",
-          "beat_id": "b3_rushed_j_car",
-          "subject": "1982 GM J-car siblings",
-          "desired_asset_type": ["photo", "advertisement", "video"],
-          "description": "Visual comparison showing the Cimarron alongside the other GM J-cars (Cavalier, J2000, Skyhawk, Firenza) to show how similar they were underneath.",
+          "beat_id": "b2_what_cadillac_was_selling",
+          "subject": "1982 Cimarron brochure cover reading 'A NEW KIND OF CADILLAC FOR A NEW KIND OF CADILLAC OWNER'",
+          "desired_asset_type": ["brochure", "advertisement", "document"],
+          "description": "The brochure cover itself -- the narration quotes this line directly, so showing the page is the strongest possible support.",
           "priority": "high",
           "exact_subject_required": true
         },
         {
           "request_id": "V004",
-          "beat_id": "b3_rushed_j_car",
-          "subject": "Early-1980s GM assembly line",
-          "desired_asset_type": ["video", "contextual_video", "photo"],
-          "description": "General GM/Detroit assembly-line footage or photos from the era to visualize the rushed production timeline; does not need to show the J-car specifically.",
+          "beat_id": "b2_what_cadillac_was_selling",
+          "subject": "BMW 320i, Volvo GL and Saab 900S of the early 1980s",
+          "desired_asset_type": ["photo", "advertisement"],
+          "description": "Period images of the three cars Cadillac named as rivals. Contextual/period-appropriate images are acceptable; exact trim matching is not required.",
           "priority": "medium",
           "exact_subject_required": false
         }
       ]
     },
     {
-      "beat_id": "b4_what_you_got",
-      "purpose": "Deliver the episode's factual core: what actually changed vs. what stayed the same, and what the real price gap was -- replacing any 'just badges and leather' or 'nearly double' shortcuts with defensible specifics.",
-      "summary": "Cadillac did make genuine changes to the Cimarron -- standard air conditioning, extra sound insulation, alloy wheels, leather, full instrumentation, and Cadillac-specific suspension tuning -- but the platform, body, and initial engine stayed shared with the Cavalier. Against the cheapest base Cavalier coupe the price gap was close to double; against a comparably equipped Cavalier CL it was reportedly closer to a quarter more, though that second figure is not yet independently confirmed.",
-      "supporting_claim_ids": ["c1", "c8", "c13", "d2"],
-      "unresolved_claim_ids": ["c14", "d1"],
-      "narration_direction": "This is the beat that has to get the numbers right. Use d2's safe_wording for the 'close to double' framing and explicitly name the comparator (cheapest base coupe). Only mention the smaller ~25%-over-a-comparable-CL figure (d1) as a reported-but-unconfirmed data point, per d1's safe_wording -- do not state it as settled. Reframe from 'it was just badges and leather' to 'Cadillac tried, but ran out of time to differentiate it enough' using c8.",
+      "beat_id": "b3_the_shared_car",
+      "purpose": "Explain the structural fact that constrains everything else -- five divisions, one car -- and the timing pressure Cadillac was under.",
+      "summary": "The Cimarron was one of five versions of GM's J-body, alongside the Chevrolet Cavalier, Pontiac J2000, Buick Skyhawk and Oldsmobile Firenza, sharing front-wheel drive, MacPherson strut front suspension, a semi-independent rear and rack and pinion steering. Cadillac came to the program late -- by one account about eleven months before launch -- and GM president Pete Estes reportedly warned Cadillac's general manager that there wasn't time to turn the J-car into a Cadillac.",
+      "supporting_claim_ids": [
+        "a02_jcar_siblings",
+        "a01_shared_architecture",
+        "t02_late_entry",
+        "t01_estes_warning"
+      ],
+      "unresolved_claim_ids": [],
+      "narration_direction": "Use 'reportedly' on the Estes remark (t01 requires the hedge -- the underlying citation was never retrieved) and 'by one account' on the eleven-month timeline (t02 was only ever a search snippet). The architecture list (a01) comes from the brochure's own cutaway callouts, so it can be stated plainly. Keep the shared-architecture point and the Cadillac-changes point separate -- the latter is b4's job -- so the audience gets the constraint before the response to it.",
       "visual_requests": [
         {
           "request_id": "V005",
-          "beat_id": "b4_what_you_got",
-          "subject": "Cimarron and Cavalier CL interiors",
-          "desired_asset_type": ["photo"],
-          "description": "Matched interior/dashboard shots of a Cimarron and a Cavalier CL for a direct visual comparison.",
+          "beat_id": "b3_the_shared_car",
+          "subject": "The five 1982 GM J-cars together",
+          "desired_asset_type": ["photo", "advertisement", "brochure"],
+          "description": "Any image showing the Cimarron alongside its Cavalier / J2000 / Skyhawk / Firenza siblings, or period images of each that can be cut together to show how similar the bodies were.",
           "priority": "high",
           "exact_subject_required": true
         },
         {
           "request_id": "V006",
-          "beat_id": "b4_what_you_got",
-          "subject": "'Cimarron by Cadillac' badge",
-          "desired_asset_type": ["photo"],
-          "description": "Close-up of the 'Cimarron by Cadillac' script badge.",
+          "beat_id": "b3_the_shared_car",
+          "subject": "1982 Cimarron engineering cutaway diagram",
+          "desired_asset_type": ["brochure", "chart", "document"],
+          "description": "The brochure's labelled cutaway illustration showing MacPherson struts, semi-independent rear suspension and rack and pinion steering -- it visualises the shared architecture the narration lists.",
           "priority": "medium",
           "exact_subject_required": true
         },
         {
           "request_id": "V007",
-          "beat_id": "b4_what_you_got",
-          "subject": "1982 Cimarron window sticker or price sheet",
-          "desired_asset_type": ["document", "brochure"],
-          "description": "A surviving window sticker, price sheet, or standard-equipment comparison chart, if one exists in the archive.",
+          "beat_id": "b3_the_shared_car",
+          "subject": "Early-1980s GM car assembly line",
+          "desired_asset_type": ["video", "contextual_video", "photo"],
+          "description": "Period GM or Detroit assembly footage to carry the compressed-timeline narration. Generic period-appropriate factory material is fine.",
           "priority": "low",
-          "exact_subject_required": true
+          "exact_subject_required": false
         }
       ]
     },
     {
-      "beat_id": "b5_market_reaction",
-      "purpose": "Correct the assumption that the Cimarron was mocked from day one -- show contemporary reception was mixed, distinct from its much harsher retrospective reputation.",
-      "summary": "Contemporary reception in 1981-82 was genuinely mixed: Road & Track criticized the initial 1.8L engine's performance as 'painfully slow,' while Car and Driver's original review is reported to have been notably positive about Cadillac's strategic boldness (not yet independently confirmed verbatim). The much harsher, near-universal 'worst car' reputation is a retrospective judgment (see b7), not the immediate press consensus at launch.",
-      "supporting_claim_ids": ["c10"],
-      "unresolved_claim_ids": ["c9"],
-      "narration_direction": "Explicitly separate two timelines: (a) contemporary 1981-82 reception -- real criticism of performance (c10, confirmed), reportedly some real praise for the concept (c9, unconfirmed) -- and (b) the retrospective reputation in b7. Do not quote c9's exact phrase; use its safe_wording hedge instead unless it gets confirmed before scripting.",
+      "beat_id": "b4_what_cadillac_actually_changed",
+      "purpose": "Deliver the episode's factual core and correct both popular distortions at once: that Cadillac changed nothing, and that the car cost double a Cavalier.",
+      "summary": "Cadillac's changes were real and documented in its own brochure: air conditioning, leather seating, a leather-wrapped wheel, full instrumentation with a tachometer, alloy wheels and deep-pile carpeting all standard, an acoustical insulation package, an exclusively tuned touring suspension and even Cadillac-specific rear axle arm bushings. But most of that could be optioned onto its GM siblings, and the price gap was large: about 43% over the top-trim Cavalier CL sedan, or about 83% over the cheapest stripped Cadet coupe -- the comparison that produces the familiar 'nearly double' line.",
+      "supporting_claim_ids": [
+        "e01_standard_equipment",
+        "e02_sound_insulation",
+        "e03_suspension_tuning",
+        "e04_rear_axle_bushings",
+        "a01_shared_architecture",
+        "x01_cavalier_optionability",
+        "p01_cimarron_price",
+        "p02_cavalier_cl_sedan_price",
+        "p03_cavalier_cadet_coupe_price",
+        "d01_premium_vs_cl_sedan",
+        "d02_premium_vs_cadet_coupe"
+      ],
+      "unresolved_claim_ids": [
+        "u01_cavalier_cl_equipped_price",
+        "u02_premium_vs_equipped_cl"
+      ],
+      "narration_direction": "The single most important beat for numerical discipline. Lead the price comparison with d01 (~43% vs the top Cavalier sedan) as the headline figure; introduce d02 (~83%) only with its comparator explicitly named as the cheapest stripped Cadet coupe, and use it to explain where the widespread 'nearly double' claim comes from rather than repeating it unqualified. Both d01 and d02 forbid unattributed use. Do NOT air any equipment-matched Cavalier price or the ~25% figure (u01/u02 unresolved). Pair e01-e04 with x01 in the same breath -- Cadillac made these things standard, but standard is not exclusive; that tension IS the beat. Attribute the equipment and suspension details to Cadillac's own brochure on screen, since that is where they come from.",
       "visual_requests": [
         {
           "request_id": "V008",
-          "beat_id": "b5_market_reaction",
-          "subject": "August 1981 Car and Driver issue",
-          "desired_asset_type": ["magazine_scan", "photo"],
-          "description": "Cover or article scan of the August 1981 Car and Driver issue containing the original Cimarron review.",
-          "priority": "medium",
+          "beat_id": "b4_what_cadillac_actually_changed",
+          "subject": "1982 Cimarron brochure standard-equipment list",
+          "desired_asset_type": ["brochure", "document"],
+          "description": "The brochure page listing standard features, including the 'Cadillac specific rear axle arm bushings' line -- narration cites this detail specifically and the document itself is the proof.",
+          "priority": "high",
           "exact_subject_required": true
         },
         {
           "request_id": "V009",
-          "beat_id": "b5_market_reaction",
-          "subject": "Contemporary Road & Track Cimarron road test",
-          "desired_asset_type": ["magazine_scan", "photo"],
-          "description": "Scan or photo of the period Road & Track road test that recorded the 15.9-second 0-60 time.",
+          "beat_id": "b4_what_cadillac_actually_changed",
+          "subject": "1982 Chevrolet Cavalier CL sedan interior",
+          "desired_asset_type": ["photo", "brochure", "advertisement"],
+          "description": "Interior of a Cavalier CL for side-by-side comparison against the Cimarron interior, supporting the 'much of this could be optioned on the Chevy' point.",
+          "priority": "high",
+          "exact_subject_required": true
+        },
+        {
+          "request_id": "V010",
+          "beat_id": "b4_what_cadillac_actually_changed",
+          "subject": "1982 Cimarron and Cavalier price comparison",
+          "desired_asset_type": ["chart", "document", "brochure"],
+          "description": "A period price list, window sticker, or an original graphic built from the verified MSRP figures ($12,131-12,181 Cimarron / $8,499 Cavalier CL sedan / $6,648 Cadet coupe). If no period document exists, this becomes a designed chart rather than an archival asset.",
+          "priority": "medium",
+          "exact_subject_required": false
+        },
+        {
+          "request_id": "V011",
+          "beat_id": "b4_what_cadillac_actually_changed",
+          "subject": "'Cimarron by Cadillac' script badge close-up",
+          "desired_asset_type": ["photo"],
+          "description": "Close-up of the model script badge.",
           "priority": "low",
           "exact_subject_required": true
         }
       ]
     },
     {
-      "beat_id": "b6_slow_fix",
-      "purpose": "Show real, ongoing engineering effort across the model run without a turnaround ending -- a slow chase for credibility, not redemption.",
-      "summary": "Between 1983 and 1988 Cadillac kept revising the car: styling updates, a 2.0L engine in 1983, a 2.8L V6 added as an option in 1985 (standard by 1987), and suspension upgrades -- but annual production kept falling through the car's final years.",
-      "supporting_claim_ids": ["c4", "c6"],
-      "unresolved_claim_ids": [],
-      "narration_direction": "Present the V6/equipment updates (c4) and the production decline (c6) together so the effort-without-payoff shape is clear. Do not editorialize the decline as 'collapsed' -- state the actual year-over-year numbers from c6.",
+      "beat_id": "b5_how_it_was_actually_received",
+      "purpose": "Correct the retrospective distortion: separate what the press said in 1981-82 from the reputation that formed decades later.",
+      "summary": "Contemporary reception was split rather than uniformly hostile. Road & Track timed the 1.8-litre car at 15.9 seconds to 60 mph and called it painfully slow. Car and Driver's original August 1981 test, by Rich Ceppos, was favorable -- the magazine's own later reprint carries the standfirst 'It's an embarrassment now, but we didn't think so then', and Ceppos later said he was embarrassed at how warmly he had received the car.",
+      "supporting_claim_ids": [
+        "r01_rt_performance",
+        "r02_cd_review_favorable",
+        "r03_ceppos_regret"
+      ],
+      "unresolved_claim_ids": [
+        "q01_cd_boldest_moves_quote"
+      ],
+      "narration_direction": "Hold three time layers apart: the 1981-82 reviews (r01, r02), the reviewer's later regret (r03, explicitly retrospective), and the reputation in b7. Do NOT quote 'one of the boldest moves ever made by a car company' -- q01 is unresolved and its forbidden inferences also rule out loose paraphrase. The C&D standfirst in r02's safe_wording IS quotable and does the same narrative work. Per r01, do not extend the performance criticism to the later V6 cars.",
       "visual_requests": [
         {
-          "request_id": "V010",
-          "beat_id": "b6_slow_fix",
-          "subject": "Cimarron styling across 1982, 1985, 1988",
-          "desired_asset_type": ["photo"],
-          "description": "Year-by-year exterior styling comparison shots.",
+          "request_id": "V012",
+          "beat_id": "b5_how_it_was_actually_received",
+          "subject": "Car and Driver August 1981 issue",
+          "desired_asset_type": ["magazine_scan", "photo"],
+          "description": "Cover or the Cimarron road test pages from the August 1981 Car and Driver. Note for Agent B: caranddriver.com blocks this environment's crawler, so this may need to come from an auction listing, an archive, or a collector scan.",
           "priority": "medium",
           "exact_subject_required": true
         },
         {
-          "request_id": "V011",
-          "beat_id": "b6_slow_fix",
-          "subject": "Cimarron V6 engine bay",
-          "desired_asset_type": ["photo"],
-          "description": "Engine bay shot showing the 2.8L V6 added in 1985.",
+          "request_id": "V013",
+          "beat_id": "b5_how_it_was_actually_received",
+          "subject": "Period Road & Track Cimarron road test pages",
+          "desired_asset_type": ["magazine_scan", "photo"],
+          "description": "The Road & Track test carrying the 15.9-second 0-60 figure.",
           "priority": "low",
           "exact_subject_required": true
         }
       ]
     },
     {
-      "beat_id": "b7_cancellation_legacy",
-      "purpose": "Land the thesis: the car's real significance is retrospective -- a case study people inside and outside GM still reference -- distinct from how it was actually received when new (b5).",
-      "summary": "Production ended in 1988 after roughly 132,499 total units (only 6,454 in the final year). In the decades since, the Cimarron has been named to lists like TIME's '50 Worst Cars of All Time' and is used as a standard example of badge engineering; former Cadillac product director John Howell reportedly kept a photo of a Cimarron in his office as a cautionary reminder.",
-      "supporting_claim_ids": ["c5", "c7", "c12"],
-      "unresolved_claim_ids": [],
-      "narration_direction": "Explicitly mark c7 and the general 'worst car' reputation as retrospective (2007 onward), contrasting with b5's contemporary account. Use c12's 'reportedly' hedge rather than stating the Howell anecdote as flat fact.",
+      "beat_id": "b6_the_long_decline",
+      "purpose": "Show sustained effort without recovery, using only the volume statement the sources actually agree on.",
+      "summary": "Cadillac kept working on the car: a 2.8-litre V6 arrived as an option in 1985 and was standard by 1987. It did not turn the model around. By its final year, 1988, Cadillac was moving only around six thousand of them, and production ended after that model year.",
+      "supporting_claim_ids": [
+        "m01_v6_option",
+        "s04_final_year_low",
+        "m02_production_ended_1988"
+      ],
+      "unresolved_claim_ids": [
+        "x03_1983_engine_and_suspension_updates",
+        "s02_yearly_sales_gcbc"
+      ],
+      "narration_direction": "AUDIT FIX: this beat previously asserted a 1983 2.0-litre engine and Bilstein/touring suspension upgrades with no supporting claim (now x03, unresolved). Do not reinstate them -- m01's V6 carries the 'they kept trying' point on its own. Do NOT read out a year-by-year sales table: s01 and s02 are two irreconcilable series and s02 is explicitly not airable. Use only s04, the roughly-six-thousand final year, which all three independent sources agree on in shape, and say 'around six thousand' rather than 6,454, since the sources differ by about 10%. Avoid 'collapsed' and similar intensifiers -- the numerical claim rule requires a derived claim for that kind of characterisation and none exists.",
       "visual_requests": [
         {
-          "request_id": "V012",
-          "beat_id": "b7_cancellation_legacy",
-          "subject": "'Worst cars' list reference",
-          "desired_asset_type": ["photo", "document"],
-          "description": "A shot or graphic referencing a 'worst cars' list cover/headline (e.g. the 2007 TIME piece).",
-          "priority": "low",
-          "exact_subject_required": false
+          "request_id": "V014",
+          "beat_id": "b6_the_long_decline",
+          "subject": "Cimarron exterior styling changes across the 1982-1988 run",
+          "desired_asset_type": ["photo", "brochure"],
+          "description": "Images of an early (1982) and a late (1987-88) Cimarron to show how the car was facelifted over its life.",
+          "priority": "medium",
+          "exact_subject_required": true
         },
         {
-          "request_id": "V013",
-          "beat_id": "b7_cancellation_legacy",
-          "subject": "Late-production (1988) Cadillac Cimarron",
+          "request_id": "V015",
+          "beat_id": "b6_the_long_decline",
+          "subject": "Cimarron 2.8-litre V6 engine bay",
+          "desired_asset_type": ["photo", "brochure"],
+          "description": "Engine bay of a V6-equipped Cimarron, 1985 or later.",
+          "priority": "low",
+          "exact_subject_required": true
+        }
+      ]
+    },
+    {
+      "beat_id": "b7_the_reputation",
+      "purpose": "Land the thesis by naming what the car actually became -- a reference point -- and make clear that this status was assigned in hindsight.",
+      "summary": "The Cimarron's real afterlife is as a case study. TIME named it to its fifty worst cars list in 2007, twenty-five years after launch, and a former Cadillac product director is said to have kept a photo of one in his office as a reminder. The verdict that defines the car was reached long after anyone stopped buying it.",
+      "supporting_claim_ids": [
+        "l01_time_worst_cars",
+        "l02_howell_photo",
+        "m02_production_ended_1988"
+      ],
+      "unresolved_claim_ids": [],
+      "narration_direction": "Date the TIME judgment explicitly to 2007 and set it against b5's contemporary reception -- the gap between the two is the closing argument. Use 'is said to have' on the Howell anecdote (l02 requires the hedge and forbids generalising one person's habit into company policy). Close on the thesis: the changes were real but narrow, and the reputation was retrospective.",
+      "visual_requests": [
+        {
+          "request_id": "V016",
+          "beat_id": "b7_the_reputation",
+          "subject": "TIME 'The 50 Worst Cars of All Time' Cimarron entry",
+          "desired_asset_type": ["document", "magazine_scan", "photo"],
+          "description": "The 2007 TIME feature page or its Cimarron entry, to date the judgment on screen.",
+          "priority": "medium",
+          "exact_subject_required": true
+        },
+        {
+          "request_id": "V017",
+          "beat_id": "b7_the_reputation",
+          "subject": "Late-production 1988 Cadillac Cimarron",
           "desired_asset_type": ["photo"],
-          "description": "A 1988 Cimarron for visual closure on the model run.",
+          "description": "A final-year car for visual closure.",
           "priority": "low",
           "exact_subject_required": true
         }

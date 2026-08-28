@@ -50,9 +50,13 @@ status says so.
    independent verification (see `fact_pack.json`'s `quirk_lead`).
 3. **Fact pack before outline.** `fact_pack.json` must reach `status: "verified"`
    (A2's adversarial pass done) before `producer_outline.json` is built from it.
-4. **Real asset inventory before final script.** `final_script.json` (A4) must not be
-   written until Agent B has produced `asset_inventory.json` for the episode. The
-   outline may *request* visuals (`visual_requests`); it must never assume they exist.
+4. **Real asset coverage before final script.** `final_script.json` (A4) must not be
+   written until `asset_inventory.json`'s `status` is `gathered` or `approved` **and**
+   every `visual_request` in `producer_outline.json` has a matching
+   `request_coverage` entry. The file's mere existence gates nothing — the CLI creates
+   it as a `pending` stub at init. A `not_found` result is valid coverage; silently
+   missing coverage is not. The outline may *request* visuals; it must never assume
+   they exist.
 5. **Final narration language comes from channel config.** `final_script.json`'s
    `output_language` must match the channel's `output_language`, snapshotted onto
    `episode_brief.json` at init time. Localization happens inside A4 as natural
@@ -62,7 +66,25 @@ status says so.
 7. **Every factual script claim traces back to the fact pack.** Each
    `final_script.json` block's `supporting_claim_ids` must resolve to
    `fact_pack.json` claims with `allowed_in_narration: true`. Only pure transitions/
-   banter that assert no fact may have an empty list.
+   banter that assert no fact may have an empty list. The same rule binds the
+   outline's `thesis_claim_ids` and `hook_claim_ids`.
+10. **Source quality and source accessibility are separate axes.** In
+    `fact_pack.json`, `source_classification` grades the source itself and
+    `access_status` records how much of it was actually read. A strong source that
+    returned HTTP 403 stays strong and is marked `unavailable`; the claim's
+    `confidence` absorbs the uncertainty. Wikipedia, mirrors, wikis, aggregators and
+    search snippets are `reference_only` by default.
+11. **Claims are atomic.** One independently falsifiable assertion per claim, small
+    enough that one `confidence` and one `allowed_in_narration` apply to all of it.
+    Never fuse a contemporary account with a later reassessment of it.
+12. **`perspective` is about the claim's era, not the evidence's publication date.**
+    A 1982 figure compiled by a modern site is a `contemporary` claim; the modern date
+    belongs in that source's `publication_date`.
+13. **Discovery is not verification.** In `asset_inventory.json`,
+    `exact_subject_match: true` requires `verification_method: visually_inspected`,
+    and video timestamps may only be recorded for footage actually inspected. Titles,
+    captions and search snippets establish what an asset *claims* to show, never what
+    it shows.
 8. **Rendering is deterministic and comes much later.** Don't build FFmpeg/Remotion
    code speculatively.
 9. **Two AI agents, not more.** Keep the architecture at Agent A + Agent B unless a

@@ -14,8 +14,36 @@ research in a direction, but it must never be copied into the thesis or into a c
 without independent support.
 
 Research in any language (`research_language` on the brief may be `auto`). Write
-atomic claims into `fact_pack.json`, normalized into `working_language`, each with its
-raw source(s) and an honest `source_classification`, `perspective`, and `confidence`.
+atomic claims into `fact_pack.json`, normalized into `working_language`, each with
+structured source provenance and an honest `perspective` and `confidence`.
+
+**Claims must be atomic.** A claim is one independently falsifiable assertion, small
+enough that a single `confidence` and a single `allowed_in_narration` value apply
+coherently to all of it. Equipment changes, suspension changes, and shared platform
+architecture are three claims, not one. A contemporary review and a decades-later
+reassessment of that review are two claims, not one — fusing them lets hindsight
+contaminate the contemporary record. If half a claim is solid and half is shaky,
+split it rather than averaging the confidence.
+
+**Source quality and source accessibility are independent axes.** Each source records
+both:
+
+- `source_classification` — intrinsic quality. Wikipedia, its mirrors, wikis, generic
+  aggregators, spec-scraper sites and search-result snippets are `reference_only` by
+  default. Never grade Wikipedia `high_quality_secondary`.
+- `access_status` — how much was actually read: `read_full`, `read_partial`,
+  `search_snippet_only`, `unavailable`.
+
+A first-rate source that returned HTTP 403 does not become `reference_only` — it stays
+first-rate with `access_status: unavailable`, and the claim's *confidence* absorbs the
+uncertainty. Conversely, fully reading an aggregator does not promote it. Record
+`evidence_note` (exactly what this source supports) and `evidence_location` (page,
+section, table, timestamp) so a later reader can retrace the find.
+
+**`perspective` describes the claim's era, not the evidence's publication date.** A
+1982 production figure compiled by a website in 2019 is a `contemporary` claim about
+1982; the 2019 date belongs in that source's `publication_date`. Reserve
+`retrospective` for claims that are themselves later judgments or reassessments.
 
 ## A2 — Verified Claim Registry / Adversarial Check
 
@@ -51,11 +79,23 @@ Once this pass is done, mark `fact_pack.json` `status: "verified"`.
 
 ## A3 — Story Architecture
 
-Build `producer_outline.json` strictly downstream of the verified `fact_pack.json`:
-thesis, hook, and every beat's `summary`/`narration_direction` must be traceable to
-`supporting_claim_ids` (claims with `allowed_in_narration: true`). A beat may
-reference `unresolved_claim_ids` too, but only to flag them as open questions -- never
-to assert them as settled.
+Build `producer_outline.json` strictly downstream of the verified `fact_pack.json`.
+The thesis carries `thesis_claim_ids` and the hook carries `hook_claim_ids`; every
+factual assertion in either must trace to a claim with `allowed_in_narration: true`.
+Unresolved claims must never reach the thesis or hook in any form, including softened
+ones — hedging an unverified claim does not make it airable.
+
+Every beat's `summary` and `narration_direction` must likewise be covered by its
+`supporting_claim_ids`. A beat may list `unresolved_claim_ids`, but only to mark
+territory as off-limits or explicitly open — never to assert it.
+
+**Audit beats semantically, not syntactically.** It is not enough that a beat cites
+some claim IDs. Read each sentence of the summary and ask which specific claim
+supports *that* sentence. Background and scene-setting assertions are the usual
+leak — "the market was shifting", "buyers were getting older" — and they need a claim
+or they need to go. Where a tempting assertion cannot be sourced, record it in the
+fact pack as an unresolved claim with its sources empty, so the gap stays visible
+instead of being silently deleted and rediscovered later.
 
 For each beat, write structured `visual_requests` describing what footage/imagery
 *would be useful*. These are requests to Agent B, not evidence that any asset exists
@@ -66,9 +106,22 @@ exaggerating weak ones.
 
 ## A4 — Localized Final Writing
 
-**A4 is forbidden until Agent B has produced `asset_inventory.json` for this episode.**
-The writer must know what can actually be shown before locking narration -- do not
-write `final_script.json` against assumed footage.
+**A4 is forbidden unless BOTH of the following hold:**
+
+1. `asset_inventory.json`'s `status` is `gathered` or `approved`; and
+2. every `visual_request` in `producer_outline.json` has a matching
+   `request_coverage` entry in `asset_inventory.json`.
+
+The file merely existing proves nothing — the CLI creates it as a `pending` stub at
+episode init, so "the file exists" is true from the very first moment and gates
+nothing. What matters is that Agent B has actually reported back on every request.
+
+A `not_found` result is valid, complete coverage: it tells the writer that beat must
+work without that visual. Silently missing coverage is not — it means nobody knows,
+and narration written against it is written against an assumption.
+
+The writer must know what can actually be shown before locking narration. Do not write
+`final_script.json` against assumed footage.
 
 Write `final_script.json` blocks directly in the channel's `output_language`
 (snapshotted onto `episode_brief.json`) -- this is not a literal translation pass, and

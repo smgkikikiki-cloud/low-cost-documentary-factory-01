@@ -2,7 +2,7 @@
   "$schema": "http://json-schema.org/draft-07/schema#",
   "$id": "asset_inventory.schema.json",
   "title": "AssetInventory",
-  "description": "Agent B's (Archive/Visual Editor) record of REAL discovered assets for the episode, plus coverage reporting against producer_outline.json's visual_requests. This schema defines the data contract only -- searching/downloading is not implemented yet.",
+  "description": "Agent B's (Archive/Visual Editor) record of REAL discovered assets, plus coverage reporting against every producer_outline.json visual_request. This schema defines the data contract only -- searching/downloading is not implemented yet. Central rule: DISCOVERY IS NOT VERIFICATION. Finding a plausible search result is not the same as having looked at the thing.",
   "type": "object",
   "required": ["episode_id", "status", "assets", "request_coverage"],
   "additionalProperties": false,
@@ -13,39 +13,88 @@
     "status": {
       "type": "string",
       "enum": ["pending", "gathered", "approved"],
-      "default": "pending"
+      "default": "pending",
+      "description": "pending: Agent B has not run. gathered: every visual_request has a request_coverage entry. approved: reviewed. Agent A's A4 stage is gated on this reaching gathered or approved -- see agents/agent_a_producer_writer.md."
+    },
+    "environment_limitations": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "Capabilities this run genuinely lacked, stated plainly rather than hidden -- e.g. 'cannot decode video frames, so no video asset can exceed verification_method: metadata_only', or 'domain X blocks this crawler'. A limitation recorded here is the justification for weaker verification_method values elsewhere in the file.",
+      "default": []
     },
     "assets": {
       "type": "array",
       "items": {
         "type": "object",
-        "required": ["asset_id", "matched_request_ids", "asset_type", "subject", "exact_subject_match"],
+        "required": [
+          "asset_id",
+          "matched_request_ids",
+          "asset_type",
+          "subject",
+          "description",
+          "exact_subject_match",
+          "access_status",
+          "verification_method"
+        ],
         "additionalProperties": false,
         "properties": {
           "asset_id": { "type": "string" },
           "matched_request_ids": {
             "type": "array",
             "items": { "type": "string" },
-            "description": "producer_outline.json visual_request request_id values this asset satisfies"
+            "description": "producer_outline.json visual_request request_id values this asset addresses"
           },
-          "source_url": { "type": "string" },
+          "source_url": {
+            "type": "string",
+            "description": "Where the asset lives. At least one of source_url or local_path must be present -- an asset with neither is not a discovered asset."
+          },
           "local_path": { "type": "string" },
+          "source_title": {
+            "type": "string",
+            "description": "Title of the page, archive record, or publication the asset came from -- so a later reviewer can retrace the find"
+          },
           "asset_type": {
             "type": "string",
             "enum": ["video", "photo", "advertisement", "brochure", "document", "magazine_scan", "map", "chart", "contextual_video"]
           },
           "subject": { "type": "string" },
-          "description": { "type": "string" },
+          "description": {
+            "type": "string",
+            "description": "What the asset actually shows. If verification_method is not visually_inspected, this describes what the SOURCE CLAIMS it shows -- say so."
+          },
           "date_or_period": { "type": "string" },
           "exact_subject_match": {
             "type": "boolean",
-            "description": "Whether this asset actually shows the exact subject requested, vs. being a contextual/period substitute"
+            "description": "Whether this asset genuinely shows the exact subject requested. MUST NOT be set true unless verification_method is visually_inspected. A title, filename, caption, search snippet, or metadata field is never sufficient evidence that an image or video depicts a specific model year or variant."
           },
-          "usable_start_sec": { "type": "number", "minimum": 0 },
-          "usable_end_sec": { "type": "number", "minimum": 0 },
+          "access_status": {
+            "type": "string",
+            "enum": ["read_full", "read_partial", "search_snippet_only", "unavailable"],
+            "description": "How much of the source was actually reached, mirroring fact_pack.json's source access semantics"
+          },
+          "verification_method": {
+            "type": "string",
+            "enum": ["visually_inspected", "metadata_only", "search_result_only", "unverified"],
+            "description": "How the asset's CONTENT was established. visually_inspected: the image, or the relevant video frames, were actually viewed. metadata_only: title/caption/EXIF/archive record read, content not viewed. search_result_only: known only from a search listing. unverified: neither content nor metadata confirmed."
+          },
+          "usable_start_sec": {
+            "type": "number",
+            "minimum": 0,
+            "description": "Video only. MUST NOT be supplied unless verification_method is visually_inspected -- timestamps for footage nobody watched are fabrication."
+          },
+          "usable_end_sec": {
+            "type": "number",
+            "minimum": 0,
+            "description": "Video only. Same rule as usable_start_sec."
+          },
           "visual_quality": {
             "type": "string",
-            "enum": ["low", "medium", "high"]
+            "enum": ["low", "medium", "high", "unknown"],
+            "description": "Use unknown unless the asset was actually viewed"
+          },
+          "license": {
+            "type": "string",
+            "description": "Licence/rights status if known, or an explicit note that it is unknown"
           },
           "notes": { "type": "string" }
         }
@@ -53,10 +102,10 @@
     },
     "request_coverage": {
       "type": "array",
-      "description": "One entry per producer_outline.json visual_request, reporting what was actually found -- lets Agent A adapt final narration to what exists.",
+      "description": "EXACTLY one entry per visual_request in producer_outline.json. A request with no entry is a silent gap and blocks Agent A's A4 stage; not_found is a valid, complete answer, silence is not.",
       "items": {
         "type": "object",
-        "required": ["request_id", "beat_id", "coverage_status", "asset_ids"],
+        "required": ["request_id", "beat_id", "coverage_status", "asset_ids", "search_attempts"],
         "additionalProperties": false,
         "properties": {
           "request_id": {
@@ -66,12 +115,19 @@
           "beat_id": { "type": "string" },
           "coverage_status": {
             "type": "string",
-            "enum": ["found_exact", "found_partial", "context_only", "not_found"]
+            "enum": ["found_exact", "found_partial", "context_only", "not_found"],
+            "description": "found_exact / found_partial / context_only MUST each reference at least one real asset_id in asset_ids. not_found MUST have an empty asset_ids array -- it must never imply an asset exists. found_exact additionally requires that at least one referenced asset has exact_subject_match: true, which in turn requires visual inspection."
           },
           "asset_ids": {
             "type": "array",
             "items": { "type": "string" },
-            "description": "asset_id values in this file that address the request, if any"
+            "description": "asset_id values in this file that address the request. Empty if and only if coverage_status is not_found."
+          },
+          "search_attempts": {
+            "type": "array",
+            "items": { "type": "string" },
+            "description": "What was actually searched, so a not_found is auditable rather than assertion. A high-priority request must show more than one distinct attempt before not_found is accepted.",
+            "default": []
           },
           "notes": { "type": "string" }
         }

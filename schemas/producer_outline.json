@@ -19,9 +19,19 @@
       "type": "string",
       "description": "The one-sentence argument/story the episode is built around. Must be supported by fact_pack.json claims, not auto-derived from episode_brief.quirk."
     },
+    "thesis_claim_ids": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "fact_pack.json claim_ids backing every factual assertion in the thesis. All must be allowed_in_narration: true -- an unresolved claim must never reach the thesis."
+    },
     "hook": {
       "type": "string",
       "description": "The cold-open line(s) meant to grab attention before the thesis unfolds"
+    },
+    "hook_claim_ids": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "fact_pack.json claim_ids backing every factual assertion in the hook. All must be allowed_in_narration: true -- an unresolved claim must never reach the hook."
     },
     "estimated_runtime_sec": {
       "type": "integer",
