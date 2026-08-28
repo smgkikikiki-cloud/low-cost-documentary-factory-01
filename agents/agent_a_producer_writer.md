@@ -99,9 +99,10 @@ story -- never speak act or beat labels aloud.
 
 ## A-FINAL gate
 
-Forbidden until `asset_inventory.status` is `gathered`/`approved` **and** every
-`visual_request` has a `request_coverage` entry -- the file existing at `pending`
-from CLI init doesn't count. `not_found` is valid coverage; a missing entry isn't.
+Forbidden until `asset_inventory.status` is `gathered`/`approved` **and** every beat
+has a `beat_coverage` entry with no `critical_gap` among them -- the file existing at
+`pending` from CLI init doesn't count. Coverage is planned per beat against that
+beat's runtime, not per `visual_request`; see `agents/agent_b_archive_visual_editor.md`.
 Write directly in the channel's `output_language`/`narration_register`, not a
 translation pass. Every factual block cites `supporting_claim_ids` from airable
 claims; empty only for pure transitions/banter.

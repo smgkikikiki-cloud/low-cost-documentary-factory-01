@@ -92,7 +92,7 @@ def init_episode(channel_id: str, topic: str, quirk: str) -> Path:
         "episode_id": episode_id,
         "status": "pending",
         "assets": [],
-        "request_coverage": [],
+        "beat_coverage": [],
     })
     _write(episode_dir / "final_script.json", {
         "episode_id": episode_id,

@@ -55,11 +55,14 @@ status says so.
    (A2's adversarial pass done) before `producer_outline.json` is built from it.
 4. **Real asset coverage before final script.** `final_script.json` (A4) must not be
    written until `asset_inventory.json`'s `status` is `gathered` or `approved` **and**
-   every `visual_request` in `producer_outline.json` has a matching
-   `request_coverage` entry. The file's mere existence gates nothing — the CLI creates
-   it as a `pending` stub at init. A `not_found` result is valid coverage; silently
-   missing coverage is not. The outline may *request* visuals; it must never assume
-   they exist.
+   every beat in `producer_outline.json` has a `beat_coverage` entry with no
+   `critical_gap` among them. The file's mere existence gates nothing — the CLI
+   creates it as a `pending` stub at init. Coverage is planned per beat against that
+   beat's runtime (`beat_coverage[].target_visual_sec`, normally the beat's
+   `estimated_narration_sec`), not per individual `visual_request` — see
+   `agents/agent_b_archive_visual_editor.md`. The outline's `visual_requests` are
+   search hints for Agent B, not a per-request checklist; the outline may *request*
+   visuals, it must never assume they exist.
 5. **Final narration language comes from channel config.** `final_script.json`'s
    `output_language` must match the channel's `output_language`, snapshotted onto
    `episode_brief.json` at init time. Localization happens inside A4 as natural

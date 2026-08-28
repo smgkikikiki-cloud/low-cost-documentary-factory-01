@@ -18,13 +18,17 @@ Checks (all topic-independent -- nothing here knows about any specific episode):
     values are unique and beat_id-consistent; beat count against the 5-8
     story-density guidance (warning only -- not a hard rule)
   - estimated_runtime_sec against the channel's runtime_policy, if both exist
-  - the A4 gate: whether asset_inventory.status + request_coverage currently
-    permit Agent A's A4 stage (informational -- False is a normal, correct state
-    before Agent B has run)
+  - the A4 gate (beat-centric, B-DISCOVER V0): whether asset_inventory.status +
+    beat_coverage currently permit Agent A's A4 stage -- every producer_outline.json
+    beat has exactly one beat_coverage entry, coverage_ratio matches
+    planned_visual_sec/target_visual_sec, coverage_status matches the V0 thresholds
+    (sufficient >= 0.90, partial >= 0.60, critical_gap < 0.60), and allocations
+    reference real asset_ids (informational -- False is a normal, correct state
+    before Agent B has run). request_coverage, if present, is optional/secondary and
+    only checked for its own internal consistency (found_*/not_found vs asset_ids)
   - asset_inventory.json: exact_subject_match=true requires
-    verification_method=visually_inspected; usable_start_sec/usable_end_sec only
-    on visually_inspected assets; found_exact/found_partial/context_only carry
-    at least one asset_id, not_found carries none
+    verification_method=visually_inspected; usable_start_sec/usable_end_sec only on
+    visually_inspected assets and usable_end_sec must exceed usable_start_sec
 
 Exits nonzero only on hard ERRORs. WARNINGs are printed but don't fail the run --
 they flag things worth a human/Agent-A look, not necessarily defects.
@@ -265,23 +269,63 @@ def validate_runtime(po: dict, episode_brief: dict, report: Report) -> None:
         report.warn("estimated_runtime_sec is exactly 480 -- verify this was actually estimated, not left at an old default")
 
 
-def validate_a4_gate(ai: dict, req_ids: list, report: Report) -> bool:
-    covered = {c.get("request_id") for c in ai.get("request_coverage", [])}
-    missing = [r for r in req_ids if r not in covered]
+def validate_a4_gate(ai: dict, beats: list, report: Report) -> bool:
+    """Beat-centric A4 gate (B-DISCOVER V0): coverage is planned per beat against
+    that beat's estimated_narration_sec, not per visual_request. See
+    schemas/asset_inventory.json's beat_coverage and agents/agent_b_archive_visual_editor.md.
+    """
+    asset_ids = {a.get("asset_id") for a in ai.get("assets", [])}
+    beat_ids = [b.get("beat_id") for b in beats]
+    coverage_by_beat = {c.get("beat_id"): c for c in ai.get("beat_coverage", [])}
+
+    missing = [bid for bid in beat_ids if bid not in coverage_by_beat]
+    extra = [bid for bid in coverage_by_beat if bid not in beat_ids]
+    if extra:
+        report.error(f"asset_inventory: beat_coverage references beat_id(s) not in producer_outline.json: {extra}")
+
+    critical_gaps = []
+    for bid, cov in coverage_by_beat.items():
+        target = cov.get("target_visual_sec")
+        planned = cov.get("planned_visual_sec")
+        ratio = cov.get("coverage_ratio")
+        status = cov.get("coverage_status")
+
+        if target is not None and target > 0 and planned is not None and ratio is not None:
+            expected_ratio = planned / target
+            if abs(ratio - expected_ratio) > 0.01:
+                report.error(
+                    f"asset_inventory: beat_coverage[{bid!r}].coverage_ratio={ratio} does not match "
+                    f"planned_visual_sec/target_visual_sec={expected_ratio:.3f}"
+                )
+        elif target == 0 and ratio != 1.0:
+            report.warn(f"asset_inventory: beat_coverage[{bid!r}] has target_visual_sec=0, expected coverage_ratio=1.0")
+
+        if ratio is not None:
+            expected_status = "sufficient" if ratio >= 0.90 else "partial" if ratio >= 0.60 else "critical_gap"
+            if status != expected_status:
+                report.error(
+                    f"asset_inventory: beat_coverage[{bid!r}] coverage_status={status!r} doesn't match "
+                    f"coverage_ratio={ratio} (expected {expected_status!r} per V0 thresholds)"
+                )
+
+        if status == "critical_gap":
+            critical_gaps.append(bid)
+        elif not cov.get("allocations"):
+            report.error(f"asset_inventory: beat_coverage[{bid!r}] has status={status!r} but no allocations")
+
+        for alloc in cov.get("allocations", []):
+            aid = alloc.get("asset_id")
+            if aid not in asset_ids:
+                report.error(f"asset_inventory: beat_coverage[{bid!r}] allocation references missing asset_id {aid!r}")
+
     status_ok = ai.get("status") in ("gathered", "approved")
-    gate_open = status_ok and not missing
+    gate_open = status_ok and not missing and not critical_gaps
     report.note(
         f"A4 gate: asset_inventory.status={ai.get('status')!r}, "
-        f"{len(missing)}/{len(req_ids)} visual_requests uncovered -> A4 permitted = {gate_open}"
+        f"{len(missing)}/{len(beat_ids)} beats uncovered, {len(critical_gaps)} critical_gap beat(s) "
+        f"-> A4 permitted = {gate_open}"
     )
-    for coverage in ai.get("request_coverage", []):
-        status = coverage.get("coverage_status")
-        asset_ids = coverage.get("asset_ids") or []
-        rid = coverage.get("request_id")
-        if status == "not_found" and asset_ids:
-            report.error(f"asset_inventory: request {rid!r} is not_found but lists asset_ids {asset_ids}")
-        if status in ("found_exact", "found_partial", "context_only") and not asset_ids:
-            report.error(f"asset_inventory: request {rid!r} is {status!r} but lists no asset_ids")
+
     for asset in ai.get("assets", []):
         aid = asset.get("asset_id")
         if asset.get("exact_subject_match") and asset.get("verification_method") != "visually_inspected":
@@ -293,6 +337,18 @@ def validate_a4_gate(ai: dict, req_ids: list, report: Report) -> bool:
             "usable_start_sec" in asset or "usable_end_sec" in asset
         ):
             report.error(f"asset_inventory: asset {aid!r} has usable timestamps but was not visually_inspected")
+        start, end = asset.get("usable_start_sec"), asset.get("usable_end_sec")
+        if start is not None and end is not None and end <= start:
+            report.error(f"asset_inventory: asset {aid!r} has usable_end_sec ({end}) <= usable_start_sec ({start})")
+
+    for coverage in ai.get("request_coverage", []) or []:
+        status = coverage.get("coverage_status")
+        rids = coverage.get("asset_ids") or []
+        rid = coverage.get("request_id")
+        if status == "not_found" and rids:
+            report.error(f"asset_inventory: request {rid!r} is not_found but lists asset_ids {rids}")
+        if status in ("found_exact", "found_partial", "context_only") and not rids:
+            report.error(f"asset_inventory: request {rid!r} is {status!r} but lists no asset_ids")
 
     return gate_open
 
@@ -308,7 +364,8 @@ def validate_status_transitions(fp: dict, po: dict, fs: dict, gate_open: bool, r
     if fs_has_content and not gate_open:
         report.error(
             "final_script.json has content (status != pending or non-empty blocks) but the A-FINAL gate "
-            "is not open -- asset_inventory.status must be gathered/approved with full request_coverage first"
+            "is not open -- asset_inventory.status must be gathered/approved with every beat covered and "
+            "no critical_gap beats in beat_coverage first"
         )
 
 
@@ -344,7 +401,7 @@ def main() -> int:
         if brief_path.exists():
             validate_runtime(po, load(brief_path), report)
         if ai_path.exists():
-            gate_open = validate_a4_gate(ai, req_ids, report)
+            gate_open = validate_a4_gate(ai, po.get("beats", []), report)
 
     if fp_path.exists() and po_path.exists():
         validate_status_transitions(fp, po, fs, gate_open, report)
