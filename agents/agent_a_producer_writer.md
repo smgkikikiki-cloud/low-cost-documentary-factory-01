@@ -115,6 +115,18 @@ A-FINAL is an editor, not a fact-pack serializer.
   process. Narrate uncertainty only when it's itself historically interesting (e.g.
   "accounts differ over who proposed it") -- and even then, use the minimum hedge
   ("reportedly" / "around" / "one account says"), never a paragraph about method.
+- **Write idiomatic native `output_language`, not literal translation.** Don't
+  preserve English sentence structure, word order, or phrase-for-phrase mapping when
+  it sounds unnatural in the target language. Use the vocabulary a native narrator in
+  that language would actually reach for -- plain and clear over literal. Before
+  finalizing each paragraph, silently reread it as spoken `output_language`; if a
+  sentence sounds translated, malformed, duplicated, or grammatically foreign,
+  rewrite it without changing its factual meaning. This self-check happens inside
+  this same A-FINAL invocation -- it never justifies a second model call. Never
+  invent, strengthen, or add a fact just to make the prose read better; only wording
+  may change. Watch especially for duplicated bilingual fragments or malformed
+  mixed-language phrases (an English term left half-translated, a word repeated in
+  two languages).
 
 ## Validation
 
