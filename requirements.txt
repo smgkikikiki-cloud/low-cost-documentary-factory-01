@@ -1,0 +1,6 @@
+# Python dependencies for the script-first documentary production pipeline.
+# ffmpeg, ffprobe, and yt-dlp are external command-line tools, not Python packages --
+# they are checked (not installed) by `python run_episode.py preflight`.
+
+edge-tts
+jsonschema

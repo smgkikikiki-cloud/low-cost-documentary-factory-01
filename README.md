@@ -8,14 +8,19 @@ master script. This repository turns that locked script into a finished video:
 
 - **Deterministic ingestion** (`scripts/ingest_script.py`) — no LLM — turns
   `master_script.md` into `script_manifest.json`.
-- **TTS** (not yet built) renders each block's narration and its *measured* duration
-  becomes `tts_manifest.json`.
+- **TTS** (`scripts/tts_render.py`, edge-tts) renders each block's narration and its
+  *measured* duration becomes `tts_manifest.json`.
 - **Claude — B-DISCOVER/B-EDIT** (`agents/agent_b_archive_visual_editor.md`) finds and
   verifies real archival visuals against the locked narration
-  (`asset_inventory.json`), then assembles a concrete, deterministic timeline
+  (`asset_inventory.json`, using `scripts/media_search.py`/`media_download.py`/
+  `media_probe.py`), then assembles a concrete, deterministic timeline
   (`edit_plan.json`). Claude decides only what is shown and how — never what is said.
-- **FFmpeg renderer** (not yet built) executes `edit_plan.json` exactly, with no
-  remaining creative decisions.
+- **FFmpeg renderer** (`scripts/render_episode.py`) executes `edit_plan.json`
+  exactly, with no remaining creative decisions.
+
+Claude Code itself performs B-DISCOVER and B-EDIT by reading/writing the JSON files
+directly — there is no separate orchestrator invoking a model. Everything else above
+is real, deterministic Python.
 
 Episode state is just JSON files on disk — see `CLAUDE.md` for the full pipeline and
 invariants, and `schemas/` for the shape of each file.
@@ -40,17 +45,37 @@ per-request checklist.
 ## Layout
 
 ```
-episodes/               one folder per episode (created by `ingest`)
+episodes/<id>/          master_script.md, script_manifest.json, tts_manifest.json,
+                         asset_inventory.json, edit_plan.json, + audio/ media/ render/
+                         temp/ (gitignored -- see .gitignore)
 agents/                 the one active Claude production role spec (B-DISCOVER/B-EDIT)
-config/channels/        minimal per-channel identity (channel_id, output_language)
+config/channels/        minimal per-channel identity (channel_id, output_language, tts)
 schemas/                JSON Schema for every active episode state file
-scripts/ingest_script.py   deterministic master_script.md -> script_manifest.json
-scripts/media_probe.py     deterministic ffprobe/ffmpeg helper
+scripts/ingest_script.py     deterministic master_script.md -> script_manifest.json
+scripts/preflight.py         checks ffmpeg/ffprobe/yt-dlp/edge-tts/jsonschema on PATH
+scripts/tts_render.py        edge-tts narration renderer, one file per block
+scripts/media_search.py      yt-dlp candidate metadata search (no download)
+scripts/media_download.py    download one selected video or direct-URL asset
+scripts/media_probe.py       deterministic ffprobe/ffmpeg helper (probe, contact sheets)
+scripts/render_episode.py    the real FFmpeg renderer -> render/final.mp4
 scripts/validate_episode.py  deterministic cross-file validator
+scripts/episode_paths.py     the one shared episode-local directory layout
 asset_library/          minimal flat-file convention for cross-episode asset reuse
 run_episode.py          CLI
 legacy/                 the retired pre-script-first architecture -- see legacy/README.md
 ```
+
+## Setup
+
+Required external tools on PATH: `ffmpeg`, `ffprobe`, `yt-dlp`.
+
+```bash
+pip install -r requirements.txt
+python run_episode.py preflight
+```
+
+`preflight` reports READY/MISSING for each component with an install hint — it never
+installs anything for you.
 
 ## Usage
 
@@ -58,15 +83,27 @@ legacy/                 the retired pre-script-first architecture -- see legacy/
 python run_episode.py ingest --channel ForeignCarsTH \
     --topic "Jeep Wrangler YJ" \
     --script /path/to/master_script.md
+
+python run_episode.py tts ForeignCarsTH_jeep-wrangler-yj
+
+# Claude performs B-DISCOVER (writes asset_inventory.json)
+# Claude performs B-EDIT (writes edit_plan.json)
+
+python run_episode.py validate ForeignCarsTH_jeep-wrangler-yj
+python run_episode.py render ForeignCarsTH_jeep-wrangler-yj
+python run_episode.py status ForeignCarsTH_jeep-wrangler-yj
 ```
 
-This creates `episodes/ForeignCarsTH_jeep-wrangler-yj/` containing a verbatim copy of
-the master script, its deterministically-parsed `script_manifest.json`, and empty
+`ingest` creates `episodes/ForeignCarsTH_jeep-wrangler-yj/` containing a verbatim copy
+of the master script, its deterministically-parsed `script_manifest.json`, and empty
 (`status: "pending"`) stubs for `tts_manifest.json`, `asset_inventory.json`, and
-`edit_plan.json`, ready for TTS and then Claude's B-DISCOVER to pick up.
+`edit_plan.json`. `status` reports the next incomplete stage (`SCRIPT INGESTED` /
+`TTS REQUIRED` / `B-DISCOVER REQUIRED` / `B-EDIT REQUIRED` / `READY TO RENDER` /
+`RENDERED`) by reading the episode's own JSON files.
 
-To add a new channel, add `config/channels/<channel_id>.json` with `channel_id` and
-`output_language`.
+To add a new channel, add `config/channels/<channel_id>.json` with `channel_id`,
+`output_language`, and a `tts` block (`provider`, `voice`, `rate`, `pitch`,
+`volume`).
 
 ## What moved to `legacy/`
 

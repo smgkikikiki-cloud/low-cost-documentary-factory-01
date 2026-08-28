@@ -137,23 +137,19 @@ def parse_master_script(raw_text: str):
     return title, optional_deck, blocks
 
 
-def ingest(
-    script_path: Path,
-    episode_dir: Path,
-    episode_id: str,
-    channel_id: str,
-    language: str,
-    topic: str = None,
-) -> dict:
-    """Reads script_path, copies it verbatim into episode_dir, and writes/returns
-    the script_manifest dict. Does not write the file itself -- caller decides where
-    (keeps this function testable without touching disk beyond the verbatim copy).
+def parse_and_validate(script_path: Path):
+    """Reads and parses script_path WITHOUT touching any episode directory.
+
+    Call this BEFORE creating an episode directory: it's the only part of ingestion
+    that can fail on malformed input (no H1 title, no narration paragraphs), so
+    doing it first means a bad script never leaves a half-created, poisoned episode
+    directory blocking a later retry with the same episode_id.
+
+    Returns (raw_bytes, script_sha256, title, optional_deck, blocks) where blocks
+    already have block_id assigned, in order. Raises SystemExit on malformed input.
     """
     raw_bytes = script_path.read_bytes()
     script_sha256 = hashlib.sha256(raw_bytes).hexdigest()
-
-    dest_script_path = episode_dir / "master_script.md"
-    dest_script_path.write_bytes(raw_bytes)  # verbatim byte-for-byte copy, never re-serialized
 
     raw_text = raw_bytes.decode("utf-8")
     title, optional_deck, parsed_blocks = parse_master_script(raw_text)
@@ -172,6 +168,29 @@ def ingest(
             "narration_text": b["narration_text"],
             "source_refs": b["source_refs"],
         })
+
+    return raw_bytes, script_sha256, title, optional_deck, blocks
+
+
+def write_episode_files(
+    episode_dir: Path,
+    raw_bytes: bytes,
+    script_sha256: str,
+    title: str,
+    optional_deck: str,
+    blocks: list,
+    episode_id: str,
+    channel_id: str,
+    language: str,
+    topic: str = None,
+) -> dict:
+    """Writes master_script.md verbatim into episode_dir and returns the
+    script_manifest dict (caller writes script_manifest.json itself). Assumes
+    episode_dir already exists and parse_and_validate already succeeded -- this
+    function itself should not raise on the content, only on disk/IO problems.
+    """
+    dest_script_path = episode_dir / "master_script.md"
+    dest_script_path.write_bytes(raw_bytes)  # verbatim byte-for-byte copy, never re-serialized
 
     manifest = {
         "episode_id": episode_id,
@@ -192,6 +211,29 @@ def ingest(
     return manifest
 
 
+def ingest(
+    script_path: Path,
+    episode_dir: Path,
+    episode_id: str,
+    channel_id: str,
+    language: str,
+    topic: str = None,
+) -> dict:
+    """Convenience wrapper: parse_and_validate + write_episode_files, for simple
+    callers where episode_dir is only created immediately before calling this (the
+    CLI below). A caller managing atomicity across MULTIPLE files (like
+    run_episode.py's `ingest` command, which also writes pending stubs) should call
+    parse_and_validate() itself first and only create the episode directory after
+    that succeeds -- see run_episode.py.
+    """
+    raw_bytes, script_sha256, title, optional_deck, blocks = parse_and_validate(script_path)
+    episode_dir.mkdir(parents=True, exist_ok=True)
+    return write_episode_files(
+        episode_dir, raw_bytes, script_sha256, title, optional_deck, blocks,
+        episode_id, channel_id, language, topic,
+    )
+
+
 def _main() -> int:
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     parser.add_argument("--script", required=True, help="Path to master_script.md")
@@ -203,8 +245,8 @@ def _main() -> int:
     args = parser.parse_args()
 
     episode_dir = Path(args.episode_dir)
-    episode_dir.mkdir(parents=True, exist_ok=True)
-
+    # ingest() itself calls parse_and_validate() before ever touching episode_dir,
+    # so a malformed script fails here without creating/poisoning the directory.
     manifest = ingest(
         script_path=Path(args.script),
         episode_dir=episode_dir,

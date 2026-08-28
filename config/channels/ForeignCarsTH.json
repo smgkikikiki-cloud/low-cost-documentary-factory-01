@@ -1,4 +1,11 @@
 {
   "channel_id": "ForeignCarsTH",
-  "output_language": "th"
+  "output_language": "th",
+  "tts": {
+    "provider": "edge-tts",
+    "voice": "th-TH-NiwatNeural",
+    "rate": "+0%",
+    "pitch": "+0Hz",
+    "volume": "+0%"
+  }
 }

@@ -169,6 +169,23 @@ def validate_tts_manifest(tts: dict, sm_blocks: dict, report: Report):
     return durations, complete
 
 
+def _num(value):
+    """Returns value if it's a real, usable number (int/float, not bool), else None.
+
+    Every arithmetic/comparison site below reads a value out of a JSON file this
+    validator does not control -- a malformed episode could contain
+    duration_sec: null, duration_sec: "abc", or similar. jsonschema (if installed)
+    catches most of this, but this validator must not crash with a Python
+    TypeError/ValueError even when jsonschema isn't installed. Coercing through
+    this helper turns a bad value into a reported ERROR instead of a stack trace.
+    """
+    if isinstance(value, bool):
+        return None
+    if isinstance(value, (int, float)):
+        return value
+    return None
+
+
 def _expected_coverage_status(ratio: float) -> str:
     if ratio >= 0.90:
         return "sufficient"
@@ -213,15 +230,27 @@ def validate_block_coverage_gate(ai: dict, sm_blocks: dict, tts_durations: dict,
 
     for e in entries:
         bid = e.get("block_id")
-        target = e.get("target_visual_sec")
-        planned = e.get("planned_visual_sec")
-        ratio = e.get("coverage_ratio")
+        target_raw, planned_raw, ratio_raw = e.get("target_visual_sec"), e.get("planned_visual_sec"), e.get("coverage_ratio")
+        target, planned, ratio = _num(target_raw), _num(planned_raw), _num(ratio_raw)
         status = e.get("coverage_status")
         allocations = e.get("allocations", [])
 
-        measured = tts_durations.get(bid)
-        if measured is not None:
-            if target != measured:
+        if target_raw is not None and target is None:
+            report.error(f"asset_inventory: block_coverage[{bid!r}].target_visual_sec is not a number: {target_raw!r}")
+        if planned_raw is not None and planned is None:
+            report.error(f"asset_inventory: block_coverage[{bid!r}].planned_visual_sec is not a number: {planned_raw!r}")
+        if ratio_raw is not None and ratio is None:
+            report.error(f"asset_inventory: block_coverage[{bid!r}].coverage_ratio is not a number: {ratio_raw!r}")
+
+        measured_raw = tts_durations.get(bid)
+        measured = _num(measured_raw)
+        if measured_raw is not None:
+            if measured is None:
+                report.error(
+                    f"asset_inventory: block_coverage[{bid!r}] cannot verify target_visual_sec -- tts_manifest's "
+                    f"duration_sec for this block is not a number: {measured_raw!r}"
+                )
+            elif target is not None and target != measured:
                 report.error(
                     f"asset_inventory: block_coverage[{bid!r}].target_visual_sec={target} does not match "
                     f"tts_manifest's measured duration_sec={measured} for this block"
@@ -229,15 +258,33 @@ def validate_block_coverage_gate(ai: dict, sm_blocks: dict, tts_durations: dict,
         elif bid in sm_blocks:
             report.warn(
                 f"asset_inventory: block_coverage[{bid!r}] has no matching measured duration in tts_manifest.json "
-                f"yet -- target_visual_sec={target!r} cannot be verified"
+                f"yet -- target_visual_sec={target_raw!r} cannot be verified"
             )
 
-        alloc_sum = sum(a.get("planned_sec") or 0 for a in allocations)
-        if planned is None or abs(planned - alloc_sum) > RATIO_TOLERANCE:
-            report.error(
-                f"asset_inventory: block_coverage[{bid!r}].planned_visual_sec={planned} does not equal "
-                f"sum(allocations[].planned_sec)={alloc_sum}"
-            )
+        alloc_sum = 0.0
+        alloc_sum_reliable = True
+        for a in allocations:
+            ps_raw = a.get("planned_sec")
+            ps = _num(ps_raw)
+            if ps is None:
+                alloc_sum_reliable = False
+                report.error(
+                    f"asset_inventory: block_coverage[{bid!r}] allocation for asset {a.get('asset_id')!r} has "
+                    f"non-numeric planned_sec: {ps_raw!r}"
+                )
+            else:
+                alloc_sum += ps
+        if alloc_sum_reliable:
+            if planned is None:
+                report.error(
+                    f"asset_inventory: block_coverage[{bid!r}].planned_visual_sec={planned_raw!r} does not equal "
+                    f"sum(allocations[].planned_sec)={alloc_sum}"
+                )
+            elif abs(planned - alloc_sum) > RATIO_TOLERANCE:
+                report.error(
+                    f"asset_inventory: block_coverage[{bid!r}].planned_visual_sec={planned} does not equal "
+                    f"sum(allocations[].planned_sec)={alloc_sum}"
+                )
 
         if target is not None and target > 0 and planned is not None:
             expected_ratio = planned / target
@@ -270,7 +317,7 @@ def validate_block_coverage_gate(ai: dict, sm_blocks: dict, tts_durations: dict,
                 continue
 
             seg_id = alloc.get("segment_id")
-            planned_sec = alloc.get("planned_sec") or 0
+            alloc_planned = _num(alloc.get("planned_sec"))
             if asset.get("asset_type") == "video":
                 if not seg_id:
                     report.error(
@@ -284,12 +331,14 @@ def validate_block_coverage_gate(ai: dict, sm_blocks: dict, tts_durations: dict,
                             f"not found on asset {aid!r}"
                         )
                     else:
-                        seg_dur = (seg.get("end_sec") or 0) - (seg.get("start_sec") or 0)
-                        if planned_sec > seg_dur + RATIO_TOLERANCE:
-                            report.error(
-                                f"asset_inventory: block_coverage[{bid!r}] allocation planned_sec={planned_sec} exceeds "
-                                f"segment {seg_id!r}'s own duration={seg_dur} on asset {aid!r}"
-                            )
+                        seg_end, seg_start = _num(seg.get("end_sec")), _num(seg.get("start_sec"))
+                        if seg_end is not None and seg_start is not None and alloc_planned is not None:
+                            seg_dur = seg_end - seg_start
+                            if alloc_planned > seg_dur + RATIO_TOLERANCE:
+                                report.error(
+                                    f"asset_inventory: block_coverage[{bid!r}] allocation planned_sec={alloc_planned} "
+                                    f"exceeds segment {seg_id!r}'s own duration={seg_dur} on asset {aid!r}"
+                                )
             elif seg_id:
                 report.error(
                     f"asset_inventory: block_coverage[{bid!r}] allocation references segment_id on non-video "
@@ -337,15 +386,24 @@ def validate_block_coverage_gate(ai: dict, sm_blocks: dict, tts_durations: dict,
             report.error(f"asset_inventory: asset {aid!r} has usable_segments but was not visually_inspected")
         if segments and asset.get("asset_type") != "video":
             report.error(f"asset_inventory: asset {aid!r} has usable_segments but asset_type is not video")
-        duration = asset.get("duration_sec")
+        duration_raw = asset.get("duration_sec")
+        duration = _num(duration_raw)
+        if duration_raw is not None and duration is None:
+            report.error(f"asset_inventory: asset {aid!r} has non-numeric duration_sec: {duration_raw!r}")
         for seg in segments:
-            s0, s1 = seg.get("start_sec"), seg.get("end_sec")
+            s0_raw, s1_raw = seg.get("start_sec"), seg.get("end_sec")
+            s0, s1 = _num(s0_raw), _num(s1_raw)
             sid = seg.get("segment_id")
+            if s0_raw is not None and s0 is None:
+                report.error(f"asset_inventory: asset {aid!r} segment {sid!r} has non-numeric start_sec: {s0_raw!r}")
+            if s1_raw is not None and s1 is None:
+                report.error(f"asset_inventory: asset {aid!r} segment {sid!r} has non-numeric end_sec: {s1_raw!r}")
             if s0 is None or s1 is None or s1 <= s0:
-                report.error(f"asset_inventory: asset {aid!r} segment {sid!r} has invalid range [{s0}, {s1}]")
-            if s0 is not None and s0 < 0:
+                report.error(f"asset_inventory: asset {aid!r} segment {sid!r} has invalid range [{s0_raw}, {s1_raw}]")
+                continue
+            if s0 < 0:
                 report.error(f"asset_inventory: asset {aid!r} segment {sid!r} has negative start_sec {s0}")
-            if duration is not None and s1 is not None and s1 > duration + RATIO_TOLERANCE:
+            if duration is not None and s1 > duration + RATIO_TOLERANCE:
                 report.error(
                     f"asset_inventory: asset {aid!r} segment {sid!r} end_sec={s1} exceeds asset duration_sec={duration}"
                 )
@@ -370,16 +428,27 @@ def validate_edit_plan(ep: dict, sm_blocks: dict, ai: dict, tts_durations: dict,
 
     # Cumulative per-block timeline window, walked in script_manifest.json's own
     # block order (never tts_manifest's array order). Only meaningful once every
-    # block has been measured.
+    # block has been measured with genuinely numeric durations.
     block_window = {}
     total_narration_duration = None
     if tts_complete:
         cum = 0.0
+        durations_reliable = True
         for bid in sm_blocks:
-            dur = tts_durations.get(bid)
+            dur = _num(tts_durations.get(bid))
+            if dur is None:
+                report.error(
+                    f"edit_plan: cannot compute the narration timeline -- tts_manifest's duration_sec for "
+                    f"block {bid!r} is not a number: {tts_durations.get(bid)!r}"
+                )
+                durations_reliable = False
+                break
             block_window[bid] = (cum, cum + dur)
             cum += dur
-        total_narration_duration = cum
+        if durations_reliable:
+            total_narration_duration = cum
+        else:
+            block_window = {}
 
     prev_end = None
     for i, c in enumerate(clips):
@@ -388,8 +457,10 @@ def validate_edit_plan(ep: dict, sm_blocks: dict, ai: dict, tts_durations: dict,
         aid = c.get("asset_id")
         seg_id = c.get("segment_id")
         still = c.get("still_treatment")
-        t0, t1 = c.get("timeline_start_sec"), c.get("timeline_end_sec")
-        s0, s1 = c.get("source_start_sec"), c.get("source_end_sec")
+        t0_raw, t1_raw = c.get("timeline_start_sec"), c.get("timeline_end_sec")
+        s0_raw, s1_raw = c.get("source_start_sec"), c.get("source_end_sec")
+        t0, t1 = _num(t0_raw), _num(t1_raw)
+        s0, s1 = _num(s0_raw), _num(s1_raw)
 
         if bid not in sm_blocks:
             report.error(f"edit_plan: clip {cid!r} references missing block_id {bid!r}")
@@ -397,18 +468,26 @@ def validate_edit_plan(ep: dict, sm_blocks: dict, ai: dict, tts_durations: dict,
         if asset is None:
             report.error(f"edit_plan: clip {cid!r} references missing asset_id {aid!r}")
 
+        if t0_raw is not None and t0 is None:
+            report.error(f"edit_plan: clip {cid!r} has non-numeric timeline_start_sec: {t0_raw!r}")
+        if t1_raw is not None and t1 is None:
+            report.error(f"edit_plan: clip {cid!r} has non-numeric timeline_end_sec: {t1_raw!r}")
         if t0 is None or t1 is None or t1 <= t0:
-            report.error(f"edit_plan: clip {cid!r} has invalid timeline range [{t0}, {t1}]")
-        if prev_end is not None and t0 is not None and t0 < prev_end - TIMELINE_TOLERANCE:
+            report.error(f"edit_plan: clip {cid!r} has invalid timeline range [{t0_raw}, {t1_raw}]")
+            # Without a usable [t0, t1], the ordering/gap/window checks below can't
+            # run meaningfully for this clip -- skip them rather than crash or emit
+            # a cascade of meaningless comparisons against None.
+            continue
+
+        if prev_end is not None and t0 < prev_end - TIMELINE_TOLERANCE:
             report.error(
                 f"edit_plan: clip {cid!r} timeline_start_sec={t0} overlaps the previous clip's "
                 f"timeline_end_sec={prev_end} -- clips must not overlap"
             )
-        if i == 0 and t0 is not None and total_narration_duration is not None and abs(t0 - 0.0) > TIMELINE_TOLERANCE:
+        if i == 0 and total_narration_duration is not None and abs(t0 - 0.0) > TIMELINE_TOLERANCE:
             report.error(f"edit_plan: first clip {cid!r} starts at timeline_start_sec={t0}, expected ~0")
         if (
             prev_end is not None
-            and t0 is not None
             and total_narration_duration is not None
             and t0 > prev_end + TIMELINE_TOLERANCE
         ):
@@ -416,8 +495,7 @@ def validate_edit_plan(ep: dict, sm_blocks: dict, ai: dict, tts_durations: dict,
                 f"edit_plan: gap in visual coverage between {prev_end} and {t0} (clip {cid!r}) -- the timeline "
                 f"must be continuously covered"
             )
-        if t1 is not None:
-            prev_end = t1 if prev_end is None else max(prev_end, t1)
+        prev_end = t1 if prev_end is None else max(prev_end, t1)
 
         if seg_id and still:
             report.error(f"edit_plan: clip {cid!r} has both segment_id and still_treatment -- a clip is one or the other")
@@ -434,18 +512,24 @@ def validate_edit_plan(ep: dict, sm_blocks: dict, ai: dict, tts_durations: dict,
                         report.error(
                             f"edit_plan: clip {cid!r} references segment_id {seg_id!r} not found on asset {aid!r}"
                         )
+                    elif s0_raw is not None and s0 is None:
+                        report.error(f"edit_plan: clip {cid!r} has non-numeric source_start_sec: {s0_raw!r}")
+                    elif s1_raw is not None and s1 is None:
+                        report.error(f"edit_plan: clip {cid!r} has non-numeric source_end_sec: {s1_raw!r}")
                     elif s0 is None or s1 is None:
                         report.error(f"edit_plan: clip {cid!r} is a video clip but missing source_start_sec/source_end_sec")
                     else:
                         if s1 <= s0:
                             report.error(f"edit_plan: clip {cid!r} has source_end_sec ({s1}) <= source_start_sec ({s0})")
-                        seg_start, seg_end = seg.get("start_sec"), seg.get("end_sec")
-                        if s0 < seg_start - RATIO_TOLERANCE or s1 > seg_end + RATIO_TOLERANCE:
+                        seg_start, seg_end = _num(seg.get("start_sec")), _num(seg.get("end_sec"))
+                        if seg_start is not None and seg_end is not None and (
+                            s0 < seg_start - RATIO_TOLERANCE or s1 > seg_end + RATIO_TOLERANCE
+                        ):
                             report.error(
                                 f"edit_plan: clip {cid!r} source range [{s0}, {s1}] falls outside usable_segment "
                                 f"{seg_id!r}'s range [{seg_start}, {seg_end}]"
                             )
-                        if t0 is not None and t1 is not None and s1 is not None and s0 is not None:
+                        if s1 > s0:
                             timeline_dur = t1 - t0
                             source_dur = s1 - s0
                             if abs(timeline_dur - source_dur) > DURATION_MATCH_TOLERANCE:
@@ -454,7 +538,7 @@ def validate_edit_plan(ep: dict, sm_blocks: dict, ai: dict, tts_durations: dict,
                                     f"source duration ({source_dur:.2f}s) -- no playback-rate changes, looping, or "
                                     f"freeze-frame extension in V0"
                                 )
-            elif seg_id or s0 is not None or s1 is not None:
+            elif seg_id or s0_raw is not None or s1_raw is not None:
                 report.error(
                     f"edit_plan: clip {cid!r} uses non-video asset {aid!r} but sets segment_id/source_start_sec/"
                     f"source_end_sec, which only apply to video"
@@ -462,7 +546,7 @@ def validate_edit_plan(ep: dict, sm_blocks: dict, ai: dict, tts_durations: dict,
 
         if bid in block_window:
             b0, b1 = block_window[bid]
-            if t0 is not None and t1 is not None and (t0 < b0 - TIMELINE_TOLERANCE or t1 > b1 + TIMELINE_TOLERANCE):
+            if t0 < b0 - TIMELINE_TOLERANCE or t1 > b1 + TIMELINE_TOLERANCE:
                 report.error(
                     f"edit_plan: clip {cid!r} timeline range [{t0}, {t1}] falls outside its block {bid!r}'s "
                     f"actual narration window [{b0:.2f}, {b1:.2f}] per tts_manifest.json"

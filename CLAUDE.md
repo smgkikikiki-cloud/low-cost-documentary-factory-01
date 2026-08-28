@@ -20,9 +20,9 @@ doesn't, anymore. See "Who does what" below.**
 |---|---|---|
 | **Upstream OpenAI writer** | Outside this repository | Research, sourcing, thesis, story selection, pacing, structure, final Thai narration. Input: a vehicle/topic name + hook. Output: one locked `master_script.md`. |
 | **Deterministic ingestion** | `scripts/ingest_script.py` | Turns `master_script.md` into `script_manifest.json`. No LLM. |
-| **TTS** | Not yet built | Renders each block's narration to audio; its measured duration becomes `tts_manifest.json`. |
+| **TTS** | `scripts/tts_render.py` (edge-tts) | Renders each block's narration to audio; its measured duration becomes `tts_manifest.json`. |
 | **Claude (B-DISCOVER / B-EDIT)** | `agents/agent_b_archive_visual_editor.md` | Finds and verifies real visual material (`asset_inventory.json`), then assembles it into a concrete timeline (`edit_plan.json`). Decides only what is shown and how, never what is said. |
-| **FFmpeg renderer** | Not yet built | Executes `edit_plan.json` exactly. No creative decisions. |
+| **FFmpeg renderer** | `scripts/render_episode.py` | Executes `edit_plan.json` exactly. No creative decisions. |
 
 Once `master_script.md` is ingested, its narration is **editorially locked**. Claude
 must never rewrite it, summarize it, improve its Thai, change its thesis, reorder its
@@ -43,7 +43,7 @@ master_script.md                      -- written upstream, supplied externally
     |  deterministic ingestion (scripts/ingest_script.py, no LLM)
     v
 script_manifest.json                  -- locked narration, source_refs as hints
-    |  TTS (not yet built)
+    |  TTS (scripts/tts_render.py, edge-tts)
     v
 tts_manifest.json                     -- MEASURED per-block audio duration
     |  Claude -- B-DISCOVER
@@ -52,7 +52,7 @@ asset_inventory.json                  -- real, verified visual material
     |  Claude -- B-EDIT
     v
 edit_plan.json                        -- complete, deterministic visual timeline
-    |  FFmpeg renderer (not yet built)
+    |  FFmpeg renderer (scripts/render_episode.py)
     v
 final.mp4
 ```
@@ -141,26 +141,45 @@ has the full production detail; this list is the index.
 - `agents/agent_b_archive_visual_editor.md` — the one active Claude production
   role spec (B-DISCOVER / B-EDIT modes).
 - `config/channels/<channel_id>.json` — minimal per-channel identity
-  (`channel_id`, `output_language`). Editorial defaults (research/working
-  language, narration register, target audience, runtime policy, act structure)
-  belonged to the retired pipeline and are not part of this repository's
-  responsibility anymore — see `legacy/`.
+  (`channel_id`, `output_language`, `tts` voice config). Editorial defaults
+  (research/working language, narration register, target audience, runtime
+  policy, act structure) belonged to the retired pipeline and are not part of
+  this repository's responsibility anymore — see `legacy/`.
 - `schemas/` — JSON Schema (draft-07) for every active episode state file
   (`script_manifest.json`, `tts_manifest.json`, `asset_inventory.json`,
   `edit_plan.json`). Validate against these before handing off between stages.
-- `run_episode.py` — CLI. One command: `ingest`.
+- `run_episode.py` — CLI: `preflight`, `ingest`, `tts`, `validate`, `render`,
+  `status`.
 - `scripts/ingest_script.py` — deterministic, LLM-free `master_script.md` →
-  `script_manifest.json` converter.
+  `script_manifest.json` converter. Atomic: a malformed script fails before any
+  episode directory is created.
+- `scripts/preflight.py` — checks ffmpeg/ffprobe/yt-dlp/edge-tts/jsonschema
+  availability on THIS machine's PATH at runtime; never installs anything.
+- `scripts/tts_render.py` — real edge-tts renderer: one audio file per
+  `script_manifest.json` block, real measured `duration_sec` via
+  `media_probe.probe()`, resumable, atomic `tts_manifest.json` writes that only
+  ever claim `status: "generated"` when every block genuinely rendered.
+- `scripts/media_search.py` / `scripts/media_download.py` — yt-dlp candidate
+  metadata search (no download), and download of one selected video or one
+  selected direct-URL asset. Claude decides what to search for and select; these
+  only execute the fetch.
 - `scripts/media_probe.py` — deterministic ffprobe/ffmpeg helper: `probe()` for
   duration/dimensions/fps/codec (video or audio), `coarse_contact_sheet()` /
   `fine_contact_sheet()` for adaptive-interval frame sampling so Claude can
   honestly inspect a long video without watching every frame.
+- `scripts/render_episode.py` — the real FFmpeg renderer: validates first,
+  concatenates narration audio in `script_manifest.json` block order, normalizes
+  every clip to 1920x1080/30fps/H.264 with letterbox/pillarbox (never crop),
+  implements the five `still_treatment` values, muxes to `render/final.mp4`.
 - `scripts/validate_episode.py` — deterministic validator for one episode: schema
-  shape (if `jsonschema` is installed; skipped with a note otherwise) plus
+  shape (if `jsonschema` is installed; skipped with a note otherwise, and the
+  cross-file checks never crash on a malformed non-numeric value either way) plus
   cross-file/reference checks no schema can express (block-reference integrity,
   the block-coverage gate and its `overall_effective_coverage` arithmetic,
   segment-bounds checks, and `edit_plan.json`'s continuous-coverage/
   duration-match checks). Topic-independent; no episode-specific logic.
+- `scripts/episode_paths.py` — the one shared definition of the episode-local
+  media layout (`audio/`, `media/raw/`, `media/inspection/`, `render/`, `temp/`).
 - `asset_library/` — minimal flat-file convention (`index.json` + `media/`) for
   reusing visual assets cheaply across episodes. No database, no vector store.
 - `legacy/` — the retired pre-script-first architecture (Agent A spec, its
@@ -170,12 +189,25 @@ has the full production detail; this list is the index.
 ## CLI
 
 ```bash
+python run_episode.py preflight
 python run_episode.py ingest --channel <channel_id> --topic "<topic>" --script <path/to/master_script.md>
+python run_episode.py tts <episode_id>
+# Claude performs B-DISCOVER (writes asset_inventory.json)
+# Claude performs B-EDIT (writes edit_plan.json)
+python run_episode.py validate <episode_id>
+python run_episode.py render <episode_id>
+python run_episode.py status <episode_id>
 ```
 
-Looks up `config/channels/<channel_id>.json`, creates
+`ingest` looks up `config/channels/<channel_id>.json`, creates
 `episodes/<channel_id>_<topic-slug>/`, copies `master_script.md` in verbatim,
 deterministically parses it into `script_manifest.json`, and writes empty
 (`status: pending`) stubs for `tts_manifest.json`, `asset_inventory.json`, and
 `edit_plan.json`. No quirk, no fact pack, no producer outline, no Agent A state —
-those belonged to the retired architecture.
+those belonged to the retired architecture. `status` derives the next incomplete
+stage (`SCRIPT INGESTED` / `TTS REQUIRED` / `B-DISCOVER REQUIRED` / `B-EDIT
+REQUIRED` / `READY TO RENDER` / `RENDERED`) by reading the JSON files directly —
+there is no separate state machine.
+
+Media (`audio/`, `media/`, `render/`, `temp/` under each episode directory) is
+gitignored — only the small JSON/text state files are tracked.

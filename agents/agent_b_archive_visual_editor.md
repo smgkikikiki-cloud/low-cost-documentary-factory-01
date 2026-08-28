@@ -4,12 +4,18 @@
 + `tts_manifest.json` + `asset_inventory.json` (B-EDIT)
 **Writes:** `asset_inventory.json` (B-DISCOVER), then `edit_plan.json` (B-EDIT)
 
-**Not yet implemented.** Only this specification and the JSON Schema data contracts
-(`schemas/asset_inventory.json`, `schemas/tts_manifest.json`, `schemas/edit_plan.json`)
-exist so far. Actual searching, downloading, TTS rendering, and video trimming have
-not been built. `scripts/media_probe.py` is real, runnable deterministic tooling, but
-has not yet been exercised against a real video in this environment (no `ffmpeg`
-installed here) -- see its own docstring.
+**The execution layer is now real, runnable code**, invoked either directly or via
+`run_episode.py`: `scripts/media_search.py` (yt-dlp candidate metadata),
+`scripts/media_download.py` (selected-video and direct-asset download),
+`scripts/media_probe.py` (probe/contact-sheets), `scripts/tts_render.py` (narration
+audio), `scripts/render_episode.py` (the FFmpeg renderer), and
+`scripts/validate_episode.py` (the deterministic validator). None of it has been
+exercised against a real episode in this development environment (`ffmpeg`,
+`ffprobe`, and `yt-dlp` are not installed here -- see `python run_episode.py
+preflight`); the canonical execution environment is wherever those are actually on
+PATH. **What is not automated, by design:** B-DISCOVER and B-EDIT themselves are not
+Python code -- they are this Claude Code session's own judgment, using the tools
+above. See **Operational workflow** below for exactly how.
 
 One agent, two modes -- not two agents:
 
@@ -262,18 +268,50 @@ discovery-is-not-verification rule above.
   is an error. `critical_gap` is an honest, complete answer for a block that
   genuinely couldn't be covered -- it's a failure to hide, not a failure to report.
 
-### Search efficiency
+### Operational workflow (executable)
 
-1. Reuse already-available local material first (see **Local reuse** below, and each
-   asset's `reusable` flag).
-2. Search externally only for the block's remaining coverage gap.
-3. Inspect promising candidates (`media_probe.py`) before accepting them.
-4. Download and select useful assets/segments; record the allocation.
-5. Stop once the block's coverage is `sufficient` (or a reasonable `partial`).
+This is the concrete, run-it-yourself version of B-DISCOVER, block by block:
+
+1. **Read the inputs.** `script_manifest.json` (locked narration, block order) and
+   `tts_manifest.json` (must be `status: "generated"` -- run
+   `python run_episode.py tts <episode_id>` first if it isn't). Also skim
+   `asset_library/index.json` for anything already tagged/reusable from a past
+   episode.
+2. **Derive search subjects from the LOCKED block narration** -- read
+   `block.narration_text` (never invent a subject the block doesn't actually
+   discuss) and its `source_refs` (hints only, per **Responsibility boundary**
+   above).
+3. **Reuse first.** Check `asset_library/index.json` and any assets already in this
+   episode's `asset_inventory.json` (`reusable: true`) before searching externally.
+4. **Search candidates:**
+   `python scripts/media_search.py "<query>" --max-results 5` -- yt-dlp metadata
+   only, nothing downloaded yet. Read the JSON it prints (title, duration, uploader,
+   thumbnail, description) to judge which candidates are worth a closer look.
+5. **Download only the selected candidate(s):**
+   `python scripts/media_download.py video "<url>" --out-dir episodes/<id>/media/raw`
+   for a promising video, or
+   `python scripts/media_download.py asset "<url>" --out-dir episodes/<id>/media/raw`
+   for a known-good direct image/PDF/brochure URL. Never mass-download search
+   results speculatively.
+6. **Inspect it honestly:**
+   `python scripts/media_probe.py probe <path>` for `duration_sec`/dimensions, then
+   `python scripts/media_probe.py contact-sheet <path> --out-dir episodes/<id>/media/inspection`
+   for a coarse full-video pass, then a `--start S --end E` fine pass around any
+   window that looks promising. Actually look at the extracted frames before
+   recording anything -- see **Discovery is not verification**.
+7. **Record honestly** in `asset_inventory.json`: the asset (with real
+   `verification_method`/`exact_subject_match`), its `usable_segments` (only for
+   frames actually viewed), and the block's `block_coverage` allocation.
+8. **Run the validator:** `python run_episode.py validate <episode_id>` (or `-q` for
+   errors/warnings only) after each meaningful update -- it catches the mechanical
+   contract violations (ratio math, segment bounds, honest `relevance: exact`, ...)
+   deterministically, before you've moved on.
+9. **Continue searching only where coverage is still insufficient** for that block
+   -- see **Episode stop condition** below for when to stop entirely.
 
 Don't keep searching for a prettier or more exact asset once a block already has
 sufficient coverage, unless a critical `exact` visual is genuinely missing and
-necessary. Don't mass-download search results speculatively.
+necessary.
 
 ### Episode stop condition
 
@@ -350,6 +388,33 @@ trigger a new B-DISCOVER search merely because of minor rounding; it fits the
 existing asset pool to the exact measured timeline first. Only a future, explicit
 fallback mechanism (not built in this task) should return to discovery if a genuine,
 otherwise-uncoverable gap turns up.
+
+### Operational workflow (executable)
+
+1. Read `script_manifest.json`, `tts_manifest.json`, and `asset_inventory.json`
+   directly. **Do not search the web during B-EDIT** -- all material must already be
+   in `asset_inventory.json` from B-DISCOVER.
+2. Walk the blocks in `script_manifest.json`'s order, accumulating cumulative
+   timing from `tts_manifest.json`'s measured `duration_sec` per block (block N
+   starts exactly where block N-1 ended).
+3. For each block, place its `block_coverage[].allocations` as ordered `clips[]`
+   entries covering that block's timeline window: pick `[source_start_sec,
+   source_end_sec]` subranges of each allocation's `usable_segments` entry (for
+   video) sized to fill the clip's `timeline_start_sec`/`timeline_end_sec` duration
+   exactly (see **No playback-rate creativity** below), or a `still_treatment` for
+   a still/document allocation.
+4. Write the complete `edit_plan.json`, then run
+   `python run_episode.py validate <episode_id>` -- it mechanically checks clip
+   ordering/continuity, segment-range containment, and the timeline/source
+   duration match. Fix and re-validate until it's clean.
+5. **If a genuine asset shortage makes a valid full timeline impossible** (e.g. a
+   block's allocated material can't be arranged to exactly fill its measured
+   duration without a gap), report the gap rather than faking coverage -- do not
+   invent a playback-rate change, a loop, or a freeze-frame to paper over it (all
+   forbidden in V0). This V0 does not build an autonomous return-to-B-DISCOVER
+   loop; surface the shortfall for a human or a subsequent B-DISCOVER pass instead.
+6. Once `validate` is clean, `python run_episode.py render <episode_id>` executes
+   it.
 
 ### Two timelines, never conflated
 
@@ -432,6 +497,7 @@ discovery time is the ceiling for how a clip may be presented, not a suggestion.
 ## Out of scope
 
 Writing narration (belongs entirely to the upstream OpenAI writer, outside this
-repository), the actual TTS rendering system, video rendering itself (the
-deterministic FFmpeg renderer executes `edit_plan.json`), computer-vision/embeddings/
-scene-detection of any kind, a media database or vector store.
+repository); Claude invoking a model recursively (`scripts/tts_render.py`'s
+edge-tts call and `scripts/render_episode.py`'s FFmpeg calls are deterministic
+code, not another Claude); computer-vision/embeddings/scene-detection of any kind;
+a media database or vector store.

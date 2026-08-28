@@ -69,8 +69,7 @@
             "type": "string",
             "enum": ["static", "slow_zoom_in", "slow_zoom_out", "pan_left", "pan_right"],
             "description": "Stills/documents only -- a clip with this set must not carry segment_id/source_start_sec/source_end_sec. Deliberately small enum, not a motion-graphics system. The renderer executes exactly this, it does not choose."
-          },
-          "caption_text": { "type": "string" }
+          }
         }
       }
     }

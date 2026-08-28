@@ -1,2 +1,9 @@
 __pycache__/
 *.pyc
+
+# Downloaded/rendered media is large and non-deterministic to regenerate byte-for-
+# byte -- keep only the small JSON/text state files under episodes/ in git.
+episodes/*/audio/
+episodes/*/media/
+episodes/*/render/
+episodes/*/temp/
