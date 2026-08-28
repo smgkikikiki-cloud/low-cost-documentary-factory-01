@@ -1,0 +1,49 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "asset_inventory.schema.json",
+  "title": "AssetInventory",
+  "description": "Agent B's (Archive/Visual Editor) list of archival visuals gathered/needed for the episode's beats.",
+  "type": "object",
+  "required": ["episode_id", "status", "assets"],
+  "additionalProperties": false,
+  "properties": {
+    "episode_id": {
+      "type": "string"
+    },
+    "status": {
+      "type": "string",
+      "enum": ["pending", "gathered", "approved"],
+      "default": "pending"
+    },
+    "assets": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["asset_id", "beat_id", "type", "query", "status"],
+        "additionalProperties": false,
+        "properties": {
+          "asset_id": { "type": "string" },
+          "beat_id": {
+            "type": "string",
+            "description": "References a beat_id from producer_outline.json"
+          },
+          "type": {
+            "type": "string",
+            "enum": ["image", "video_clip", "document"]
+          },
+          "query": {
+            "type": "string",
+            "description": "Search terms used to locate this asset in the archive"
+          },
+          "source": { "type": "string" },
+          "license": { "type": "string" },
+          "local_path": { "type": "string" },
+          "status": {
+            "type": "string",
+            "enum": ["needed", "found", "rejected"]
+          }
+        }
+      }
+    }
+  }
+}

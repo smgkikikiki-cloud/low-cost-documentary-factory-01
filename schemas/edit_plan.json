@@ -1,0 +1,42 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "edit_plan.schema.json",
+  "title": "EditPlan",
+  "description": "The deterministic, machine-executable timeline handed to the renderer (FFmpeg/Remotion). Generated from final_script.json + asset_inventory.json, no further creative decisions left to make.",
+  "type": "object",
+  "required": ["episode_id", "status", "clips"],
+  "additionalProperties": false,
+  "properties": {
+    "episode_id": {
+      "type": "string"
+    },
+    "status": {
+      "type": "string",
+      "enum": ["pending", "planned", "rendered"],
+      "default": "pending"
+    },
+    "clips": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["clip_id", "scene_id", "asset_id", "start_sec", "end_sec"],
+        "additionalProperties": false,
+        "properties": {
+          "clip_id": { "type": "string" },
+          "scene_id": {
+            "type": "string",
+            "description": "References a scene_id from final_script.json"
+          },
+          "asset_id": {
+            "type": "string",
+            "description": "References an asset_id from asset_inventory.json"
+          },
+          "start_sec": { "type": "number", "minimum": 0 },
+          "end_sec": { "type": "number", "minimum": 0 },
+          "narration_audio_path": { "type": "string" },
+          "caption_text": { "type": "string" }
+        }
+      }
+    }
+  }
+}

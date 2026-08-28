@@ -1,0 +1,41 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "final_script.schema.json",
+  "title": "FinalScript",
+  "description": "The locked narration script, merging producer_outline.json beats with asset_inventory.json visuals. Last human/agent-editable artifact before the deterministic renderer takes over.",
+  "type": "object",
+  "required": ["episode_id", "status", "scenes"],
+  "additionalProperties": false,
+  "properties": {
+    "episode_id": {
+      "type": "string"
+    },
+    "status": {
+      "type": "string",
+      "enum": ["pending", "drafted", "locked"],
+      "default": "pending"
+    },
+    "scenes": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["scene_id", "beat_id", "narration_text"],
+        "additionalProperties": false,
+        "properties": {
+          "scene_id": { "type": "string" },
+          "beat_id": {
+            "type": "string",
+            "description": "References a beat_id from producer_outline.json"
+          },
+          "narration_text": { "type": "string" },
+          "asset_ids": {
+            "type": "array",
+            "items": { "type": "string" },
+            "description": "References asset_id values from asset_inventory.json"
+          },
+          "duration_sec": { "type": "number", "minimum": 0 }
+        }
+      }
+    }
+  }
+}

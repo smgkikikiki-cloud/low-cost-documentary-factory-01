@@ -1,0 +1,42 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "producer_outline.schema.json",
+  "title": "ProducerOutline",
+  "description": "Agent A's (Producer/Writer) structural plan for the episode, produced from episode_brief.json.",
+  "type": "object",
+  "required": ["episode_id", "status", "thesis", "beats"],
+  "additionalProperties": false,
+  "properties": {
+    "episode_id": {
+      "type": "string"
+    },
+    "status": {
+      "type": "string",
+      "enum": ["pending", "drafted", "approved"],
+      "default": "pending"
+    },
+    "thesis": {
+      "type": "string",
+      "description": "The one-sentence argument/story the episode is built around"
+    },
+    "estimated_runtime_sec": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "beats": {
+      "type": "array",
+      "description": "Ordered narrative beats making up the episode",
+      "items": {
+        "type": "object",
+        "required": ["beat_id", "summary"],
+        "additionalProperties": false,
+        "properties": {
+          "beat_id": { "type": "string" },
+          "summary": { "type": "string" },
+          "narration_notes": { "type": "string" },
+          "visual_notes": { "type": "string" }
+        }
+      }
+    }
+  }
+}
