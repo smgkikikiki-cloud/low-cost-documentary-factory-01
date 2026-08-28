@@ -19,9 +19,41 @@
       "type": "string",
       "description": "The one-sentence argument/story the episode is built around"
     },
+    "hook": {
+      "type": "string",
+      "description": "The cold-open line(s) meant to grab attention before the thesis unfolds"
+    },
     "estimated_runtime_sec": {
       "type": "integer",
       "minimum": 0
+    },
+    "key_factual_claims": {
+      "type": "array",
+      "description": "Factual claims the episode relies on, each traceable to a source, so later stages can verify or cite them",
+      "items": {
+        "type": "object",
+        "required": ["claim_id", "claim", "source_url"],
+        "additionalProperties": false,
+        "properties": {
+          "claim_id": { "type": "string" },
+          "claim": { "type": "string" },
+          "relevant_beats": {
+            "type": "array",
+            "items": { "type": "string" },
+            "description": "beat_id values this claim supports"
+          },
+          "source_url": { "type": "string" },
+          "note": {
+            "type": "string",
+            "description": "Caveats about source reliability, e.g. an unconfirmed secondary citation"
+          }
+        }
+      }
+    },
+    "open_questions": {
+      "type": "array",
+      "description": "Unresolved research questions Agent B or later research should try to answer",
+      "items": { "type": "string" }
     },
     "beats": {
       "type": "array",
