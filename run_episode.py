@@ -1,18 +1,28 @@
 #!/usr/bin/env python3
-"""CLI for the documentary content factory.
+"""CLI for the script-first documentary production repository.
 
 Usage:
-    python run_episode.py init --channel ForeignCarsTH \\
-        --topic "Cadillac Cimarron" \\
-        --quirk "Cadillac's infamous attempt to turn the GM J-car into a luxury compact"
+    python run_episode.py ingest --channel ForeignCarsTH \\
+        --topic "Jeep Wrangler YJ" \\
+        --script /path/to/master_script.md
+
+An upstream OpenAI writer researches the topic and produces a complete, editorially
+locked Thai master script OUTSIDE this repository. `ingest` is the entry point into
+production: it creates the episode directory, preserves master_script.md verbatim,
+deterministically parses it into script_manifest.json (no LLM), and creates pending
+stubs for the files production fills in next (tts_manifest.json, asset_inventory.json,
+edit_plan.json). There is no quirk, fact_pack, or producer_outline in this pipeline --
+those belonged to the retired pre-script-first architecture (see legacy/).
 """
 import argparse
 import hashlib
 import json
 import re
 import sys
-from datetime import datetime, timezone
 from pathlib import Path
+
+sys.path.insert(0, str(Path(__file__).resolve().parent / "scripts"))
+import ingest_script  # noqa: E402
 
 ROOT = Path(__file__).resolve().parent
 EPISODES_DIR = ROOT / "episodes"
@@ -24,8 +34,8 @@ def slugify(text: str) -> str:
 
     Latin text slugifies normally. Non-Latin scripts (Thai, Japanese, Cyrillic, ...)
     have no ASCII form here, so rather than collapsing to an empty string we fall
-    back to a short hash of the original topic -- deterministic, so re-running init
-    with the same topic still resolves to the same episode folder.
+    back to a short hash of the original topic -- deterministic, so re-running
+    ingest with the same topic still resolves to the same episode folder.
     """
     slug = re.sub(r"[^a-z0-9]+", "-", text.strip().lower()).strip("-")
     if slug:
@@ -43,62 +53,38 @@ def load_channel(channel_id: str) -> dict:
     return json.loads(channel_path.read_text())
 
 
-def init_episode(channel_id: str, topic: str, quirk: str) -> Path:
+def ingest_episode(channel_id: str, topic: str, script_path: Path) -> Path:
     channel = load_channel(channel_id)
     episode_id = f"{channel_id}_{slugify(topic)}"
     episode_dir = EPISODES_DIR / episode_id
 
     if episode_dir.exists():
         raise SystemExit(f"Episode folder already exists: {episode_dir.relative_to(ROOT)}")
+    if not script_path.exists():
+        raise SystemExit(f"No such script file: {script_path}")
 
     episode_dir.mkdir(parents=True)
 
-    episode_brief = {
-        "episode_id": episode_id,
-        "channel_id": channel_id,
-        "research_language": channel["research_language"],
-        "working_language": channel["working_language"],
-        "output_language": channel["output_language"],
-        "narration_register": channel["narration_register"],
-        "topic": topic,
-        "quirk": quirk,
-        "target_audience": channel["target_audience"],
-        "created_at": datetime.now(timezone.utc).isoformat(),
-        # The CLI populates every brief field from the channel config and the
-        # command line, so the brief is complete on creation -- there is no further
-        # authoring step before Agent A can pick it up.
-        "status": "ready_for_producer",
-    }
-    _write(episode_dir / "episode_brief.json", episode_brief)
+    manifest = ingest_script.ingest(
+        script_path=script_path,
+        episode_dir=episode_dir,
+        episode_id=episode_id,
+        channel_id=channel_id,
+        language=channel["output_language"],
+        topic=topic,
+    )
+    _write(episode_dir / "script_manifest.json", manifest)
 
-    _write(episode_dir / "fact_pack.json", {
+    _write(episode_dir / "tts_manifest.json", {
         "episode_id": episode_id,
         "status": "pending",
-        "research_language": channel["research_language"],
-        "working_language": channel["working_language"],
-        "quirk_lead": {
-            "text": quirk,
-            "note": "Research lead only -- not a verified fact. Must not be assumed as the thesis until supported by claims in this fact pack.",
-        },
-        "claims": [],
-    })
-    _write(episode_dir / "producer_outline.json", {
-        "episode_id": episode_id,
-        "status": "pending",
-        "thesis": "",
-        "beats": [],
+        "blocks": [],
     })
     _write(episode_dir / "asset_inventory.json", {
         "episode_id": episode_id,
         "status": "pending",
         "assets": [],
-        "beat_coverage": [],
-    })
-    _write(episode_dir / "final_script.json", {
-        "episode_id": episode_id,
-        "output_language": channel["output_language"],
-        "status": "pending",
-        "blocks": [],
+        "block_coverage": [],
     })
     _write(episode_dir / "edit_plan.json", {
         "episode_id": episode_id,
@@ -114,19 +100,22 @@ def _write(path: Path, data: dict) -> None:
 
 
 def main() -> None:
-    parser = argparse.ArgumentParser(description="Documentary content factory CLI")
+    parser = argparse.ArgumentParser(description="Script-first documentary production CLI")
     subparsers = parser.add_subparsers(dest="command", required=True)
 
-    init_parser = subparsers.add_parser("init", help="Initialize a new episode folder")
-    init_parser.add_argument("--channel", required=True, help="Channel ID, e.g. ForeignCarsTH")
-    init_parser.add_argument("--topic", required=True, help="Episode topic")
-    init_parser.add_argument("--quirk", required=True, help="Episode quirk/angle")
+    ingest_parser = subparsers.add_parser(
+        "ingest",
+        help="Ingest a locked upstream master script and start a new production episode",
+    )
+    ingest_parser.add_argument("--channel", required=True, help="Channel ID, e.g. ForeignCarsTH")
+    ingest_parser.add_argument("--topic", required=True, help="Episode topic (record-keeping only)")
+    ingest_parser.add_argument("--script", required=True, help="Path to the locked master_script.md")
 
     args = parser.parse_args()
 
-    if args.command == "init":
-        episode_dir = init_episode(args.channel, args.topic, args.quirk)
-        print(f"Initialized episode at {episode_dir.relative_to(ROOT)}")
+    if args.command == "ingest":
+        episode_dir = ingest_episode(args.channel, args.topic, Path(args.script))
+        print(f"Ingested episode at {episode_dir.relative_to(ROOT)}")
         for f in sorted(episode_dir.iterdir()):
             print(f"  {f.relative_to(ROOT)}")
 

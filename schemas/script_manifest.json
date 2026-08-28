@@ -1,0 +1,75 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "script_manifest.schema.json",
+  "title": "ScriptManifest",
+  "description": "Deterministic ingestion output of an externally-authored, EDITORIALLY LOCKED Thai master script (master_script.md, produced upstream by an OpenAI writer -- research, sourcing, thesis, story selection, pacing, structure, and final Thai prose are all decided before this repository ever sees the script). Produced once by scripts/ingest_script.py, with NO LLM involved, and never rewritten -- narration_text in each block is verbatim from the upstream script except for trailing citation-link markup, which is moved to source_refs so TTS never reads a URL aloud. This file is now the sole editorial source of truth for what gets spoken. Claude's production work (B-DISCOVER/B-EDIT) begins after this file exists and must not alter its narration_text, reorder its blocks, or add/remove facts -- Claude decides only what is shown, never what is said.",
+  "type": "object",
+  "required": ["episode_id", "channel_id", "script_sha256", "title", "language", "status", "source_script_path", "blocks"],
+  "additionalProperties": false,
+  "properties": {
+    "episode_id": { "type": "string" },
+    "channel_id": { "type": "string" },
+    "topic": {
+      "type": "string",
+      "description": "The vehicle/topic name originally supplied to the upstream writer. Record-keeping only -- never used to drive any editorial decision in this repository."
+    },
+    "script_sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$",
+      "description": "SHA-256 of master_script.md's raw bytes at ingestion time, so any downstream artifact (TTS audio, asset_inventory, edit_plan) can be proven to trace back to this exact locked script."
+    },
+    "title": {
+      "type": "string",
+      "description": "From the master script's first Markdown H1."
+    },
+    "optional_deck": {
+      "type": "string",
+      "description": "A single italic line immediately under the H1, if present and unambiguous -- metadata, not a spoken block."
+    },
+    "language": {
+      "type": "string",
+      "description": "Snapshot of the channel's output_language at ingestion time, e.g. 'th'."
+    },
+    "status": {
+      "type": "string",
+      "enum": ["locked"],
+      "default": "locked",
+      "description": "Always locked. A master script is only ever ingested once fully authored upstream -- there is no draft/in-progress state for this file in this repository."
+    },
+    "source_script_path": {
+      "type": "string",
+      "description": "Path (relative to the episode directory) to the verbatim copy of master_script.md preserved alongside this file."
+    },
+    "created_at": { "type": "string" },
+    "blocks": {
+      "type": "array",
+      "minItems": 1,
+      "description": "Deterministic paragraph-level blocks, in the master script's own order. Block formation is mechanical (blank-line-separated paragraphs) -- this file does not invent story beats, acts, or structure the upstream script didn't already have.",
+      "items": {
+        "type": "object",
+        "required": ["block_id", "narration_text", "source_refs"],
+        "additionalProperties": false,
+        "properties": {
+          "block_id": { "type": "string" },
+          "narration_text": {
+            "type": "string",
+            "description": "Verbatim spoken prose for this block, with only trailing citation-link markup removed. Never rewritten, summarized, translated, corrected, or improved by Claude -- if it reads awkwardly, that is an upstream editorial matter, out of scope here."
+          },
+          "source_refs": {
+            "type": "array",
+            "description": "Citation-style links found at the end of this block's paragraph, extracted so TTS never reads a URL aloud. Hints/provenance for Claude's visual research only -- never a fact-check gate; Claude does not re-verify the upstream writer's claims before producing visuals.",
+            "items": {
+              "type": "object",
+              "required": ["label", "url"],
+              "additionalProperties": false,
+              "properties": {
+                "label": { "type": "string" },
+                "url": { "type": "string" }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

@@ -2,7 +2,7 @@
   "$schema": "http://json-schema.org/draft-07/schema#",
   "$id": "tts_manifest.schema.json",
   "title": "TTSManifest",
-  "description": "Minimal contract letting B-EDIT know the ACTUAL narration timing of each final_script.json block. Produced by a TTS generation step that sits between A-FINAL and B-EDIT and is not yet built -- this file defines only the data contract. TTS timing is measured, not estimated: duration_sec must come from probing the rendered audio file (e.g. scripts/media_probe.py's probe()), never copied from final_script.json's estimated_duration_sec. B-EDIT computes each block's position on the final timeline deterministically as a running sum over final_script.json's block order: block N starts where block N-1 ended.",
+  "description": "The MEASURED (never estimated) narration timing for script_manifest.json's blocks. Produced by a TTS rendering step (not yet built -- this file defines only the data contract) that runs AFTER script ingestion and BEFORE B-DISCOVER: since the master script is already complete and locked, there is no outline-estimate intermediary anymore -- B-DISCOVER plans visual coverage directly against real audio duration. duration_sec must come from probing the actual rendered audio file (e.g. scripts/media_probe.py's probe()), never copied or guessed from anywhere else. B-EDIT computes each block's position on the final documentary timeline deterministically as a running sum over script_manifest.json's own block order: block N starts exactly where block N-1 ended.",
   "type": "object",
   "required": ["episode_id", "status", "blocks"],
   "additionalProperties": false,
@@ -12,11 +12,11 @@
       "type": "string",
       "enum": ["pending", "generated"],
       "default": "pending",
-      "description": "pending: no audio rendered yet. generated: at least one block's audio has been rendered and measured -- does not require every final_script.json block to be present here yet."
+      "description": "pending: audio not fully rendered yet (zero or partial blocks present is normal). generated: EVERY script_manifest.json block has exactly one measured entry here -- a partial set must not use this status. B-DISCOVER/B-EDIT treat production as not-yet-ready until this is generated; the validator enforces full block coverage whenever this is set."
     },
     "blocks": {
       "type": "array",
-      "description": "One entry per final_script.json block whose narration audio has been rendered. Entries may appear in any order -- B-EDIT looks each one up by block_id and reconstructs cumulative timing from final_script.json's own block order, not from this array's order.",
+      "description": "One entry per script_manifest.json block whose narration audio has been rendered and measured. Entries may appear in any order -- lookups are by block_id; cumulative timing is reconstructed from script_manifest.json's own block order, not this array's order.",
       "items": {
         "type": "object",
         "required": ["block_id", "audio_path", "duration_sec"],
@@ -24,7 +24,7 @@
         "properties": {
           "block_id": {
             "type": "string",
-            "description": "References a block_id from final_script.json"
+            "description": "References a block_id from script_manifest.json"
           },
           "audio_path": {
             "type": "string",
@@ -33,7 +33,7 @@
           "duration_sec": {
             "type": "number",
             "minimum": 0,
-            "description": "MEASURED duration of audio_path -- e.g. via scripts/media_probe.py's probe(). Never an estimate copied from final_script.json."
+            "description": "MEASURED duration of audio_path -- e.g. via scripts/media_probe.py's probe(). Never an estimate."
           }
         }
       }

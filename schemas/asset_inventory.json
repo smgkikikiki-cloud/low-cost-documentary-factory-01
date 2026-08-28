@@ -2,9 +2,9 @@
   "$schema": "http://json-schema.org/draft-07/schema#",
   "$id": "asset_inventory.schema.json",
   "title": "AssetInventory",
-  "description": "Agent B's (Archive/Visual Editor) B-DISCOVER output: real discovered assets plus beat-level coverage planning against producer_outline.json. Central rule: DISCOVERY IS NOT VERIFICATION -- finding a plausible search result is not the same as having looked at the thing. Coverage is beat-centric: beat_coverage[].target_visual_sec is copied directly from producer_outline.json's beat.estimated_narration_sec (Agent B's visual workload budget for that beat), not a per-visual_request checklist -- visual_requests remain advisory search hints only. A single long source video may contain multiple non-contiguous useful regions; each is recorded as its own usable_segments[] entry rather than one start/end pair per asset -- see agents/agent_b_archive_visual_editor.md.",
+  "description": "Claude's B-DISCOVER output: real discovered visual assets plus block-level coverage planning against script_manifest.json. Central rule: DISCOVERY IS NOT VERIFICATION -- finding a plausible search result is not the same as having looked at the thing. Coverage is block-centric: block_coverage[].target_visual_sec is the corresponding block's MEASURED duration_sec from tts_manifest.json (never an estimate) -- there is no outline/beat intermediary in this pipeline. A single long source video may contain multiple non-contiguous useful regions; each is its own usable_segments[] entry rather than one start/end pair per asset. See agents/agent_b_archive_visual_editor.md.",
   "type": "object",
-  "required": ["episode_id", "status", "assets", "beat_coverage"],
+  "required": ["episode_id", "status", "assets", "block_coverage"],
   "additionalProperties": false,
   "properties": {
     "episode_id": {
@@ -14,7 +14,7 @@
       "type": "string",
       "enum": ["pending", "gathered", "approved"],
       "default": "pending",
-      "description": "pending: Agent B has not run. gathered: every producer_outline.json beat has exactly one beat_coverage entry, none is critical_gap, and overall_effective_coverage (see agents/agent_a_producer_writer.md's A-FINAL gate) is >= 0.90. approved: reviewed. Agent A's A4 stage is gated on this reaching gathered or approved."
+      "description": "pending: B-DISCOVER has not run. gathered: every script_manifest.json block has exactly one block_coverage entry, none is critical_gap, and overall_effective_coverage (see agents/agent_b_archive_visual_editor.md) is >= 0.90. approved: reviewed. B-EDIT is gated on this reaching gathered or approved."
     },
     "environment_limitations": {
       "type": "array",
@@ -24,7 +24,7 @@
     },
     "assets": {
       "type": "array",
-      "description": "Every real asset discovered, regardless of which beat(s) use it. The same asset may be allocated to multiple beats via beat_coverage[].allocations -- store it once here. Downloading the source file never trims or overwrites it: usable_segments records permitted RANGES within the intact original, it does not cut it.",
+      "description": "Every real asset discovered, regardless of which block(s) use it. The same asset may be allocated to multiple blocks via block_coverage[].allocations -- store it once here. Downloading the source file never trims or overwrites it: usable_segments records permitted RANGES within the intact original, it does not cut it.",
       "items": {
         "type": "object",
         "required": [
@@ -61,7 +61,8 @@
           },
           "asset_type": {
             "type": "string",
-            "enum": ["video", "photo", "advertisement", "brochure", "document", "magazine_scan", "map", "chart", "contextual_video"]
+            "enum": ["video", "photo", "advertisement", "brochure", "document", "magazine_scan", "map", "chart"],
+            "description": "There is exactly ONE video type. 'Contextual' is not a media type -- it is expressed via an allocation's relevance: contextual instead (see block_coverage[].allocations[].relevance). A contextual video is still asset_type: video."
           },
           "subject": { "type": "string" },
           "description": {
@@ -76,7 +77,7 @@
           "access_status": {
             "type": "string",
             "enum": ["read_full", "read_partial", "search_snippet_only", "unavailable"],
-            "description": "How much of the source was actually reached, mirroring fact_pack.json's source access semantics"
+            "description": "How much of the source was actually reached."
           },
           "verification_method": {
             "type": "string",
@@ -98,7 +99,7 @@
               "properties": {
                 "segment_id": {
                   "type": "string",
-                  "description": "Unique across the ENTIRE asset_inventory.json (not just within this asset), e.g. 'asset_014_s1'. Referenced by beat_coverage[].allocations[].segment_id and later by edit_plan.json clips."
+                  "description": "Unique across the ENTIRE asset_inventory.json (not just within this asset), e.g. 'asset_014_s1'. Referenced by block_coverage[].allocations[].segment_id and later by edit_plan.json clips."
                 },
                 "start_sec": { "type": "number", "minimum": 0 },
                 "end_sec": {
@@ -121,19 +122,19 @@
           },
           "reusable": {
             "type": "boolean",
-            "description": "Whether this asset (or its segments) is generic/flexible enough to reasonably allocate to more than one beat (e.g. a contextual factory shot or a period logo), as opposed to something that only makes sense for the one beat it was found for."
+            "description": "Whether this asset (or its segments) is generic/flexible enough to reasonably allocate to more than one block (e.g. a contextual factory shot or a period logo), as opposed to something that only makes sense for the one block it was found for. See asset_library/ for cross-episode reuse."
           },
           "notes": { "type": "string" }
         }
       }
     },
-    "beat_coverage": {
+    "block_coverage": {
       "type": "array",
-      "description": "PRIMARY coverage contract. Exactly one entry per beat in producer_outline.json's beats array -- a beat with no entry, or more than one entry, is an error. target_visual_sec must equal the outline beat's estimated_narration_sec when the outline provides one.",
+      "description": "PRIMARY coverage contract. Exactly one entry per block in script_manifest.json's blocks array -- a block with no entry, or more than one entry, is an error. target_visual_sec must equal that block's measured duration_sec from tts_manifest.json.",
       "items": {
         "type": "object",
         "required": [
-          "beat_id",
+          "block_id",
           "target_visual_sec",
           "planned_visual_sec",
           "coverage_ratio",
@@ -142,20 +143,14 @@
         ],
         "additionalProperties": false,
         "properties": {
-          "beat_id": {
+          "block_id": {
             "type": "string",
-            "description": "References a beat_id from producer_outline.json"
-          },
-          "act": {
-            "type": "integer",
-            "minimum": 1,
-            "maximum": 4,
-            "description": "Optional. Mirrors the beat's act in producer_outline.json when the channel uses an act_structure. Not required."
+            "description": "References a block_id from script_manifest.json"
           },
           "target_visual_sec": {
             "type": "number",
             "minimum": 0,
-            "description": "The visual workload budget for this beat. MUST equal producer_outline.json's beat.estimated_narration_sec when the outline provides one -- Agent B may not lower this to make coverage easier. Only when the outline beat genuinely has no estimated_narration_sec may Agent B set its own reasonable value, and it must then explain the fallback in notes."
+            "description": "The visual workload budget for this block. MUST equal tts_manifest.json's measured duration_sec for this block_id -- there is no estimate to fall back to in this pipeline; TTS must be measured before this is meaningful."
           },
           "planned_visual_sec": {
             "type": "number",
@@ -170,11 +165,11 @@
           "coverage_status": {
             "type": "string",
             "enum": ["sufficient", "partial", "critical_gap"],
-            "description": "V0 planning thresholds against coverage_ratio: sufficient >= 0.90, partial >= 0.60 and < 0.90, critical_gap < 0.60. Simple planning guidance, not a scoring system. Per-beat status alone does not open the A-FINAL gate -- see agents/agent_a_producer_writer.md for the episode-level overall_effective_coverage requirement."
+            "description": "V0 planning thresholds against coverage_ratio: sufficient >= 0.90, partial >= 0.60 and < 0.90, critical_gap < 0.60. Simple planning guidance, not a scoring system. Per-block status alone does not open the B-EDIT gate -- see agents/agent_b_archive_visual_editor.md for the episode-level overall_effective_coverage requirement."
           },
           "allocations": {
             "type": "array",
-            "description": "Assets (and, for video, specific usable_segments) planned for this beat's screen time. May be empty only if coverage_status is critical_gap.",
+            "description": "Assets (and, for video, specific usable_segments) planned for this block's screen time. May be empty only if coverage_status is critical_gap.",
             "items": {
               "type": "object",
               "required": ["asset_id", "planned_sec", "relevance"],
@@ -182,58 +177,25 @@
               "properties": {
                 "asset_id": {
                   "type": "string",
-                  "description": "References an asset_id in this file's assets array. The same asset_id may appear in multiple beats' allocations."
+                  "description": "References an asset_id in this file's assets array. The same asset_id may appear in multiple blocks' allocations."
                 },
                 "segment_id": {
                   "type": "string",
-                  "description": "Video assets only, and required for them: references one of that asset's usable_segments[].segment_id. Absent for photo/document/etc. assets, which have no segments. Different segments of the same video asset may serve different beats (even different acts) -- that's expected, not a problem."
+                  "description": "Video assets only, and required for them: references one of that asset's usable_segments[].segment_id. Absent for photo/document/etc. assets, which have no segments. Different segments of the same video asset may serve different blocks -- that's expected, not a problem."
                 },
                 "planned_sec": {
                   "type": "number",
                   "minimum": 0,
-                  "description": "Approximate planned screen time for this asset within this beat. For a video allocation this must not exceed the referenced segment's own duration (end_sec - start_sec) -- only the selected usable material counts, never the source video's full runtime. Soft editorial guidance (not a hard validation limit) for typical values: ~15-35s for a good relevant video segment or ~15-30s contextual video, ~8-18s photo, ~10-20s brochure/document/magazine, ~8-15s map/chart. Longer is fine when genuinely appropriate -- don't mechanically chop a strong clip just to fit a range."
+                  "description": "Approximate planned screen time for this asset within this block. For a video allocation this must not exceed the referenced segment's own duration (end_sec - start_sec) -- only the selected usable material counts, never the source video's full runtime. Soft editorial guidance (not a hard validation limit) for typical values: ~15-35s for a good relevant video segment, ~8-18s photo, ~10-20s brochure/document/magazine, ~8-15s map/chart. Longer is fine when genuinely appropriate -- don't mechanically chop a strong clip just to fit a range."
                 },
                 "relevance": {
                   "type": "string",
                   "enum": ["exact", "adjacent", "contextual", "documentary_fallback"],
-                  "description": "exact: the exact vehicle/object/event being discussed -- requires the referenced asset's exact_subject_match to be true. adjacent: a closely related model, sibling vehicle, factory, company, component, or same project. contextual: period/geography/industry footage supporting the narration without claiming to depict the exact subject. documentary_fallback: brochure, document, advertisement, magazine scan, map, chart, archive still, etc. A beat is not required to have exact-relevance material for every second -- a coherent visual story matters more than exactness for every allocation."
+                  "description": "exact: the exact vehicle/object/event being discussed -- requires the referenced asset's exact_subject_match to be true. adjacent: a closely related model, sibling vehicle, factory, company, component, or same project. contextual: period/geography/industry footage supporting the narration without claiming to depict the exact subject (this is how a 'contextual video' is expressed -- asset_type stays video, relevance carries the contextuality). documentary_fallback: brochure, document, advertisement, magazine scan, map, chart, archive still, etc. A block is not required to have exact-relevance material for every second -- a coherent visual story matters more than exactness for every allocation."
                 },
                 "notes": { "type": "string" }
               }
             }
-          },
-          "notes": { "type": "string" }
-        }
-      }
-    },
-    "request_coverage": {
-      "type": "array",
-      "description": "OPTIONAL, secondary traceability only -- NOT the completion gate. beat_coverage is the primary contract; a visual_request with no entry here is not a gap by itself as long as its beat's coverage is sufficient/partial. Use this only when per-request traceability is genuinely useful (e.g. auditing which specific request a high-priority exact asset satisfies).",
-      "items": {
-        "type": "object",
-        "required": ["request_id", "beat_id", "coverage_status", "asset_ids"],
-        "additionalProperties": false,
-        "properties": {
-          "request_id": {
-            "type": "string",
-            "description": "References a visual_request request_id from producer_outline.json"
-          },
-          "beat_id": { "type": "string" },
-          "coverage_status": {
-            "type": "string",
-            "enum": ["found_exact", "found_partial", "context_only", "not_found"],
-            "description": "found_exact / found_partial / context_only MUST each reference at least one real asset_id in asset_ids. not_found MUST have an empty asset_ids array. found_exact additionally requires that at least one referenced asset has exact_subject_match: true."
-          },
-          "asset_ids": {
-            "type": "array",
-            "items": { "type": "string" },
-            "description": "asset_id values in this file that address the request. Empty if and only if coverage_status is not_found."
-          },
-          "search_attempts": {
-            "type": "array",
-            "items": { "type": "string" },
-            "description": "What was actually searched, if recorded.",
-            "default": []
           },
           "notes": { "type": "string" }
         }
