@@ -64,6 +64,17 @@
         "additionalProperties": false,
         "properties": {
           "beat_id": { "type": "string" },
+          "act": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 4,
+            "description": "Optional. Which act (1-4) this beat belongs to, for channels whose config defines an act_structure (see config/channels/<channel_id>.json). Acts are fixed and ordered; beats within an act are flexible. Omit entirely for channels/episodes not using an act structure."
+          },
+          "estimated_narration_sec": {
+            "type": "integer",
+            "minimum": 0,
+            "description": "Optional. This beat's share of estimated_runtime_sec, for act-structured channels balancing narration time across acts. Not required when act is omitted."
+          },
           "purpose": {
             "type": "string",
             "description": "Why this beat exists -- its narrative function in the episode"

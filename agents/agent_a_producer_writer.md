@@ -87,6 +87,16 @@ automatically at `preferred_minutes`. 5-8 beats, each earning its place (introdu
 problem, reveals a decision, explains a mechanism, shows a contrast/turn/consequence,
 or resolves the core question).
 
+If the channel config defines an `act_structure`, that channel's episodes use it
+instead of a free-form beat list: every beat's `act` carries the number of the act it
+belongs to (1..N, in order); acts are fixed, beats within an act are flexible. Before
+finishing A-PRE, check whether the evidence collected can honestly support each act's
+`narration_share_pct` of the channel's `preferred_minutes` without padding -- if an
+act is thin, research deeper into that act's territory before stopping, within the
+normal source/search budget. If it's still thin, say so in `runtime_rationale` rather
+than inventing material. A-FINAL then writes through the acts as one continuous
+story -- never speak act or beat labels aloud.
+
 ## A-FINAL gate
 
 Forbidden until `asset_inventory.status` is `gathered`/`approved` **and** every
@@ -127,6 +137,13 @@ A-FINAL is an editor, not a fact-pack serializer.
   may change. Watch especially for duplicated bilingual fragments or malformed
   mixed-language phrases (an English term left half-translated, a word repeated in
   two languages).
+- **Don't over-compress a well-supported story merely because facts are optional.**
+  Selection removes low-value or redundant material -- it doesn't strip out useful
+  explanatory depth the evidence actually supports. Where a claim's `notes` or
+  `safe_wording` carries a WHAT/WHY/consequence worth explaining, explain it in full
+  sentences rather than compressing it to a bare fact; that is depth, not padding.
+  Aim to use the evidence density the fact pack actually has, not the least that gets
+  the point across.
 
 ## Validation
 

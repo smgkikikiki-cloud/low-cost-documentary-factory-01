@@ -154,7 +154,14 @@ def validate_outline(po: dict, claims: dict, report: Report) -> list:
     check_ids("hook_claim_ids", po.get("hook_claim_ids"), True)
 
     beats = po.get("beats", [])
-    if not (5 <= len(beats) <= 8):
+    uses_acts = any("act" in b for b in beats)
+    if uses_acts:
+        if not (8 <= len(beats) <= 12):
+            report.warn(
+                f"producer_outline: {len(beats)} beats, outside the 8-12 act-structured "
+                f"story-density guidance (not a hard error -- may be justified by the evidence)"
+            )
+    elif not (5 <= len(beats) <= 8):
         report.warn(
             f"producer_outline: {len(beats)} beats, outside the 5-8 story-density guidance "
             f"(not a hard error -- may be justified by the evidence)"
@@ -176,7 +183,50 @@ def validate_outline(po: dict, claims: dict, report: Report) -> list:
         dupes = {r for r in req_ids if req_ids.count(r) > 1}
         report.error(f"producer_outline: duplicate visual_request request_id values: {dupes}")
 
+    if uses_acts:
+        validate_acts(beats, report)
+
     return req_ids
+
+
+def validate_acts(beats: list, report: Report) -> None:
+    """Checks for channels using the fixed 4-act structure (act present on beats).
+
+    Topic-independent: only looks at act numbers and estimated_narration_sec, never
+    at beat content.
+    """
+    for b in beats:
+        if "act" not in b:
+            report.error(f"producer_outline: {b.get('beat_id')!r} has no 'act' but other beats do -- all beats must carry act when the outline uses act structure")
+
+    acts_seen = [b["act"] for b in beats if "act" in b]
+    if set(acts_seen) != {1, 2, 3, 4}:
+        report.error(f"producer_outline: acts present are {sorted(set(acts_seen))}, expected exactly {{1, 2, 3, 4}} (no empty act)")
+
+    if acts_seen != sorted(acts_seen):
+        report.error("producer_outline: beats are not in act order (acts must appear 1, 2, 3, 4 in sequence)")
+
+    sec_by_act = {}
+    missing_sec = False
+    for b in beats:
+        if "act" not in b:
+            continue
+        sec = b.get("estimated_narration_sec")
+        if sec is None:
+            missing_sec = True
+        else:
+            sec_by_act[b["act"]] = sec_by_act.get(b["act"], 0) + sec
+    if missing_sec:
+        report.warn("producer_outline: some act-structured beats have no estimated_narration_sec")
+    elif sec_by_act:
+        act3_sec = sec_by_act.get(3, 0)
+        others = [sec_by_act.get(a, 0) for a in (1, 2, 4)]
+        if any(act3_sec < o for o in others):
+            report.warn(
+                f"producer_outline: act 3 narration ({act3_sec}s) is not the longest act "
+                f"(others: {dict((a, sec_by_act.get(a, 0)) for a in (1, 2, 4))}) -- act 3 is usually "
+                f"the main body and should normally be the longest, though this isn't a hard rule"
+            )
 
 
 def validate_runtime(po: dict, episode_brief: dict, report: Report) -> None:

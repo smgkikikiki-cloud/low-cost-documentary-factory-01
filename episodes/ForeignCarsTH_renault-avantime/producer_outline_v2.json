@@ -1,0 +1,154 @@
+{
+  "episode_id": "ForeignCarsTH_renault-avantime",
+  "status": "drafted",
+  "thesis": "The Renault Avantime (2001-2003) was a radically unconventional 2-door coupe-MPV hybrid designed to astonish -- frameless, no B-pillars, double-kinematic doors -- built on a genuinely singular, expensive engineering platform. Every unusual choice served a coherent design vision, but that same singularity made the car costly to build, hard to sell, and impossible to justify exporting. Renault and Matra expected 20,000 sales annually; they got less than 2,900. The car was discontinued after just 8,557 units when Matra exited automotive production in 2003 under the weight of those losses.",
+  "thesis_claim_ids": ["top01_quirk_false", "des01_designer_mettroz", "eng01_door_engineering", "prod01_production_total", "mkt01_target_sales", "mkt02_actual_sales_gap", "disc01_matra_exit"],
+  "hook": "You might think the Renault Avantime was the car with gullwing doors that failed. You'd be half right. There were no gullwing doors -- instead, a strange parallel-opening hinge system on doors so long they needed dedicated engineering just to open in a parking space. That single detail says everything about how this car was built, and why it couldn't survive.",
+  "hook_claim_ids": ["top01_quirk_false", "eng01_door_engineering", "des01_designer_mettroz", "mkt02_actual_sales_gap"],
+  "estimated_runtime_sec": 585,
+  "runtime_rationale": "9.75 minutes -- within the channel's new normal_range_minutes [9, 11], close to the 10-minute preferred center. This is a REBUILT outline using the 4-act ForeignCarsTH structure (act_structure in config/channels/ForeignCarsTH.json), reusing the SAME 20 claims from fact_pack.json gathered under the prior outline structure -- no new research was performed for this regression test. Per-act allocation: Act 1 ~75s (12.8%, within 10-15% target), Act 2 ~135s (23.1%, within 20-25%), Act 3 ~255s (43.6%, within 40-45%), Act 4 ~120s (20.5%, within 20-25%). HONEST ASSESSMENT: the existing fact pack was gathered to support a ~9min flat-beat structure and, at full explanatory depth (see A-FINAL's 'don't over-compress' principle), can plausibly reach the low end of the 9-11min band -- it cannot reach the high end without either new research or padding, neither of which this regression performs. Act 3 now includes the previously-cut Nissan/Infiniti material (nissan01-03), which fits naturally as evidence of just how singular and costly the platform was -- this is genuine added depth from claims that already existed in the fact pack, not new research.",
+  "open_questions": [
+    "This outline reuses fact_pack.json claims gathered under the pre-4-act research pass. A newly-researched Avantime episode under the current A-PRE act-aware behavior would likely research deeper into Act 2 (company/market conditions circa 1999-2001) and Act 4 (contemporary critical reception, if any exists) to close the gap to the 10-11 minute band with genuine evidence rather than reused material stretched thinner."
+  ],
+  "beats": [
+    {
+      "beat_id": "b1_cold_open",
+      "act": 1,
+      "estimated_narration_sec": 75,
+      "purpose": "Establish why this car deserves a video: its unmistakable strangeness and the central question (why does it look like this?) without dumping history or fully explaining the strangeness yet.",
+      "summary": "The Renault Avantime is a 4-seat, 2-door coupe-MPV hybrid (2001-2003) with no B-pillars, giving it an unbroken glass line from front to rear. It looks like something between a sports coupe and a family minivan -- and both descriptions are correct. Only 8,557 were ever built.",
+      "supporting_claim_ids": ["design01_hybrid_genre", "des02_no_bpillars", "prod01_production_total"],
+      "unresolved_claim_ids": [],
+      "narration_direction": "Lead with the visual strangeness and the hybrid genre puzzle. Raise the question the episode answers (why would anyone build this?) without resolving it. Do not explain the door mechanism in depth here -- that's Act 3's job; a brief tease of 'even the doors aren't what you think' is fine as a hook line, not an explanation.",
+      "visual_requests": [
+        {"request_id": "V001", "beat_id": "b1_cold_open", "subject": "Renault Avantime exterior, all angles (2001-2003)", "desired_asset_type": ["photo"], "description": "Multiple angles showing the car's unusual proportions, frameless design, and distinctive profile.", "priority": "high", "exact_subject_required": true},
+        {"request_id": "V002", "beat_id": "b1_cold_open", "subject": "Avantime front 3/4 view emphasizing lack of B-pillars", "desired_asset_type": ["photo"], "description": "Close framing showing the continuous window line and pillarless design.", "priority": "medium", "exact_subject_required": true}
+      ]
+    },
+    {
+      "beat_id": "b2_manufacturing_origin",
+      "act": 2,
+      "estimated_narration_sec": 45,
+      "purpose": "Explain who actually built the car and why -- the manufacturing arrangement that made an unconventional project possible in the first place.",
+      "summary": "Renault designed the Avantime, but didn't build it -- Matra did, at its Romorantin plant in France. That factory had originally been built to produce the Renault Espace; once Renault moved Espace production in-house, Matra needed new work, and the Avantime became that work.",
+      "supporting_claim_ids": ["prod03_manufacturing_matra"],
+      "unresolved_claim_ids": [],
+      "narration_direction": "This is a short scene-setting beat: establish Matra as a specialist manufacturer with spare capacity, not Renault's normal factory system. This detail matters later (Act 4) when Matra's exit ends the car's life.",
+      "visual_requests": [
+        {"request_id": "V004b", "beat_id": "b2_manufacturing_origin", "subject": "Matra Romorantin plant, exterior (period or contemporary)", "desired_asset_type": ["photo", "contextual_video"], "description": "The factory where every Avantime was assembled.", "priority": "low", "exact_subject_required": false}
+      ]
+    },
+    {
+      "beat_id": "b3_design_vision",
+      "act": 2,
+      "estimated_narration_sec": 55,
+      "purpose": "Introduce who conceived the car's design language and what they were trying to achieve -- the human intent behind the project.",
+      "summary": "The exterior was designed by Thierry Métroz, working under Patrick Le Quément, Renault's head of design. Métroz's stated goal was direct: make anyone walking around the car feel continually astonished. Every subsequent unusual choice traces back to that one instruction.",
+      "supporting_claim_ids": ["des01_designer_mettroz"],
+      "unresolved_claim_ids": [],
+      "narration_direction": "Frame this as the project's founding intent -- a single design philosophy that Act 3 will show being executed feature by feature. Keep the quote natural, not a stiff translated quotation.",
+      "visual_requests": [
+        {"request_id": "V006", "beat_id": "b3_design_vision", "subject": "Thierry Métroz or Renault design center (2001-era)", "desired_asset_type": ["photo"], "description": "Designer portrait or period Renault design studio imagery.", "priority": "low", "exact_subject_required": false}
+      ]
+    },
+    {
+      "beat_id": "b4_market_logic",
+      "act": 2,
+      "estimated_narration_sec": 35,
+      "purpose": "Explain the business reasoning that greenlit an unconventional car -- who Renault thought would buy it and why the bet seemed rational at the time.",
+      "summary": "Renault and Matra weren't gambling blindly: they targeted 20,000 sales a year, betting on buyers who wanted a practical four-seater but refused to drive an ordinary minivan. The premise was that style-conscious practicality was an underserved niche.",
+      "supporting_claim_ids": ["mkt01_target_sales"],
+      "unresolved_claim_ids": [],
+      "narration_direction": "This closes Act 2 by stating the plan and its logic plainly, setting up Act 3's explanation of what that plan actually required engineering-wise, and Act 4's payoff of whether the plan worked.",
+      "visual_requests": []
+    },
+    {
+      "beat_id": "b5_door_myth_correction",
+      "act": 3,
+      "estimated_narration_sec": 70,
+      "purpose": "Correct the episode's own premise and open the 'why it was so weird' act with its clearest example: the doors.",
+      "summary": "The Avantime never had gullwing doors -- that's a common misremembering. What it actually had was a double-kinematic hinge system: doors 1.4 meters long, needed so a 2-door car could still give rear passengers real access. The hinge moved each door forward and outward at once, cutting how far it swung into the next parking space.",
+      "supporting_claim_ids": ["top01_quirk_false", "eng01_door_engineering"],
+      "unresolved_claim_ids": [],
+      "narration_direction": "State the correction plainly and without apology -- it's a real finding, not an error to gloss over. Walk through WHAT the mechanism was, WHY the doors had to be that long (4-seat/2-door layout), and WHAT problem the hinge design solved (parking outswing). This is the template the rest of Act 3 follows.",
+      "visual_requests": [
+        {"request_id": "V003", "beat_id": "b5_door_myth_correction", "subject": "Avantime door mechanism in action or detailed open position", "desired_asset_type": ["photo", "contextual_video"], "description": "Images or video clearly showing the door open, the hinge mechanism, and the parallel opening path.", "priority": "high", "exact_subject_required": false},
+        {"request_id": "V005", "beat_id": "b5_door_myth_correction", "subject": "Avantime interior, rear seat entry via the long front door", "desired_asset_type": ["photo"], "description": "Show the rear seat space and how a passenger enters via the long front door.", "priority": "medium", "exact_subject_required": false}
+      ]
+    },
+    {
+      "beat_id": "b6_interior_coherence",
+      "act": 3,
+      "estimated_narration_sec": 65,
+      "purpose": "Show that the design's strangeness was systemic, not a single gimmick -- every interior choice reinforced the same 'astonish' intent from beat 3.",
+      "summary": "The no-B-pillars structure meant an unbroken glass line, but it also demanded elevated 'theater seating' in the rear so passengers could see over the front seats, a full auto-opening panoramic roof, and an aluminum space-frame strong enough to compensate for the pillars the body no longer had. None of it was luxury padding -- each piece answered a structural or experiential requirement created by the others.",
+      "supporting_claim_ids": ["des02_no_bpillars", "des03_interior_features"],
+      "unresolved_claim_ids": [],
+      "narration_direction": "Use WHAT/WHY/consequence explicitly: what was removed (B-pillars) forced what compensations (aluminum space-frame strength, seating geometry) which produced what experience (panoramic, theater-like cabin). Avoid reading this as a features list -- connect each choice to the one before it.",
+      "visual_requests": [
+        {"request_id": "V005b", "beat_id": "b6_interior_coherence", "subject": "Avantime interior with theater seating and panoramic roof visible", "desired_asset_type": ["photo"], "description": "Interior shot showing the elevated rear seating and panoramic roof together.", "priority": "medium", "exact_subject_required": true}
+      ]
+    },
+    {
+      "beat_id": "b7_powertrain_positioning",
+      "act": 3,
+      "estimated_narration_sec": 55,
+      "purpose": "Explain the range of engines offered and why -- the choice to give an unconventional body genuinely serious performance options, reinforcing the 'not a compromise' theme.",
+      "summary": "Three engines were offered, from a 2.0-liter turbo (163 hp) and a 2.2-liter diesel (148 hp) up to a 3.0-liter V6 (207 hp). Offering V6 power in a car with this much interior space and glass was a deliberate signal: this was meant to out-drive a minivan and out-practical a coupe, not settle in the middle.",
+      "supporting_claim_ids": ["eng02_engine_options", "design01_hybrid_genre"],
+      "unresolved_claim_ids": [],
+      "narration_direction": "Connect engine choice back to the hybrid-genre premise from Act 1/2: the powertrain was picked to make the coupe half of the equation credible, not just the MPV half.",
+      "visual_requests": [
+        {"request_id": "V007", "beat_id": "b7_powertrain_positioning", "subject": "Avantime V6 or turbo engine bay", "desired_asset_type": ["photo"], "description": "Engine bay showing one of the powerplant options.", "priority": "medium", "exact_subject_required": false}
+      ]
+    },
+    {
+      "beat_id": "b8_infiniti_road_not_taken",
+      "act": 3,
+      "estimated_narration_sec": 65,
+      "purpose": "Show just how singular and costly the platform was by showing what it would have cost to export it -- a concrete number that proves the car's weirdness had a real price tag.",
+      "summary": "After Renault and Nissan formed their alliance in 1999, the two companies looked at selling an Infiniti-badged Avantime in North America. The idea died on the numbers: converting the car to meet US safety and emissions rules was estimated at roughly $83.7 million, a cost neither company could justify for a niche vehicle. No Infiniti version was ever built.",
+      "supporting_claim_ids": ["nissan01_infiniti_plan", "nissan02_infiniti_rejected", "nissan03_no_infiniti_built"],
+      "unresolved_claim_ids": [],
+      "narration_direction": "Frame this as Act 3's closing evidence, not a footnote: it quantifies exactly how expensive the car's singularity was, in a way the design descriptions alone can't. Keep the cost figure hedged as an estimate per its safe_wording, no methodology narration about how the estimate was found.",
+      "visual_requests": []
+    },
+    {
+      "beat_id": "b9_sales_trajectory",
+      "act": 4,
+      "estimated_narration_sec": 45,
+      "purpose": "Pay off Act 2's stated sales target with what actually happened.",
+      "summary": "Reality fell far short of the 20,000-unit annual target. The first year, 2001, saw only 772 sales. 2002 was the peak at 5,037. By 2003 the decline was sharp, and production stopped that February -- an average of well under 2,900 units a year, about 14 percent of what Renault and Matra had planned for.",
+      "supporting_claim_ids": ["prod02_sales_by_year", "mkt02_actual_sales_gap"],
+      "unresolved_claim_ids": [],
+      "narration_direction": "Let the gap between beat 4's plan and this beat's reality do the work -- state the numbers plainly rather than editorializing about failure.",
+      "visual_requests": []
+    },
+    {
+      "beat_id": "b10_manufacturer_fallout",
+      "act": 4,
+      "estimated_narration_sec": 45,
+      "purpose": "Explain the compounding business consequences: internal competition and the manufacturer's exit that ended the car's life.",
+      "summary": "Renault made things harder for itself by launching another upmarket model, the Vel Satis, in 2002 -- both cars competing for the same marketing budget and buyer attention, and the Vel Satis outsold the Avantime roughly seven and a half times over. Matra, still losing money on the low-volume Avantime, exited car manufacturing entirely in 2003. Renault considered moving production in-house but judged the retooling cost too high, and chose to end the car instead.",
+      "supporting_claim_ids": ["compet01_vel_satis_launch", "compet02_vel_satis_outsold", "disc01_matra_exit", "disc02_relocation_rejected"],
+      "unresolved_claim_ids": [],
+      "narration_direction": "Keep the causal chain explicit: internal competition plus manufacturer losses plus prohibitive retooling cost equals discontinuation. This is the beat that closes the loop opened by beat 2 (Matra's role) and beat 8 ($83.7M as evidence the car was never going to scale).",
+      "visual_requests": [
+        {"request_id": "V009", "beat_id": "b10_manufacturer_fallout", "subject": "Renault Vel Satis (2002-2003 period)", "desired_asset_type": ["photo"], "description": "Vel Satis for visual comparison -- the competing luxury vehicle that pulled marketing focus.", "priority": "low", "exact_subject_required": true}
+      ]
+    },
+    {
+      "beat_id": "b11_legacy",
+      "act": 4,
+      "estimated_narration_sec": 30,
+      "purpose": "Close on a meaningful reflection rather than repeating that the car was weird.",
+      "summary": "Only 8,557 Avantimes exist. It's now one of the rarest cars of the 2000s, increasingly sought by collectors -- not despite its commercial failure, but because the same uncompromising choices that killed it in the market are exactly what makes it worth seeking out today.",
+      "supporting_claim_ids": ["legacy01_production_rarity"],
+      "unresolved_claim_ids": [],
+      "narration_direction": "Land on the irony: the singularity that made it commercially impossible is the same thing that makes it collectible now. Don't just restate 'it was weird' -- give the closing line a genuine turn.",
+      "visual_requests": [
+        {"request_id": "V011", "beat_id": "b11_legacy", "subject": "Avantime in contemporary (2020s) collector or museum context", "desired_asset_type": ["photo"], "description": "Modern image of an Avantime owned by a collector, or displayed in a museum, showing its rare status now.", "priority": "low", "exact_subject_required": false}
+      ]
+    }
+  ]
+}
