@@ -1,6 +1,108 @@
 {
   "episode_id": "ForeignCarsTH_cadillac-cimarron",
-  "status": "pending",
-  "thesis": "",
-  "beats": []
+  "status": "drafted",
+  "thesis": "The Cadillac Cimarron shows what happens when a legacy luxury brand tries to manufacture credibility instead of earning it: in 1982 GM took a roughly $7,000 economy car, added badges, leather, and a higher sticker, charged nearly double, and spent the rest of the decade paying for the damage to Cadillac's name.",
+  "hook": "In 1982, Cadillac sold you a Chevrolet Cavalier for almost double the price, and dared to call it a Cadillac. Decades later, GM's own people still point to this car as one of the company's biggest self-inflicted wounds.",
+  "estimated_runtime_sec": 480,
+  "beats": [
+    {
+      "beat_id": "b1_cold_open",
+      "summary": "Cold open on the hook: a luxury nameplate on an economy car, sold at nearly double the price, still cited today as a cautionary tale.",
+      "narration_notes": "Lead with the price gap and the badge, not the model name yet -- withhold 'Cimarron' for a beat to build curiosity. End on a question: how does a 100+ year old luxury brand end up here?",
+      "visual_notes": "Would be useful: a striking side-by-side still of a Cimarron and a same-year Cavalier badge/grille close-up; a period Cimarron print ad as an opening graphic."
+    },
+    {
+      "beat_id": "b2_cadillacs_problem",
+      "summary": "Context: Cadillac's aging buyer base and the late-1970s/early-1980s downsizing and fuel-economy pressures pushed GM to want a compact entry-luxury Cadillac that could compete with BMW's 3-Series, Audi, and Mercedes' 190 and pull in younger buyers.",
+      "narration_notes": "Establish the legitimate business problem before showing the bad solution, so the audience understands this wasn't pure incompetence -- it was a real strategic gap Cadillac was trying to close.",
+      "visual_notes": "Would be useful: period Cadillac showroom or lineup photos (Seville/DeVille era), and reference shots of a contemporary BMW 3-Series/Mercedes 190 for the competitive-set comparison."
+    },
+    {
+      "beat_id": "b3_rushed_j_car",
+      "summary": "GM's 1982 J-car platform was shared across five divisions (Chevrolet Cavalier, Pontiac J2000, Buick Skyhawk, Oldsmobile Firenza, Cadillac Cimarron). Cadillac reportedly joined the program only about 11 months before launch, with an internal warning that there wasn't enough time to turn it into a real Cadillac.",
+      "narration_notes": "This is the pivot beat: badge-engineering as a rushed, top-down decision rather than a considered design. Use the internal-warning detail to show GM knew the risk going in.",
+      "visual_notes": "Would be useful: GM J-car assembly-line or factory floor footage/photos from the era, and any archival image of the five J-car siblings lined up together to show how similar they were."
+    },
+    {
+      "beat_id": "b4_what_you_got",
+      "summary": "The reveal: for $12,181 (vs. roughly $7,000-8,000 for a Cavalier), buyers got the same body, chassis, and engine bay, with leather seats, script badging, and extra sound insulation as the main differences.",
+      "narration_notes": "This is the comedic/damning core of the episode -- a near feature-by-feature comparison. Keep it concrete and visual rather than editorializing; let the price and spec sheet do the work.",
+      "visual_notes": "Would be useful: matched interior shots of a Cimarron and Cavalier dashboard, a Cimarron window sticker/price sheet if one survives in archives, close-ups of the 'Cimarron by Cadillac' script badge."
+    },
+    {
+      "beat_id": "b5_market_reaction",
+      "summary": "Press and dealers reacted with immediate mockery; period road tests were unfavorable, and first-year sales were weak relative to Cadillac's expectations.",
+      "narration_notes": "Use period critical reaction as evidence the failure wasn't just hindsight -- contemporaries called it out at launch.",
+      "visual_notes": "Would be useful: scans/covers of period automotive magazine road tests or reviews, any archival news clippings covering the launch reception."
+    },
+    {
+      "beat_id": "b6_slow_fix",
+      "summary": "Between 1983 and 1988 Cadillac tried to fix the car: styling revisions, a 2.8L V6 added as an option in 1985 (and standard by 1987), and price adjustments -- but the reputation was already set, and sales fell nearly every year of the run.",
+      "narration_notes": "Show effort without redemption -- this beat should feel like a slow, losing chase rather than a turnaround story.",
+      "visual_notes": "Would be useful: year-by-year exterior styling comparison shots (1982 vs. 1985 vs. 1988), any engine bay shot showing the V6 update."
+    },
+    {
+      "beat_id": "b7_cancellation_legacy",
+      "summary": "Production ended in 1988; the Cimarron is now routinely named one of the worst cars ever made (e.g. TIME's '50 Worst Cars of All Time') and used as the textbook example of badge-engineering gone wrong.",
+      "narration_notes": "Land the thesis here: this is the car's real legacy -- not its sales numbers, but its use as a cautionary case study.",
+      "visual_notes": "Would be useful: a shot or graphic referencing a 'worst cars' list cover/headline, a late-production (1988) Cimarron for visual closure."
+    },
+    {
+      "beat_id": "b8_foreign_angle_close",
+      "summary": "Close by tying it to the channel's angle: the Cimarron was never officially sold in Thailand, which makes it a purely foreign curiosity for this audience -- an obscure piece of American automotive history rather than a car anyone locally would have encountered, and a lesson in brand trust that applies far beyond GM.",
+      "narration_notes": "This is the channel-fit beat -- needs a genuine 'why should a Thai car enthusiast care' answer, not just a recap. Tie back to the hook's opening question.",
+      "visual_notes": "Would be useful: a map or graphic-style visual suggesting rarity/import status; no specific Thailand-market footage is expected to exist for this car, so this beat likely needs a graphic/text treatment rather than archival footage."
+    }
+  ],
+  "key_factual_claims": [
+    {
+      "claim_id": "c1",
+      "claim": "The 1982 Cadillac Cimarron had a list price of $12,181, versus roughly $7,000-8,000 for a same-year Chevrolet Cavalier.",
+      "relevant_beats": ["b1_cold_open", "b4_what_you_got"],
+      "source_url": "https://www.hagerty.com/media/opinion/final-parking-space/final-parking-space-1982-cadillac-cimarron/"
+    },
+    {
+      "claim_id": "c2",
+      "claim": "Cadillac joined the J-car program only about 11 months before launch, and GM president Pete Estes reportedly warned there wasn't enough time to turn it into a real Cadillac.",
+      "relevant_beats": ["b3_rushed_j_car"],
+      "source_url": "https://blog.consumerguide.com/ladder-to-oblivion-the-1982-general-motors-j-cars/"
+    },
+    {
+      "claim_id": "c3",
+      "claim": "The Cimarron shared its J-body platform with the Chevrolet Cavalier, Pontiac J2000, Buick Skyhawk, and Oldsmobile Firenza.",
+      "relevant_beats": ["b3_rushed_j_car"],
+      "source_url": "https://en.wikipedia.org/wiki/Cadillac_Cimarron"
+    },
+    {
+      "claim_id": "c4",
+      "claim": "A 2.8L V6 became optional in 1985 (around 125-130 hp) and standard equipment by 1987.",
+      "relevant_beats": ["b6_slow_fix"],
+      "source_url": "https://www.conceptcarz.com/vehicle/z1990/cadillac-cimarron.aspx"
+    },
+    {
+      "claim_id": "c5",
+      "claim": "Cimarron production ended in 1988; total production across the model run was about 132,499 units, with only 6,454 built in the final year.",
+      "relevant_beats": ["b6_slow_fix", "b7_cancellation_legacy"],
+      "source_url": "https://www.goodcarbadcar.net/cadillac-cimarron-sales-figures/"
+    },
+    {
+      "claim_id": "c6",
+      "claim": "Annual production fell in the car's final years: 25,534 in 1986, 14,561 in 1987, 6,454 in 1988.",
+      "relevant_beats": ["b6_slow_fix"],
+      "source_url": "https://www.goodcarbadcar.net/cadillac-cimarron-sales-figures/"
+    },
+    {
+      "claim_id": "c7",
+      "claim": "TIME magazine included the 1982 Cadillac Cimarron on its list of the '50 Worst Cars of All Time'.",
+      "relevant_beats": ["b7_cancellation_legacy"],
+      "source_url": "https://content.time.com/time/specials/2007/article/0,28804,1658545_1658533_1658526,00.html"
+    }
+  ],
+  "open_questions": [
+    "Was the Cimarron ever officially imported to Thailand or Southeast Asia, even in tiny numbers, or is it purely a 'never sold here' curiosity? Confirm before asserting rarity/import status in beat b8.",
+    "The 'Ed, you don't have time...' warning is attributed to GM president Pete Estes via a secondary source (Consumer Guide's 'Ladder to Oblivion'); confirm who 'Ed' refers to and whether a primary source (interview, GM archive, contemporary press) exists before treating this as a verified quote on screen.",
+    "Multiple retrospective sources (TIME, Curbside Classic, The Drive) say GM/Cadillac people have 'admitted' the Cimarron was a mistake, but no specific, attributable named-executive quote or formal apology was found during this research pass -- verify whether a citable quote exists (e.g. from a named Cadillac executive or official GM statement) or whether this should be framed as 'widely regarded as a mistake in retrospectives' instead.",
+    "Is there a documented causal link between the Cimarron's failure and Cadillac's later struggles against Lexus/Acura/Infiniti (launched late 1980s), or is that connection this outline's own inference? Not found in this research pass -- either find a source or drop the claim from the script.",
+    "Are any of the specific archival assets requested in visual_notes (period print ads, road test scans, factory photos, window stickers) actually available/licensable? This outline assumes nothing about footage availability -- that determination belongs to Agent B."
+  ]
 }
