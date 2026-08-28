@@ -251,6 +251,14 @@ scene-understanding model, no database. Three operations:
 CLI: `python scripts/media_probe.py probe <path>` /
 `python scripts/media_probe.py contact-sheet <path> --out-dir DIR [--start S --end E]`.
 
+Pass the **same base `--out-dir`** (e.g. `episodes/<id>/media/inspection`) for every
+source you inspect in an episode -- frames are written into a subdirectory scoped to
+that specific source file (its filename stem plus a short hash of its resolved
+path), so inspecting several different videos into one shared inspection directory
+never lets one video's frames overwrite another's. Re-inspecting the exact same
+source (or the same window of it) again is expected to overwrite its own previous
+frames -- that's a fresher look at the same evidence, not a collision.
+
 This tool only produces frames to look at -- it never writes `asset_inventory.json`
 and never derives a `usable_segments` entry automatically. Recording a segment is
 still a judgment call made after actually viewing what it extracted, per the
@@ -293,9 +301,18 @@ This is the concrete, run-it-yourself version of B-DISCOVER, block by block:
    `python scripts/media_download.py asset "<url>" --out-dir episodes/<id>/media/raw`
    for a known-good direct image/PDF/brochure URL. Never mass-download search
    results speculatively.
+
+   **V0 warning: don't put a raw PDF into `edit_plan.json`.** This V0 has no PDF
+   rasterization -- `render_episode.py`'s still-image handling needs an
+   FFmpeg-decodable raster image, not a PDF. If `document`/`brochure`/
+   `magazine_scan` material only exists as a PDF, either find/use an existing
+   JPG/PNG scan of the relevant page instead, or don't allocate that asset to a
+   clip -- do not point a clip's `local_path` at a `.pdf` and assume it will render.
 6. **Inspect it honestly:**
    `python scripts/media_probe.py probe <path>` for `duration_sec`/dimensions, then
    `python scripts/media_probe.py contact-sheet <path> --out-dir episodes/<id>/media/inspection`
+   (safe to reuse this same base directory across every video -- see
+   **Cheap video inspection** above for how per-source collisions are avoided)
    for a coarse full-video pass, then a `--start S --end E` fine pass around any
    window that looks promising. Actually look at the extracted frames before
    recording anything -- see **Discovery is not verification**.

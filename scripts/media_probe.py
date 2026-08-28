@@ -18,6 +18,16 @@ Frame counts are adaptive (target ~20-30 frames, never below a minimum interval)
 rather than a hardcoded "every 5 seconds" rule, so a 2-minute clip and a 20-minute
 clip both get a sensible, bounded number of frames to look at.
 
+Contact-sheet frames are written into a subdirectory of `out_dir` scoped to the
+source file (its filename stem plus a short hash of its resolved path), never
+directly into `out_dir` itself -- so inspecting several different source videos
+into the same base inspection directory (e.g.
+`episodes/<id>/media/inspection/`) can never let one video's frames overwrite
+another's, regardless of generic `coarse_000...`/`fine_000...` naming. Re-inspecting
+the SAME source (the same window or the whole video again) intentionally overwrites
+its own previous frames -- ffmpeg's `-y` -- since that's just a fresher look at the
+same evidence, not a collision.
+
 This tool only produces evidence for Agent B to look at. It never writes
 asset_inventory.json itself, and it never invents timestamps -- usable_segments must
 still be recorded by hand (by the agent, after actually viewing the frames this
@@ -31,9 +41,16 @@ CLI usage:
     python scripts/media_probe.py probe <path>
     python scripts/media_probe.py contact-sheet <path> --out-dir DIR [--target-frames 25] [--min-interval 1.0]
     python scripts/media_probe.py contact-sheet <path> --out-dir DIR --start 55 --end 85 [--target-frames 12] [--min-interval 0.5]
+
+--out-dir is a shared BASE directory (e.g. episodes/<id>/media/inspection) -- pass
+the same one for every video you inspect in an episode. Frames actually land under
+a per-source subdirectory of it, so different videos never collide; see
+_source_scoped_dir().
 """
 import argparse
+import hashlib
 import json
+import re
 import shutil
 import subprocess
 import sys
@@ -112,9 +129,23 @@ def compute_sample_interval(duration_sec: float, target_frames: int = 25, min_in
     return max(duration_sec / target_frames, min_interval_sec)
 
 
+def _source_scoped_dir(path: str, base_out_dir: str) -> Path:
+    """Deterministic, collision-safe subdirectory of base_out_dir for this source
+    file's inspection frames: <stem>_<8-char-hash-of-resolved-path>/. The same
+    source path always maps to the same subdirectory (so re-inspecting it only
+    overwrites its own old frames); two different source files never collide, even
+    if they happen to share a filename stem, because the hash is over the full
+    resolved path.
+    """
+    resolved = str(Path(path).resolve())
+    safe_stem = re.sub(r"[^A-Za-z0-9._-]+", "_", Path(path).stem) or "source"
+    short_hash = hashlib.sha256(resolved.encode("utf-8")).hexdigest()[:8]
+    return Path(base_out_dir) / f"{safe_stem}_{short_hash}"
+
+
 def _extract_frames(path: str, timestamps: list, out_dir: str, prefix: str) -> list:
     _require_binary("ffmpeg")
-    out = Path(out_dir)
+    out = _source_scoped_dir(path, out_dir)
     out.mkdir(parents=True, exist_ok=True)
     frame_paths = []
     for i, ts in enumerate(timestamps):
@@ -139,6 +170,11 @@ def _extract_frames(path: str, timestamps: list, out_dir: str, prefix: str) -> l
 
 def coarse_contact_sheet(path: str, out_dir: str, target_frames: int = 25, min_interval_sec: float = 1.0) -> list:
     """Sample frames across the FULL duration of the video for a first-pass look.
+
+    Frames are written under a subdirectory of out_dir scoped to this source file
+    (see _source_scoped_dir) -- passing the same base out_dir (e.g.
+    episodes/<id>/media/inspection) for every video you inspect is safe; different
+    sources never overwrite each other.
 
     Returns a list of {timestamp_sec, frame_path}. Does not write asset_inventory.json
     or record any usable_segments -- that remains a judgment call made after actually
@@ -165,6 +201,10 @@ def fine_contact_sheet(
 ) -> list:
     """Sample frames across ONE time window for a closer look, after a coarse pass
     suggested that window contains useful material.
+
+    Frames are written under the same per-source subdirectory as coarse_contact_sheet
+    (see _source_scoped_dir) -- safe to pass the same base out_dir across many
+    inspections of many different source videos.
 
     Returns a list of {timestamp_sec, frame_path}.
     """
