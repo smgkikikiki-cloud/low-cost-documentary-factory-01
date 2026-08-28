@@ -1,0 +1,84 @@
+{
+  "episode_id": "ForeignCarsTH_renault-avantime",
+  "status": "drafted",
+  "thesis": "The Renault Avantime (2001-2003) was a radically unconventional 2-door coupe-MPV hybrid designed to astonish—frameless, no B-pillars, double-kinematic doors—yet it failed catastrophically in the market. Renault and Matra expected 20,000 sales annually but achieved less than 2,900; the car was discontinued after just 8,557 units when Matra exited automotive production in 2003. Its obscurity and rarity today often obscure a more interesting story: a designer's bold vision, sound engineering, and a market that simply wasn't ready for such a specific, polarizing shape.",
+  "thesis_claim_ids": ["top01_quirk_false", "des01_designer_mettroz", "eng01_door_engineering", "prod01_production_total", "mkt01_target_sales", "mkt02_actual_sales_gap", "disc01_matra_exit"],
+  "hook": "You might think the Renault Avantime was the car with gullwing doors that failed. You'd be partially wrong. There were no gullwing doors—instead, a wild double-kinematic hinge system on doors so long they needed special engineering. What it really was: a car designer's bid to make people astonished, followed by a market that said 'thank you, no.'",
+  "hook_claim_ids": ["top01_quirk_false", "eng01_door_engineering", "des01_designer_mettroz", "mkt02_actual_sales_gap"],
+  "estimated_runtime_sec": 540,
+  "runtime_rationale": "Nine minutes -- below the channel's preferred 12-minute center (normal_range 8-12 min). Justification: the episode corrects a false premise (gullwing doors myth) in the hook, which compresses rather than expands the cold open; several supporting claims are single-sourced background (prod02_sales_by_year, compet02_vel_satis, prod03_manufacturing) held at medium confidence and used as color/context rather than expanded into full beats; one claim (nissan02_infiniti_rejected) is a 'road not taken' that doesn't require detailed narration; and the design story, while rich, focuses on two key features (double-kinematic, no B-pillars) rather than every detail. Five substantive beats fit comfortably under 9 minutes without thin material.",
+  "open_questions": [],
+  "beats": [
+    {
+      "beat_id": "b1_cold_open",
+      "purpose": "Open on the unusual design and immediately establish the design-led approach without naming the false quirk yet.",
+      "summary": "The Renault Avantime was a 4-seat, 2-door coupe-MPV hybrid (2001-2003) with frameless doors and no B-pillars, designed to be visually astonishing. At first glance, it looks like something between a sports car and a minivan—and both descriptions are correct.",
+      "supporting_claim_ids": ["design01_hybrid_genre", "des02_no_bpillars"],
+      "unresolved_claim_ids": [],
+      "narration_direction": "Lead with the visual strangeness. Describe proportions, design intent (Métroz's 'continually astonished' goal), and the unusual 2+2 seating. Do not mention gullwing doors or doors at all in this beat—that correction comes in beat 2.",
+      "visual_requests": [
+        {"request_id": "V001", "beat_id": "b1_cold_open", "subject": "Renault Avantime exterior, all angles (2001-2003)", "desired_asset_type": ["photo"], "description": "Multiple angles showing the car's unusual proportions, frameless design, and distinctive profile.", "priority": "high", "exact_subject_required": true},
+        {"request_id": "V002", "beat_id": "b1_cold_open", "subject": "Avantime front 3/4 view emphasizing lack of B-pillars", "desired_asset_type": ["photo"], "description": "Close framing showing the continuous window line and pillarless design.", "priority": "medium", "exact_subject_required": true}
+      ]
+    },
+    {
+      "beat_id": "b2_door_myth_correction",
+      "purpose": "Correct the false premise: no gullwing doors. Introduce the actual double-kinematic system and why it was needed.",
+      "summary": "The Avantime's doors were not gullwing. Instead, they used a double-kinematic (parallel-opening) hinge system: 1.4-meter-long conventional doors that moved forward and out simultaneously, minimizing outswing in tight parking spaces. This unusual engineering solved a specific design challenge: how to make a 2-door car with rear-seat access without swinging doors halfway into the next parking space.",
+      "supporting_claim_ids": ["top01_quirk_false", "eng01_door_engineering"],
+      "unresolved_claim_ids": [],
+      "narration_direction": "State plainly that the car did not have gullwing doors; this is a frequent misremembering. Explain why the doors needed to be so long (4-seat 2-door layout) and how the double-kinematic system solved the outswing problem. Make clear this was sound engineering, not a gimmick.",
+      "visual_requests": [
+        {"request_id": "V003", "beat_id": "b2_door_myth_correction", "subject": "Avantime door mechanism in action or detailed open position", "desired_asset_type": ["photo", "contextual_video"], "description": "Images or video clearly showing the door open, the hinge mechanism, and the parallel opening path.", "priority": "high", "exact_subject_required": false},
+        {"request_id": "V004", "beat_id": "b2_door_myth_correction", "subject": "Interior access, rear seat entry", "desired_asset_type": ["photo"], "description": "Show the rear seat space and how a passenger enters via the long front door.", "priority": "medium", "exact_subject_required": false}
+      ]
+    },
+    {
+      "beat_id": "b3_design_vision",
+      "purpose": "Establish the designer's intent and the coherence of the unusual design choices.",
+      "summary": "Thierry Métroz designed the Avantime's exterior under Patrick Le Quément's direction with a specific goal: 'We wanted someone walking around the car to be continually astonished.' The no-B-pillars choice, the theater seating (rear seats elevated higher than front), the full panoramic auto-opening roof—all these worked together to create an unusual blend of coupe drama and family practicality. It wasn't a compromise; it was intentional design coherence.",
+      "supporting_claim_ids": ["des01_designer_mettroz", "des02_no_bpillars", "des03_interior_features"],
+      "unresolved_claim_ids": [],
+      "narration_direction": "Emphasize that Métroz had a coherent vision and the Avantime executed it. The choices weren't random; each detail reinforced the 'astonish' goal. The theater seating and panoramic roof weren't luxury padding—they served the core design intent.",
+      "visual_requests": [
+        {"request_id": "V005", "beat_id": "b3_design_vision", "subject": "Avantime interior with theater seating visible", "desired_asset_type": ["photo"], "description": "Interior shot showing the elevated rear seating and panoramic roof.", "priority": "medium", "exact_subject_required": true},
+        {"request_id": "V006", "beat_id": "b3_design_vision", "subject": "Thierry Métroz or Renault design center (2001-era)", "desired_asset_type": ["photo"], "description": "Designer portrait or period Renault design studio imagery.", "priority": "low", "exact_subject_required": false}
+      ]
+    },
+    {
+      "beat_id": "b4_market_gamble",
+      "purpose": "Explain what Renault offered and the market positioning: who was supposed to buy this?",
+      "summary": "The Avantime came with three engines: a 2.0-liter turbo (163 hp), a 2.2-liter diesel (148 hp), and a 3.0-liter V6 (207 hp). Renault positioned it as a luxury alternative to the ordinary minivan, a vehicle for people who wanted practicality with drama. Renault and Matra had planned for 20,000 sales annually, betting on enthusiasts who needed space but refused to drive a conventional MPV.",
+      "supporting_claim_ids": ["eng02_engine_options", "design01_hybrid_genre", "mkt01_target_sales"],
+      "unresolved_claim_ids": [],
+      "narration_direction": "Frame this as an ambitious bet: Renault was certain the market wanted style-conscious practicality. It was a rational gamble based on the premise that Avantime buyers existed. The engine range showed confidence (offering V6 power in a family vehicle was rare at the time).",
+      "visual_requests": [
+        {"request_id": "V007", "beat_id": "b4_market_gamble", "subject": "Avantime V6 or turbo engine bay", "desired_asset_type": ["photo"], "description": "Engine bay showing one of the powerplant options.", "priority": "medium", "exact_subject_required": false},
+        {"request_id": "V008", "beat_id": "b4_market_gamble", "subject": "Contemporary Renault marketing or press materials (2001-2002)", "desired_asset_type": ["photo"], "description": "Period advertising or dealer materials showing how Renault positioned the Avantime.", "priority": "low", "exact_subject_required": false}
+      ]
+    },
+    {
+      "beat_id": "b5_failure_cascade",
+      "purpose": "Explain why the market rejection happened: the gap between expectations and reality, and the compounding factors.",
+      "summary": "The gap was catastrophic. Renault expected 20,000 annually; actual sales averaged 2,850 per unit per year (8,557 total ÷ 3 years). The first year (2001) saw only 772 sales. At the same time Renault launched the Vel Satis (2002), another upmarket vehicle that competed for Renault's luxury-car budget and marketing resources. When Matra, the manufacturer, realized it was hemorrhaging money on low-volume production, it exited automotive production entirely in 2003. Rather than relocate Avantime production to its own factories, Renault chose to discontinue the car—the cost of restarting production elsewhere was prohibitive.",
+      "supporting_claim_ids": ["mkt02_actual_sales_gap", "prod02_sales_by_year", "compet01_vel_satis_launch", "disc01_matra_exit", "disc02_relocation_rejected"],
+      "unresolved_claim_ids": [],
+      "narration_direction": "This is the beat that answers the thesis: why did this astonishing car vanish? Emphasize the speed of the collapse (2,860 unit decline year-over-year in Year 2), the internal competition with Vel Satis, and the finality of Matra's exit decision. The car didn't fail slowly; it failed fast.",
+      "visual_requests": [
+        {"request_id": "V009", "beat_id": "b5_failure_cascade", "subject": "Renault Vel Satis (2002-2003 period)", "desired_asset_type": ["photo"], "description": "Vel Satis for visual comparison—show the competing luxury vehicle that pulled marketing focus.", "priority": "low", "exact_subject_required": true},
+        {"request_id": "V010", "beat_id": "b5_failure_cascade", "subject": "Matra Romorantin plant (2001-2003 era) or closure documentation", "desired_asset_type": ["photo"], "description": "Manufacturing facility where Avantime was built; could be contemporary or archival.", "priority": "low", "exact_subject_required": false}
+      ]
+    },
+    {
+      "beat_id": "b6_legacy_rarity",
+      "purpose": "Close on what the Avantime means now: a rare automotive footnote that represents a specific moment in design ambition and market misjudgment.",
+      "summary": "Only 8,557 Avantimes were built. Today, it's one of the rarest 2000s-era production cars and increasingly sought by collectors who value bold design and automotive oddities. The Avantime represents a moment when a major automaker was willing to fund a vision that didn't fit consumer expectations—and paid the price. But from today's perspective, Renault's willingness to build something astonishing, even if it failed, is worth remembering.",
+      "supporting_claim_ids": ["prod01_production_total", "legacy01_production_rarity"],
+      "unresolved_claim_ids": [],
+      "narration_direction": "This is the retrospective valuation beat. Frame the rarity as a result of failure, but flip the frame: what seems like commercial failure in 2003 looks like brave design ambition in retrospect. Close on the idea that polarizing design has its own value, and the Avantime earned its place in automotive history by being singular.",
+      "visual_requests": [
+        {"request_id": "V011", "beat_id": "b6_legacy_rarity", "subject": "Avantime in contemporary (2020s) collector or museum context", "desired_asset_type": ["photo"], "description": "Modern image of an Avantime owned by a collector, or displayed in a museum, showing its rare status now.", "priority": "low", "exact_subject_required": false}
+      ]
+    }
+  ]
+}
