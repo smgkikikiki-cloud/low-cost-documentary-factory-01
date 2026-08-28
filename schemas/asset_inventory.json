@@ -2,9 +2,9 @@
   "$schema": "http://json-schema.org/draft-07/schema#",
   "$id": "asset_inventory.schema.json",
   "title": "AssetInventory",
-  "description": "Agent B's (Archive/Visual Editor) list of archival visuals gathered/needed for the episode's beats.",
+  "description": "Agent B's (Archive/Visual Editor) record of REAL discovered assets for the episode, plus coverage reporting against producer_outline.json's visual_requests. This schema defines the data contract only -- searching/downloading is not implemented yet.",
   "type": "object",
-  "required": ["episode_id", "status", "assets"],
+  "required": ["episode_id", "status", "assets", "request_coverage"],
   "additionalProperties": false,
   "properties": {
     "episode_id": {
@@ -19,29 +19,61 @@
       "type": "array",
       "items": {
         "type": "object",
-        "required": ["asset_id", "beat_id", "type", "query", "status"],
+        "required": ["asset_id", "matched_request_ids", "asset_type", "subject", "exact_subject_match"],
         "additionalProperties": false,
         "properties": {
           "asset_id": { "type": "string" },
-          "beat_id": {
-            "type": "string",
-            "description": "References a beat_id from producer_outline.json"
+          "matched_request_ids": {
+            "type": "array",
+            "items": { "type": "string" },
+            "description": "producer_outline.json visual_request request_id values this asset satisfies"
           },
-          "type": {
-            "type": "string",
-            "enum": ["image", "video_clip", "document"]
-          },
-          "query": {
-            "type": "string",
-            "description": "Search terms used to locate this asset in the archive"
-          },
-          "source": { "type": "string" },
-          "license": { "type": "string" },
+          "source_url": { "type": "string" },
           "local_path": { "type": "string" },
-          "status": {
+          "asset_type": {
             "type": "string",
-            "enum": ["needed", "found", "rejected"]
-          }
+            "enum": ["video", "photo", "advertisement", "brochure", "document", "magazine_scan", "map", "chart", "contextual_video"]
+          },
+          "subject": { "type": "string" },
+          "description": { "type": "string" },
+          "date_or_period": { "type": "string" },
+          "exact_subject_match": {
+            "type": "boolean",
+            "description": "Whether this asset actually shows the exact subject requested, vs. being a contextual/period substitute"
+          },
+          "usable_start_sec": { "type": "number", "minimum": 0 },
+          "usable_end_sec": { "type": "number", "minimum": 0 },
+          "visual_quality": {
+            "type": "string",
+            "enum": ["low", "medium", "high"]
+          },
+          "notes": { "type": "string" }
+        }
+      }
+    },
+    "request_coverage": {
+      "type": "array",
+      "description": "One entry per producer_outline.json visual_request, reporting what was actually found -- lets Agent A adapt final narration to what exists.",
+      "items": {
+        "type": "object",
+        "required": ["request_id", "beat_id", "coverage_status", "asset_ids"],
+        "additionalProperties": false,
+        "properties": {
+          "request_id": {
+            "type": "string",
+            "description": "References a visual_request request_id from producer_outline.json"
+          },
+          "beat_id": { "type": "string" },
+          "coverage_status": {
+            "type": "string",
+            "enum": ["found_exact", "found_partial", "context_only", "not_found"]
+          },
+          "asset_ids": {
+            "type": "array",
+            "items": { "type": "string" },
+            "description": "asset_id values in this file that address the request, if any"
+          },
+          "notes": { "type": "string" }
         }
       }
     }

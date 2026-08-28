@@ -1,5 +1,8 @@
 {
   "channel_id": "ForeignCarsTH",
-  "language": "th",
+  "research_language": "auto",
+  "working_language": "en",
+  "output_language": "th",
+  "narration_register": "natural_spoken_thai",
   "target_audience": "Thai car enthusiasts interested in obscure foreign automotive history"
 }

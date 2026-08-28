@@ -1,0 +1,334 @@
+{
+  "episode_id": "ForeignCarsTH_cadillac-cimarron",
+  "status": "verified",
+  "research_language": "auto",
+  "working_language": "en",
+  "quirk_lead": {
+    "text": "Cadillac's infamous attempt to turn the GM J-car into a luxury compact",
+    "note": "Research lead only -- not a verified fact. The claims below support a narrower, more defensible thesis (joined the J-car program too late to differentiate it enough) rather than the quirk's blunter 'infamous attempt' framing."
+  },
+  "claims": [
+    {
+      "claim_id": "c1",
+      "normalized_claim": "The 1982 Cadillac Cimarron's base price at launch was in the $12,131-$12,181 range.",
+      "claim_type": "statistic",
+      "time_context": "1982",
+      "source_language": "en",
+      "sources": [
+        "https://en.wikipedia.org/wiki/Cadillac_Cimarron",
+        "https://www.hagerty.com/media/opinion/final-parking-space/final-parking-space-1982-cadillac-cimarron/",
+        "https://macsmotorcitygarage.com/cadillacs-small-mistake-the-1982-1988-cimarron/"
+      ],
+      "source_classification": "high_quality_secondary",
+      "perspective": "contemporary",
+      "confidence": "high",
+      "allowed_in_narration": true,
+      "safe_wording": "The 1982 Cimarron launched with a base price of roughly $12,100-12,200.",
+      "forbidden_or_unsupported_inference": [
+        "Picking one exact figure ($12,131 or $12,181) and presenting it as the single undisputed price without the range"
+      ],
+      "conflicting_evidence": [
+        "Wikipedia and Hagerty give $12,181; Mac's Motor City Garage gives $12,131. Likely rounding or a mid-year adjustment; both figures are retained rather than silently resolved to one."
+      ],
+      "notes": ""
+    },
+    {
+      "claim_id": "c13",
+      "normalized_claim": "A 1982 Chevrolet Cavalier's base price ranged from roughly $6,600 (base coupe) to $7,000-$8,000 (sedan), well below the Cimarron.",
+      "claim_type": "statistic",
+      "time_context": "1982",
+      "source_language": "en",
+      "sources": [
+        "https://www.hagerty.com/media/opinion/final-parking-space/final-parking-space-1982-cadillac-cimarron/"
+      ],
+      "source_classification": "high_quality_secondary",
+      "perspective": "contemporary",
+      "confidence": "high",
+      "allowed_in_narration": true,
+      "safe_wording": "A base Chevrolet Cavalier coupe started around $6,600 that same year; a sedan ran $7,000-8,000.",
+      "forbidden_or_unsupported_inference": [
+        "Using this base-Cavalier figure as if it were a comparably equipped comparator to the Cimarron (see c14 and d1 for the equipped comparison, and d2 for what this figure alone actually supports)"
+      ],
+      "conflicting_evidence": [],
+      "notes": "This is the cheapest, least-equipped Cavalier configuration -- useful for the base-to-base comparison (d2), not for a like-for-like trim comparison."
+    },
+    {
+      "claim_id": "c14",
+      "normalized_claim": "A 1982 Chevrolet Cavalier CL (top Cavalier trim) started around $8,137, and cost roughly $9,712 when optioned to Cimarron-equivalent spec.",
+      "claim_type": "statistic",
+      "time_context": "1982",
+      "source_language": "en",
+      "sources": [
+        "https://www.curbsideclassic.com/vintage-reviews/vintage-reviews-cadillac-cimarron/"
+      ],
+      "source_classification": "reference_only",
+      "perspective": "contemporary",
+      "confidence": "unresolved",
+      "allowed_in_narration": false,
+      "safe_wording": "Do not state these exact figures in narration. If confirmed, the safe wording would be: 'a comparably equipped Cavalier CL ran close to $9,700.'",
+      "forbidden_or_unsupported_inference": [
+        "Stating '$8,137' or '$9,712' as settled facts",
+        "Using this to compute a public-facing percentage premium (see d1) before this claim is resolved"
+      ],
+      "conflicting_evidence": [],
+      "notes": "This is the most important claim in the episode's central price comparison and it is currently the weakest-sourced: the only source found returned HTTP 403 on direct fetch, so these numbers come from a search-engine summary, not a directly read page. Per the adversarial-check rule, an important/disputed claim should not rest on a reference_only source when a stronger one can reasonably be found -- treat resolving this as the top research priority before final_script.json is written. A period Cavalier CL brochure or window sticker would upgrade this to contemporary_primary."
+    },
+    {
+      "claim_id": "d1",
+      "normalized_claim": "Premium of the Cimarron's base price over a comparably-equipped Cavalier CL.",
+      "claim_type": "derived_comparison",
+      "time_context": "1982",
+      "source_language": "en",
+      "sources": [],
+      "source_claim_ids": ["c1", "c14"],
+      "calculation": "(12131 - 9712) / 9712 * 100",
+      "result": "approx. 24.9% premium (about $2,419) over a comparably equipped Cavalier CL -- roughly a quarter more, not double",
+      "source_classification": "reference_only",
+      "perspective": "contemporary",
+      "confidence": "unresolved",
+      "allowed_in_narration": false,
+      "safe_wording": "Do not state a specific percentage yet. Once c14 is confirmed, the safe wording is: 'against a similarly equipped Cavalier, the premium was closer to a quarter more than double.'",
+      "forbidden_or_unsupported_inference": [
+        "Stating '~25% more expensive' as settled fact before c14 is confirmed",
+        "Rounding this up to a punchier 'nearly double' framing -- that conflates it with the base-Cavalier comparison in d2"
+      ],
+      "conflicting_evidence": [],
+      "notes": "Blocked on resolving c14's source. This is the claim that should replace any instinct to write 'nearly double the price' in the final script."
+    },
+    {
+      "claim_id": "d2",
+      "normalized_claim": "Premium of the Cimarron's base price over the cheapest base Chevrolet Cavalier coupe.",
+      "claim_type": "derived_comparison",
+      "time_context": "1982",
+      "source_language": "en",
+      "sources": [],
+      "source_claim_ids": ["c1", "c13"],
+      "calculation": "(12131 - 6600) / 6600 * 100",
+      "result": "approx. 83.8% premium (about $5,531) over the cheapest base Cavalier coupe -- close to double, but only against the least-equipped Cavalier body style",
+      "source_classification": "high_quality_secondary",
+      "perspective": "contemporary",
+      "confidence": "medium",
+      "allowed_in_narration": true,
+      "safe_wording": "Against the cheapest, most stripped-down Cavalier coupe, the Cimarron's price was close to double -- but that's comparing against the least-equipped Cavalier available, not a like-for-like trim.",
+      "forbidden_or_unsupported_inference": [
+        "Presenting this as 'the' Cimarron-vs-Cavalier premium without specifying the comparator is the cheapest base coupe",
+        "Dropping the qualifier and just saying 'the Cimarron cost nearly double a Cavalier'"
+      ],
+      "conflicting_evidence": [],
+      "notes": "Confidence is medium rather than high only because c1's own base price carries a minor $12,131/$12,181 discrepancy (see c1); the arithmetic itself and both input claims are solid."
+    },
+    {
+      "claim_id": "c2",
+      "normalized_claim": "GM president Pete Estes warned Cadillac general manager Edward Kennard that there wasn't enough time to turn the J-car into a real Cadillac ('Ed, you don't have time to turn the J-car into a Cadillac').",
+      "claim_type": "quote",
+      "time_context": "circa 1980-1981, pre-launch",
+      "source_language": "en",
+      "sources": ["https://en.wikipedia.org/wiki/Cadillac_Cimarron"],
+      "source_classification": "high_quality_secondary",
+      "perspective": "contemporary",
+      "confidence": "medium",
+      "allowed_in_narration": true,
+      "safe_wording": "GM president Pete Estes reportedly warned Cadillac general manager Edward Kennard that there wasn't enough time to turn the J-car into a real Cadillac.",
+      "forbidden_or_unsupported_inference": [
+        "Presenting this as a verbatim primary-source transcript rather than a widely repeated secondary account",
+        "Using it to imply GM leadership as a whole opposed the Cimarron"
+      ],
+      "conflicting_evidence": [],
+      "notes": "Attribution (who 'Ed' is) was resolved in a prior research pass via Wikipedia, which names Edward Kennard as Cadillac's general manager at the time."
+    },
+    {
+      "claim_id": "c3",
+      "normalized_claim": "The Cimarron shared its J-body platform with the Chevrolet Cavalier, Pontiac J2000, Buick Skyhawk, and Oldsmobile Firenza.",
+      "claim_type": "fact",
+      "time_context": "1982",
+      "source_language": "en",
+      "sources": ["https://en.wikipedia.org/wiki/Cadillac_Cimarron"],
+      "source_classification": "high_quality_secondary",
+      "perspective": "timeless",
+      "confidence": "high",
+      "allowed_in_narration": true,
+      "safe_wording": "The Cimarron shared its J-body platform with the Chevrolet Cavalier, Pontiac J2000, Buick Skyhawk, and Oldsmobile Firenza.",
+      "forbidden_or_unsupported_inference": [],
+      "conflicting_evidence": [],
+      "notes": ""
+    },
+    {
+      "claim_id": "c8",
+      "normalized_claim": "Cadillac standardized real differentiating equipment on the Cimarron versus the Cavalier -- air conditioning, extra sound insulation, deep-pile carpeting, alloy wheels, leather-wrapped steering wheel, full instrumentation, leather upholstery -- plus Cadillac-specific ('F41') suspension tuning, while the platform, body structure, and initial engine remained shared.",
+      "claim_type": "fact",
+      "time_context": "1982",
+      "source_language": "en",
+      "sources": ["https://en.wikipedia.org/wiki/Cadillac_Cimarron"],
+      "source_classification": "high_quality_secondary",
+      "perspective": "contemporary",
+      "confidence": "high",
+      "allowed_in_narration": true,
+      "safe_wording": "Cadillac did add real equipment and its own suspension tuning -- air conditioning, extra sound insulation, alloy wheels, leather, full instrumentation -- even though the platform, body, and (at first) the engine stayed shared with the Cavalier.",
+      "forbidden_or_unsupported_inference": [
+        "Reducing this to 'just badges and leather'",
+        "Implying the suspension used entirely different hardware rather than Cadillac-specific tuning of shared components"
+      ],
+      "conflicting_evidence": [],
+      "notes": "Supersedes the prior draft's flatter 'badges, leather, and sound insulation' framing."
+    },
+    {
+      "claim_id": "c4",
+      "normalized_claim": "A 2.8L V6 became optional on the Cimarron in 1985 (roughly 125-130 hp) and standard equipment by 1987.",
+      "claim_type": "fact",
+      "time_context": "1985-1987",
+      "source_language": "en",
+      "sources": ["https://www.conceptcarz.com/vehicle/z1990/cadillac-cimarron.aspx"],
+      "source_classification": "high_quality_secondary",
+      "perspective": "contemporary",
+      "confidence": "high",
+      "allowed_in_narration": true,
+      "safe_wording": "A 2.8-liter V6 became optional in 1985 and standard by 1987.",
+      "forbidden_or_unsupported_inference": [],
+      "conflicting_evidence": [],
+      "notes": ""
+    },
+    {
+      "claim_id": "c5",
+      "normalized_claim": "Cimarron production ended in 1988; total production across the model run was about 132,499 units, with only 6,454 built in the final year.",
+      "claim_type": "statistic",
+      "time_context": "1982-1988",
+      "source_language": "en",
+      "sources": ["https://www.goodcarbadcar.net/cadillac-cimarron-sales-figures/"],
+      "source_classification": "high_quality_secondary",
+      "perspective": "retrospective",
+      "confidence": "high",
+      "allowed_in_narration": true,
+      "safe_wording": "Production ended in 1988, after about 132,499 units total -- only 6,454 of them in that final year.",
+      "forbidden_or_unsupported_inference": [],
+      "conflicting_evidence": [],
+      "notes": "perspective is 'retrospective' because this is a modern compiled tally, not a contemporary announcement -- the underlying production events were of course contemporary."
+    },
+    {
+      "claim_id": "c6",
+      "normalized_claim": "Annual Cimarron production fell in the car's final years: 25,534 in 1986, 14,561 in 1987, 6,454 in 1988.",
+      "claim_type": "statistic",
+      "time_context": "1986-1988",
+      "source_language": "en",
+      "sources": ["https://www.goodcarbadcar.net/cadillac-cimarron-sales-figures/"],
+      "source_classification": "high_quality_secondary",
+      "perspective": "retrospective",
+      "confidence": "high",
+      "allowed_in_narration": true,
+      "safe_wording": "Year-over-year production kept falling: 25,534 in 1986, 14,561 in 1987, 6,454 in 1988.",
+      "forbidden_or_unsupported_inference": [
+        "Attributing the decline solely to reputation without noting the V6/equipment updates happened over this same window"
+      ],
+      "conflicting_evidence": [],
+      "notes": ""
+    },
+    {
+      "claim_id": "c7",
+      "normalized_claim": "TIME magazine's 2007 retrospective list named the Cadillac Cimarron among the '50 Worst Cars of All Time.'",
+      "claim_type": "reputation_assessment",
+      "time_context": "2007",
+      "source_language": "en",
+      "sources": ["https://content.time.com/time/specials/2007/article/0,28804,1658545_1658533_1658526,00.html"],
+      "source_classification": "high_quality_secondary",
+      "perspective": "retrospective",
+      "confidence": "high",
+      "allowed_in_narration": true,
+      "safe_wording": "In 2007, TIME named the Cimarron to its retrospective list of the '50 Worst Cars of All Time.'",
+      "forbidden_or_unsupported_inference": [
+        "Presenting this as how the car was perceived in 1982",
+        "Treating inclusion on one magazine list as objective, universal consensus"
+      ],
+      "conflicting_evidence": [],
+      "notes": "Must be paired with c9/c10 (contemporary reception) in narration so the two eras aren't collapsed into one."
+    },
+    {
+      "claim_id": "c9",
+      "normalized_claim": "Car and Driver's original review (Rich Ceppos, August 1981 issue) was notably positive, reportedly calling the Cimarron launch 'one of the boldest moves ever made by a car company'; the author later said he felt embarrassed for having 'effused' over the car once its reputation soured.",
+      "claim_type": "quote",
+      "time_context": "August 1981",
+      "source_language": "en",
+      "sources": ["https://www.curbsideclassic.com/vintage-reviews/vintage-reviews-cadillac-cimarron/"],
+      "source_classification": "reference_only",
+      "perspective": "contemporary",
+      "confidence": "unresolved",
+      "allowed_in_narration": false,
+      "safe_wording": "Do not quote 'one of the boldest moves ever made by a car company' directly until confirmed. Safe interim wording: 'contemporary coverage, including Car and Driver, was reportedly more positive than the car's later reputation would suggest.'",
+      "forbidden_or_unsupported_inference": [
+        "Quoting the exact phrase as verified when it hasn't been read from a primary or directly-fetched source",
+        "Using this to claim ALL contemporary press was positive -- c10 shows contemporary criticism existed too"
+      ],
+      "conflicting_evidence": [],
+      "notes": "Source page returned HTTP 403 on direct fetch; only a search-engine summary was available. Needs primary confirmation (original C&D issue or an independently fetchable reprint) before use as a direct quote in final_script.json."
+    },
+    {
+      "claim_id": "c10",
+      "normalized_claim": "A contemporary Road & Track test recorded 0-60 mph in 15.9 seconds for the 1.8L Cimarron and described the performance as 'painfully slow.'",
+      "claim_type": "quote",
+      "time_context": "1982",
+      "source_language": "en",
+      "sources": ["https://macsmotorcitygarage.com/cadillacs-small-mistake-the-1982-1988-cimarron/"],
+      "source_classification": "high_quality_secondary",
+      "perspective": "contemporary",
+      "confidence": "high",
+      "allowed_in_narration": true,
+      "safe_wording": "Road & Track clocked the original 1.8-liter car at 0-60 in 15.9 seconds and called it 'painfully slow.'",
+      "forbidden_or_unsupported_inference": [
+        "Applying this performance criticism to the later V6 cars (1985+), which were meaningfully quicker"
+      ],
+      "conflicting_evidence": [],
+      "notes": "Directly confirmed via fetch this session (not just a search summary)."
+    },
+    {
+      "claim_id": "c11",
+      "normalized_claim": "Cadillac's own 1982 marketing materials positioned the Cimarron against the Volvo GL, Saab 900S, and BMW 320i.",
+      "claim_type": "fact",
+      "time_context": "1982",
+      "source_language": "en",
+      "sources": ["https://www.thedrive.com/news/37839/the-infamous-cadillac-cimarron-was-a-bad-caddy-but-not-as-awful-a-car-as-you-think"],
+      "source_classification": "high_quality_secondary",
+      "perspective": "contemporary",
+      "confidence": "high",
+      "allowed_in_narration": true,
+      "safe_wording": "Cadillac's own launch brochure named the Volvo GL, Saab 900S, and BMW 320i as the competition.",
+      "forbidden_or_unsupported_inference": [],
+      "conflicting_evidence": [],
+      "notes": "Directly confirmed via fetch this session (quoted from the brochure by the source)."
+    },
+    {
+      "claim_id": "c15",
+      "normalized_claim": "Contemporary and retrospective sources also compare the Cimarron's price and positioning against the Audi 4000 and Honda Accord.",
+      "claim_type": "fact",
+      "time_context": "1982",
+      "source_language": "en",
+      "sources": ["https://amazingclassiccars.com/cadillac-cimarron-1982/"],
+      "source_classification": "reference_only",
+      "perspective": "contemporary",
+      "confidence": "unresolved",
+      "allowed_in_narration": false,
+      "safe_wording": "Do not name Audi 4000/Honda Accord as confirmed period competitors until this is independently confirmed; c11's Volvo/Saab/BMW brochure quote is the confirmed version of this claim.",
+      "forbidden_or_unsupported_inference": [
+        "Stating the ~$2,000 price gap vs. Audi/Accord as a confirmed figure"
+      ],
+      "conflicting_evidence": [],
+      "notes": "Came from a web-search summary, not an independently fetched page. Confirm against amazingclassiccars.com directly, or drop it."
+    },
+    {
+      "claim_id": "c12",
+      "normalized_claim": "Former Cadillac product director John Howell reportedly kept a photo of a Cimarron in his office as a cautionary reminder.",
+      "claim_type": "context",
+      "time_context": "unspecified, retrospective anecdote",
+      "source_language": "en",
+      "sources": ["https://www.thedrive.com/news/37839/the-infamous-cadillac-cimarron-was-a-bad-caddy-but-not-as-awful-a-car-as-you-think"],
+      "source_classification": "high_quality_secondary",
+      "perspective": "retrospective",
+      "confidence": "medium",
+      "allowed_in_narration": true,
+      "safe_wording": "Former Cadillac product director John Howell reportedly kept a photo of a Cimarron in his office as a warning to himself.",
+      "forbidden_or_unsupported_inference": [
+        "Stating this as verified fact rather than a reported anecdote",
+        "Implying this was official Cadillac policy or a company-wide sentiment rather than one person's habit"
+      ],
+      "conflicting_evidence": [],
+      "notes": "Source itself hedges with 'reportedly' -- single-source anecdote, kept at medium confidence rather than high."
+    }
+  ]
+}

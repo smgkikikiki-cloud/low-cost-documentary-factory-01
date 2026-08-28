@@ -2,38 +2,50 @@
   "$schema": "http://json-schema.org/draft-07/schema#",
   "$id": "final_script.schema.json",
   "title": "FinalScript",
-  "description": "The locked narration script, merging producer_outline.json beats with asset_inventory.json visuals. Last human/agent-editable artifact before the deterministic renderer takes over.",
+  "description": "The locked, localized narration script. Written by Agent A's A4 stage, which is forbidden until asset_inventory.json exists for this episode (final narration must know what can actually be shown). Any block that asserts a factual claim must cite it via supporting_claim_ids; the script must not introduce facts absent from fact_pack.json.",
   "type": "object",
-  "required": ["episode_id", "status", "scenes"],
+  "required": ["episode_id", "output_language", "status", "blocks"],
   "additionalProperties": false,
   "properties": {
     "episode_id": {
       "type": "string"
+    },
+    "output_language": {
+      "type": "string",
+      "description": "Must match the channel's output_language (snapshotted on episode_brief.json) -- narration is written directly in this language, not translated word-for-word from working_language"
     },
     "status": {
       "type": "string",
       "enum": ["pending", "drafted", "locked"],
       "default": "pending"
     },
-    "scenes": {
+    "blocks": {
       "type": "array",
       "items": {
         "type": "object",
-        "required": ["scene_id", "beat_id", "narration_text"],
+        "required": ["block_id", "beat_id", "narration", "supporting_claim_ids", "estimated_duration_sec"],
         "additionalProperties": false,
         "properties": {
-          "scene_id": { "type": "string" },
+          "block_id": { "type": "string" },
           "beat_id": {
             "type": "string",
             "description": "References a beat_id from producer_outline.json"
           },
-          "narration_text": { "type": "string" },
+          "narration": {
+            "type": "string",
+            "description": "Final narration text, in output_language"
+          },
+          "supporting_claim_ids": {
+            "type": "array",
+            "items": { "type": "string" },
+            "description": "fact_pack.json claim_ids this block's factual assertions trace back to. May be empty ONLY for pure transitions, jokes, rhetorical questions, or host banter that assert no fact."
+          },
           "asset_ids": {
             "type": "array",
             "items": { "type": "string" },
-            "description": "References asset_id values from asset_inventory.json"
+            "description": "asset_inventory.json asset_id values this block is written around"
           },
-          "duration_sec": { "type": "number", "minimum": 0 }
+          "estimated_duration_sec": { "type": "number", "minimum": 0 }
         }
       }
     }

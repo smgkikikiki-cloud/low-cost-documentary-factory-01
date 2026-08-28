@@ -19,13 +19,13 @@
       "type": "array",
       "items": {
         "type": "object",
-        "required": ["clip_id", "scene_id", "asset_id", "start_sec", "end_sec"],
+        "required": ["clip_id", "block_id", "asset_id", "start_sec", "end_sec"],
         "additionalProperties": false,
         "properties": {
           "clip_id": { "type": "string" },
-          "scene_id": {
+          "block_id": {
             "type": "string",
-            "description": "References a scene_id from final_script.json"
+            "description": "References a block_id from final_script.json"
           },
           "asset_id": {
             "type": "string",

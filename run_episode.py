@@ -46,7 +46,10 @@ def init_episode(channel_id: str, topic: str, quirk: str) -> Path:
     episode_brief = {
         "episode_id": episode_id,
         "channel_id": channel_id,
-        "language": channel["language"],
+        "research_language": channel["research_language"],
+        "working_language": channel["working_language"],
+        "output_language": channel["output_language"],
+        "narration_register": channel["narration_register"],
         "topic": topic,
         "quirk": quirk,
         "target_audience": channel["target_audience"],
@@ -55,6 +58,17 @@ def init_episode(channel_id: str, topic: str, quirk: str) -> Path:
     }
     _write(episode_dir / "episode_brief.json", episode_brief)
 
+    _write(episode_dir / "fact_pack.json", {
+        "episode_id": episode_id,
+        "status": "pending",
+        "research_language": channel["research_language"],
+        "working_language": channel["working_language"],
+        "quirk_lead": {
+            "text": quirk,
+            "note": "Research lead only -- not a verified fact. Must not be assumed as the thesis until supported by claims in this fact pack.",
+        },
+        "claims": [],
+    })
     _write(episode_dir / "producer_outline.json", {
         "episode_id": episode_id,
         "status": "pending",
@@ -65,11 +79,13 @@ def init_episode(channel_id: str, topic: str, quirk: str) -> Path:
         "episode_id": episode_id,
         "status": "pending",
         "assets": [],
+        "request_coverage": [],
     })
     _write(episode_dir / "final_script.json", {
         "episode_id": episode_id,
+        "output_language": channel["output_language"],
         "status": "pending",
-        "scenes": [],
+        "blocks": [],
     })
     _write(episode_dir / "edit_plan.json", {
         "episode_id": episode_id,

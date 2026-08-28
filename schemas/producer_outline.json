@@ -2,7 +2,7 @@
   "$schema": "http://json-schema.org/draft-07/schema#",
   "$id": "producer_outline.schema.json",
   "title": "ProducerOutline",
-  "description": "Agent A's (Producer/Writer) structural plan for the episode, produced from episode_brief.json.",
+  "description": "Agent A's (A3 Story Architecture) structural plan for the episode. Downstream of fact_pack.json: every supporting_claim_ids/unresolved_claim_ids entry must reference a claim_id that exists there, and this file must not introduce factual claims fact_pack.json doesn't contain. visual_requests are requests to Agent B, not evidence that any asset exists.",
   "type": "object",
   "required": ["episode_id", "status", "thesis", "beats"],
   "additionalProperties": false,
@@ -17,7 +17,7 @@
     },
     "thesis": {
       "type": "string",
-      "description": "The one-sentence argument/story the episode is built around"
+      "description": "The one-sentence argument/story the episode is built around. Must be supported by fact_pack.json claims, not auto-derived from episode_brief.quirk."
     },
     "hook": {
       "type": "string",
@@ -27,32 +27,9 @@
       "type": "integer",
       "minimum": 0
     },
-    "key_factual_claims": {
-      "type": "array",
-      "description": "Factual claims the episode relies on, each traceable to a source, so later stages can verify or cite them",
-      "items": {
-        "type": "object",
-        "required": ["claim_id", "claim", "source_url"],
-        "additionalProperties": false,
-        "properties": {
-          "claim_id": { "type": "string" },
-          "claim": { "type": "string" },
-          "relevant_beats": {
-            "type": "array",
-            "items": { "type": "string" },
-            "description": "beat_id values this claim supports"
-          },
-          "source_url": { "type": "string" },
-          "note": {
-            "type": "string",
-            "description": "Caveats about source reliability, e.g. an unconfirmed secondary citation"
-          }
-        }
-      }
-    },
     "open_questions": {
       "type": "array",
-      "description": "Unresolved research questions Agent B or later research should try to answer",
+      "description": "Outline-level open questions that aren't tied to one fact_pack claim (e.g. structural/strategic questions). Per-claim uncertainty belongs in fact_pack.json instead.",
       "items": { "type": "string" }
     },
     "beats": {
@@ -60,13 +37,75 @@
       "description": "Ordered narrative beats making up the episode",
       "items": {
         "type": "object",
-        "required": ["beat_id", "summary"],
+        "required": [
+          "beat_id",
+          "purpose",
+          "summary",
+          "supporting_claim_ids",
+          "unresolved_claim_ids",
+          "narration_direction",
+          "visual_requests"
+        ],
         "additionalProperties": false,
         "properties": {
           "beat_id": { "type": "string" },
+          "purpose": {
+            "type": "string",
+            "description": "Why this beat exists -- its narrative function in the episode"
+          },
           "summary": { "type": "string" },
-          "narration_notes": { "type": "string" },
-          "visual_notes": { "type": "string" }
+          "supporting_claim_ids": {
+            "type": "array",
+            "items": { "type": "string" },
+            "description": "fact_pack.json claim_ids (allowed_in_narration: true) this beat is built on"
+          },
+          "unresolved_claim_ids": {
+            "type": "array",
+            "items": { "type": "string" },
+            "description": "fact_pack.json claim_ids this beat references but that are NOT allowed_in_narration -- must be framed as open/unconfirmed if mentioned at all, never stated as fact"
+          },
+          "narration_direction": {
+            "type": "string",
+            "description": "Guidance for the A4 localized-writing stage -- talking points and tone, NOT final narration text"
+          },
+          "visual_requests": {
+            "type": "array",
+            "description": "Structured requests to Agent B. A request, not evidence the asset exists.",
+            "items": {
+              "type": "object",
+              "required": [
+                "request_id",
+                "beat_id",
+                "subject",
+                "desired_asset_type",
+                "description",
+                "priority",
+                "exact_subject_required"
+              ],
+              "additionalProperties": false,
+              "properties": {
+                "request_id": { "type": "string" },
+                "beat_id": { "type": "string" },
+                "subject": { "type": "string" },
+                "desired_asset_type": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "enum": ["video", "photo", "advertisement", "brochure", "document", "magazine_scan", "map", "chart", "contextual_video"]
+                  }
+                },
+                "description": { "type": "string" },
+                "priority": {
+                  "type": "string",
+                  "enum": ["low", "medium", "high"]
+                },
+                "exact_subject_required": {
+                  "type": "boolean",
+                  "description": "If true, only footage/imagery of the exact subject satisfies this request -- generic/contextual substitutes are not acceptable. If false, contextual/period-appropriate substitutes are acceptable."
+                }
+              }
+            }
+          }
         }
       }
     }

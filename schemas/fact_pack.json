@@ -1,0 +1,132 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "fact_pack.schema.json",
+  "title": "FactPack",
+  "description": "Agent A's (A1 Evidence Collection / A2 Verified Claim Registry) evidence boundary between research and storytelling. producer_outline.json may only cite claim_ids that exist here; final_script.json narration may only assert claims marked allowed_in_narration.",
+  "type": "object",
+  "required": ["episode_id", "status", "claims"],
+  "additionalProperties": false,
+  "properties": {
+    "episode_id": { "type": "string" },
+    "status": {
+      "type": "string",
+      "enum": ["pending", "collected", "verified"],
+      "default": "pending",
+      "description": "pending: not started. collected: A1 evidence collection done. verified: A2 adversarial pass done, allowed_in_narration values are trustworthy."
+    },
+    "research_language": {
+      "type": "string",
+      "description": "Snapshot of the channel's research_language at collection time (research itself may draw on sources in any language)"
+    },
+    "working_language": {
+      "type": "string",
+      "description": "Snapshot of the channel's working_language -- normalized_claim text is written in this language for internal consistency"
+    },
+    "quirk_lead": {
+      "type": "object",
+      "description": "The episode_brief's quirk, carried forward as a research lead only. It is NOT a claim and must never be treated as pre-verified or auto-promoted to the thesis.",
+      "additionalProperties": false,
+      "properties": {
+        "text": { "type": "string" },
+        "note": {
+          "type": "string",
+          "default": "Research lead only -- not a verified fact. Must not be assumed as the thesis until supported by claims in this fact pack."
+        }
+      }
+    },
+    "claims": {
+      "type": "array",
+      "description": "Atomic, independently traceable claims. Includes both sourced claims and derived_comparison claims (numbers computed from other claims -- see the numerical claim rule in agents/agent_a_producer_writer.md).",
+      "items": {
+        "type": "object",
+        "required": [
+          "claim_id",
+          "normalized_claim",
+          "claim_type",
+          "time_context",
+          "source_language",
+          "sources",
+          "source_classification",
+          "perspective",
+          "confidence",
+          "allowed_in_narration",
+          "safe_wording",
+          "forbidden_or_unsupported_inference",
+          "conflicting_evidence",
+          "notes"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "claim_id": { "type": "string" },
+          "normalized_claim": {
+            "type": "string",
+            "description": "The claim stated plainly in working_language, independent of any beat's phrasing"
+          },
+          "claim_type": {
+            "type": "string",
+            "enum": ["fact", "quote", "statistic", "derived_comparison", "reputation_assessment", "context"]
+          },
+          "time_context": {
+            "type": "string",
+            "description": "The time period the claim is ABOUT, e.g. '1982', '1985-1987', '2007'"
+          },
+          "source_language": {
+            "type": "string",
+            "description": "Primary language of the source(s) used, e.g. 'en'"
+          },
+          "sources": {
+            "type": "array",
+            "items": { "type": "string" },
+            "description": "Source URLs (or citations) for this claim. May be empty for a derived_comparison claim, which cites source_claim_ids instead."
+          },
+          "source_classification": {
+            "type": "string",
+            "enum": ["contemporary_primary", "later_primary", "high_quality_secondary", "reference_only"]
+          },
+          "perspective": {
+            "type": "string",
+            "enum": ["contemporary", "retrospective", "timeless"],
+            "description": "contemporary: asserted/observed at time_context. retrospective: a later judgment projected onto time_context -- must not be presented as what people thought at the time. timeless: not time-bound (e.g. platform-sharing fact)."
+          },
+          "confidence": {
+            "type": "string",
+            "enum": ["high", "medium", "unresolved"],
+            "description": "unresolved claims cannot be stated as fact in narration -- allowed_in_narration must be false"
+          },
+          "allowed_in_narration": {
+            "type": "boolean",
+            "description": "Whether this claim, as currently evidenced, may be asserted as fact in final_script.json. Must be false whenever confidence is 'unresolved'."
+          },
+          "safe_wording": {
+            "type": "string",
+            "description": "Pre-approved phrasing that does not overclaim beyond the evidence -- the wording a writer may use, or the hedge to use if allowed_in_narration is false"
+          },
+          "forbidden_or_unsupported_inference": {
+            "type": "array",
+            "items": { "type": "string" },
+            "description": "Specific conclusions a writer might be tempted to draw from this claim that the evidence does NOT support"
+          },
+          "conflicting_evidence": {
+            "type": "array",
+            "items": { "type": "string" },
+            "description": "Other data points/sources that disagree with this claim. Must be preserved here rather than silently resolved for narrative convenience; empty array if none."
+          },
+          "notes": { "type": "string" },
+          "source_claim_ids": {
+            "type": "array",
+            "items": { "type": "string" },
+            "description": "Required (by convention, not schema) when claim_type is derived_comparison: the claim_ids the calculation is derived from"
+          },
+          "calculation": {
+            "type": "string",
+            "description": "For derived_comparison claims: the literal arithmetic performed, e.g. '(12131 - 9712) / 9712 * 100'"
+          },
+          "result": {
+            "type": "string",
+            "description": "For derived_comparison claims: the calculated result, stated with its comparator explicit"
+          }
+        }
+      }
+    }
+  }
+}

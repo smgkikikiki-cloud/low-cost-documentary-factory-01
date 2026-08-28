@@ -2,9 +2,18 @@
   "$schema": "http://json-schema.org/draft-07/schema#",
   "$id": "episode_brief.schema.json",
   "title": "EpisodeBrief",
-  "description": "The seed spec for one episode. Created by the CLI at episode init time; consumed by Agent A.",
+  "description": "The seed spec for one episode. Created by the CLI at episode init time, which snapshots the channel's language settings here so the episode stays reproducible even if the channel config changes later. Consumed by Agent A.",
   "type": "object",
-  "required": ["channel_id", "language", "topic", "quirk", "target_audience"],
+  "required": [
+    "channel_id",
+    "research_language",
+    "working_language",
+    "output_language",
+    "narration_register",
+    "topic",
+    "quirk",
+    "target_audience"
+  ],
   "additionalProperties": false,
   "properties": {
     "episode_id": {
@@ -15,9 +24,21 @@
       "type": "string",
       "description": "Identifier of the channel this episode belongs to, e.g. ForeignCarsTH"
     },
-    "language": {
+    "research_language": {
       "type": "string",
-      "description": "BCP-47-ish language code or name for narration, e.g. th, en"
+      "description": "Snapshot of the channel's research_language. 'auto' means research may draw on sources in any language."
+    },
+    "working_language": {
+      "type": "string",
+      "description": "Snapshot of the channel's working_language -- the internal language fact_pack.json normalized claims are written in"
+    },
+    "output_language": {
+      "type": "string",
+      "description": "Snapshot of the channel's output_language -- final_script.json narration MUST be written directly in this language"
+    },
+    "narration_register": {
+      "type": "string",
+      "description": "Snapshot of the channel's narration_register, e.g. 'natural_spoken_thai' -- guides A4 localized writing style"
     },
     "topic": {
       "type": "string",
@@ -25,7 +46,7 @@
     },
     "quirk": {
       "type": "string",
-      "description": "The specific angle/hook that makes this episode interesting"
+      "description": "The specific angle/hook that makes this episode interesting. A research lead, NOT a pre-verified fact or a guaranteed thesis -- see fact_pack.json's quirk_lead."
     },
     "target_audience": {
       "type": "string",
