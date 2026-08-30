@@ -8,7 +8,7 @@ master script. This repository turns that locked script into a finished video:
 
 - **Deterministic ingestion** (`scripts/ingest_script.py`) — no LLM — turns
   `master_script.md` into `script_manifest.json`.
-- **TTS** (`scripts/tts_render.py`, edge-tts) renders each block's narration and its
+- **TTS** (`scripts/tts_render.py`, edge-tts or Google Chirp 3: HD) renders each block's narration and its
   *measured* duration becomes `tts_manifest.json`.
 - **Claude — B-DISCOVER/B-EDIT** (`agents/agent_b_archive_visual_editor.md`) finds and
   verifies real archival visuals against the locked narration
@@ -46,14 +46,18 @@ per-request checklist.
 
 ```
 episodes/<id>/          master_script.md, script_manifest.json, tts_manifest.json,
-                         asset_inventory.json, edit_plan.json, + audio/ media/ render/
+                         asset_inventory.json, edit_plan.json,
+                         + audio/<tts_fingerprint>/ media/ render/ temp/
                          temp/ (gitignored -- see .gitignore)
 agents/                 the one active Claude production role spec (B-DISCOVER/B-EDIT)
-config/channels/        minimal per-channel identity (channel_id, output_language, tts)
+config/channels/        minimal per-channel identity (channel_id, output_language, tts,
+                         optional tts_profiles). Never any credentials.
 schemas/                JSON Schema for every active episode state file
 scripts/ingest_script.py     deterministic master_script.md -> script_manifest.json
 scripts/preflight.py         checks ffmpeg/ffprobe/yt-dlp/edge-tts/jsonschema on PATH
-scripts/tts_render.py        edge-tts narration renderer, one file per block
+                             (+ optional google-cloud-texttospeech)
+scripts/tts_render.py        narration renderer (edge-tts | google-chirp3), one file per block
+scripts/tts_audition.py      Chirp 3: HD voice audition, writes only to temp/audition/
 scripts/media_search.py      yt-dlp candidate metadata search (no download)
 scripts/media_download.py    download one selected video or direct-URL asset
 scripts/media_probe.py       deterministic ffprobe/ffmpeg helper (probe, contact sheets)
@@ -84,7 +88,8 @@ python run_episode.py ingest --channel ForeignCarsTH \
     --topic "Jeep Wrangler YJ" \
     --script /path/to/master_script.md
 
-python run_episode.py tts ForeignCarsTH_jeep-wrangler-yj
+python run_episode.py tts ForeignCarsTH_jeep-wrangler-yj            # channel's active tts config
+python run_episode.py tts ForeignCarsTH_jeep-wrangler-yj --profile google-chirp3
 
 # Claude performs B-DISCOVER (writes asset_inventory.json)
 # Claude performs B-EDIT (writes edit_plan.json)

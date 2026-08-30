@@ -1,6 +1,11 @@
 # Python dependencies for the script-first documentary production pipeline.
 # ffmpeg, ffprobe, and yt-dlp are external command-line tools, not Python packages --
 # they are checked (not installed) by `python run_episode.py preflight`.
+#
+# google-cloud-texttospeech is needed only by the `google-chirp3` TTS provider. It
+# authenticates via Application Default Credentials configured on the machine --
+# no key, project ID, or credential file belongs in this repository.
 
 edge-tts
+google-cloud-texttospeech
 jsonschema

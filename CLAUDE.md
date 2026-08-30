@@ -20,7 +20,7 @@ doesn't, anymore. See "Who does what" below.**
 |---|---|---|
 | **Upstream OpenAI writer** | Outside this repository | Research, sourcing, thesis, story selection, pacing, structure, final Thai narration. Input: a vehicle/topic name + hook. Output: one locked `master_script.md`. |
 | **Deterministic ingestion** | `scripts/ingest_script.py` | Turns `master_script.md` into `script_manifest.json`. No LLM. |
-| **TTS** | `scripts/tts_render.py` (edge-tts) | Renders each block's narration to audio; its measured duration becomes `tts_manifest.json`. |
+| **TTS** | `scripts/tts_render.py` (edge-tts or Google Chirp 3: HD) | Renders each block's narration to audio; its measured duration becomes `tts_manifest.json`. |
 | **Claude (B-DISCOVER / B-EDIT)** | `agents/agent_b_archive_visual_editor.md` | Finds and verifies real visual material (`asset_inventory.json`), then assembles it into a concrete timeline (`edit_plan.json`). Decides only what is shown and how, never what is said. |
 | **FFmpeg renderer** | `scripts/render_episode.py` | Executes `edit_plan.json` exactly. No creative decisions. |
 
@@ -43,7 +43,7 @@ master_script.md                      -- written upstream, supplied externally
     |  deterministic ingestion (scripts/ingest_script.py, no LLM)
     v
 script_manifest.json                  -- locked narration, source_refs as hints
-    |  TTS (scripts/tts_render.py, edge-tts)
+    |  TTS (scripts/tts_render.py, edge-tts | google-chirp3)
     v
 tts_manifest.json                     -- MEASURED per-block audio duration
     |  Claude -- B-DISCOVER
@@ -141,7 +141,11 @@ has the full production detail; this list is the index.
 - `agents/agent_b_archive_visual_editor.md` — the one active Claude production
   role spec (B-DISCOVER / B-EDIT modes).
 - `config/channels/<channel_id>.json` — minimal per-channel identity
-  (`channel_id`, `output_language`, `tts` voice config). Editorial defaults
+  (`channel_id`, `output_language`, `tts` voice config, plus optional named
+  `tts_profiles` so a provider/voice switch keeps a working rollback).
+  Credentials never live here: the Google backend uses Application Default
+  Credentials configured on the machine, so no key, project ID, or
+  service-account path belongs in this repository. Editorial defaults
   (research/working language, narration register, target audience, runtime
   policy, act structure) belonged to the retired pipeline and are not part of
   this repository's responsibility anymore — see `legacy/`.
@@ -154,11 +158,26 @@ has the full production detail; this list is the index.
   `script_manifest.json` converter. Atomic: a malformed script fails before any
   episode directory is created.
 - `scripts/preflight.py` — checks ffmpeg/ffprobe/yt-dlp/edge-tts/jsonschema
-  availability on THIS machine's PATH at runtime; never installs anything.
-- `scripts/tts_render.py` — real edge-tts renderer: one audio file per
-  `script_manifest.json` block, real measured `duration_sec` via
-  `media_probe.probe()`, resumable, atomic `tts_manifest.json` writes that only
-  ever claim `status: "generated"` when every block genuinely rendered.
+  availability on THIS machine's PATH at runtime, plus the optional
+  `google-cloud-texttospeech` package; never installs anything. Google
+  credentials are deliberately not checked here — Application Default
+  Credentials are resolved only when Google synthesis actually runs, so the
+  edge-tts pipeline never requires a Google login.
+- `scripts/tts_render.py` — the real TTS renderer, with two backends selected by
+  the channel config's `provider` (`edge-tts` or `google-chirp3` = Google Cloud
+  Chirp 3: HD). A two-branch dispatch, deliberately not a provider framework.
+  One audio file per `script_manifest.json` block, real measured `duration_sec`
+  via `media_probe.probe()`, a per-block synthesis timeout (120 s default) so a
+  hung request can never stall an episode, crash-safe resume that probes existing
+  audio rather than trusting a checkpoint, and atomic `tts_manifest.json`
+  checkpoints after every measured block that only ever claim
+  `status: "generated"` when every block genuinely rendered.
+- `scripts/tts_audition.py` — voice audition for Google Chirp 3: HD. Renders ONE
+  real narration block with several candidate voices into
+  `episodes/<id>/temp/audition/` so they can be compared on the actual script.
+  Never writes `tts_manifest.json`, never writes into `audio/` (it refuses), and
+  verifies every voice name against Google's live `list_voices` catalog before
+  synthesizing.
 - `scripts/media_search.py` / `scripts/media_download.py` — yt-dlp candidate
   metadata search (no download), and download of one selected video or one
   selected direct-URL asset. Claude decides what to search for and select; these
@@ -179,7 +198,8 @@ has the full production detail; this list is the index.
   segment-bounds checks, and `edit_plan.json`'s continuous-coverage/
   duration-match checks). Topic-independent; no episode-specific logic.
 - `scripts/episode_paths.py` — the one shared definition of the episode-local
-  media layout (`audio/`, `media/raw/`, `media/inspection/`, `render/`, `temp/`).
+  media layout (`audio/<tts_fingerprint>/`, `media/raw/`, `media/inspection/`,
+  `render/`, `temp/`, `temp/audition/`).
 - `asset_library/` — minimal flat-file convention (`index.json` + `media/`) for
   reusing visual assets cheaply across episodes. No database, no vector store.
 - `legacy/` — the retired pre-script-first architecture (Agent A spec, its
@@ -191,7 +211,7 @@ has the full production detail; this list is the index.
 ```bash
 python run_episode.py preflight
 python run_episode.py ingest --channel <channel_id> --topic "<topic>" --script <path/to/master_script.md>
-python run_episode.py tts <episode_id>
+python run_episode.py tts <episode_id> [--profile <tts_profile>]
 # Claude performs B-DISCOVER (writes asset_inventory.json)
 # Claude performs B-EDIT (writes edit_plan.json)
 python run_episode.py validate <episode_id>
@@ -211,3 +231,13 @@ there is no separate state machine.
 
 Media (`audio/`, `media/`, `render/`, `temp/` under each episode directory) is
 gitignored — only the small JSON/text state files are tracked.
+
+Rendered narration is scoped by synthesis configuration:
+`audio/<provider>_<8-hex-fingerprint>/block_001.mp3`, where the fingerprint covers
+every field that materially changes how the audio sounds (provider, voice,
+language, speaking rate/pace, pitch, volume, input/markup mode, encoding). Changing
+provider, voice, pace, or markup mode therefore renders into a different directory,
+so audio made by one configuration can never be silently reused as another's, and
+switching back is just switching the config back — nothing is deleted.
+`tts_manifest.json` always records the current configuration's real relative
+`audio_path`; no schema change was needed for any of this.

@@ -7,5 +7,21 @@
     "rate": "+0%",
     "pitch": "+0Hz",
     "volume": "+0%"
+  },
+  "tts_profiles": {
+    "edge-tts": {
+      "provider": "edge-tts",
+      "voice": "th-TH-NiwatNeural",
+      "rate": "+0%",
+      "pitch": "+0Hz",
+      "volume": "+0%"
+    },
+    "google-chirp3": {
+      "provider": "google-chirp3",
+      "language_code": "th-TH",
+      "voice": "th-TH-Chirp3-HD-Charon",
+      "speaking_rate": 1.0,
+      "input_mode": "text"
+    }
   }
 }

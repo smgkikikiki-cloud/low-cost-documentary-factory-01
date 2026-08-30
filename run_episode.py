@@ -4,7 +4,7 @@
 Usage:
     python run_episode.py preflight
     python run_episode.py ingest --channel ForeignCarsTH --topic "Jeep Wrangler YJ" --script /path/to/master_script.md
-    python run_episode.py tts <episode_id>
+    python run_episode.py tts <episode_id> [--profile google-chirp3]
     # Claude performs B-DISCOVER (writes asset_inventory.json)
     # Claude performs B-EDIT (writes edit_plan.json)
     python run_episode.py validate <episode_id>
@@ -129,12 +129,36 @@ def ingest_episode(channel_id: str, topic: str, script_path: Path) -> Path:
     return episode_dir
 
 
-def run_tts(episode_dir: Path) -> int:
-    sm = json.loads((episode_dir / "script_manifest.json").read_text(encoding="utf-8"))
-    channel = load_channel(sm["channel_id"])
+def select_tts_config(channel: dict, profile: str = None) -> dict:
+    """The channel's active `tts` block, or one of its named `tts_profiles`.
+
+    Profiles exist so a voice/provider change is a one-word switch with a working
+    rollback -- the previous configuration stays in the file rather than being
+    overwritten. `tts` remains the single source of truth for what production
+    uses when no profile is named.
+    """
+    if profile:
+        profiles = channel.get("tts_profiles") or {}
+        if profile not in profiles:
+            available = ", ".join(sorted(profiles)) or "(none defined)"
+            raise SystemExit(
+                f"Channel {channel.get('channel_id')!r} has no tts profile {profile!r}. Available: {available}"
+            )
+        return profiles[profile]
+
     tts_config = channel.get("tts")
     if not tts_config:
-        raise SystemExit(f"Channel {sm['channel_id']!r} has no 'tts' config -- see config/channels/{sm['channel_id']}.json")
+        raise SystemExit(
+            f"Channel {channel.get('channel_id')!r} has no 'tts' config -- "
+            f"see config/channels/{channel.get('channel_id')}.json"
+        )
+    return tts_config
+
+
+def run_tts(episode_dir: Path, profile: str = None) -> int:
+    sm = json.loads((episode_dir / "script_manifest.json").read_text(encoding="utf-8"))
+    channel = load_channel(sm["channel_id"])
+    tts_config = select_tts_config(channel, profile)
 
     try:
         result = tts_render.render_episode_tts(episode_dir, tts_config)
@@ -239,6 +263,9 @@ def main() -> int:
 
     tts_parser = subparsers.add_parser("tts", help="Render narration audio and measure real durations")
     tts_parser.add_argument("episode", help="episode_id or path to the episode folder")
+    tts_parser.add_argument("--profile", default=None,
+                            help="Use a named entry from the channel's tts_profiles (e.g. google-chirp3) "
+                                 "instead of its active 'tts' config")
 
     validate_parser = subparsers.add_parser("validate", help="Run the deterministic cross-file validator")
     validate_parser.add_argument("episode", help="episode_id or path to the episode folder")
@@ -263,7 +290,7 @@ def main() -> int:
         return 0
 
     if args.command == "tts":
-        return run_tts(resolve_episode_dir(args.episode))
+        return run_tts(resolve_episode_dir(args.episode), args.profile)
 
     if args.command == "validate":
         return run_validate(resolve_episode_dir(args.episode), args.quiet)

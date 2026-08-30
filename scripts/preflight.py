@@ -14,7 +14,18 @@ Checks:
   - ffprobe on PATH
   - yt-dlp on PATH
   - edge-tts (Python package `edge_tts`, or the `edge-tts` CLI entry point)
+  - google-cloud-texttospeech (Python package, OPTIONAL -- only the `google-chirp3`
+    TTS provider needs it)
   - jsonschema (Python package)
+
+Optional components are reported but never fail the overall check, so a machine
+that only runs the edge-tts backend still reports READY.
+
+This checks PACKAGE AVAILABILITY only. Google credentials are deliberately NOT
+checked here: Application Default Credentials are resolved at the moment Google
+synthesis is actually requested (scripts/tts_render.py's google_client()), so
+running preflight -- or the whole edge-tts pipeline -- never requires a Google
+login.
 
 Never auto-installs anything. Prints READY/MISSING per component with a short
 install hint for anything missing, then an overall summary.
@@ -33,7 +44,7 @@ def _check_binary(name: str, hint: str) -> dict:
     return {"component": name, "ready": path is not None, "detail": path or "not found on PATH", "hint": hint}
 
 
-def _check_python_package(module_name: str, pip_name: str, hint: str) -> dict:
+def _check_python_package(module_name: str, pip_name: str, hint: str, optional: bool = False) -> dict:
     try:
         spec = importlib.util.find_spec(module_name)
     except (ImportError, ValueError):
@@ -44,6 +55,7 @@ def _check_python_package(module_name: str, pip_name: str, hint: str) -> dict:
         "ready": ready,
         "detail": f"python module {module_name!r} importable" if ready else f"python module {module_name!r} not found",
         "hint": hint,
+        "optional": optional,
     }
 
 
@@ -86,6 +98,13 @@ def run_all() -> list:
         _check_binary("ffprobe", "installed alongside ffmpeg -- same download as above"),
         _check_binary("yt-dlp", "pip install yt-dlp   (or download the standalone binary and put it on PATH)"),
         check_edge_tts(),
+        _check_python_package(
+            "google.cloud.texttospeech", "google-cloud-texttospeech",
+            "pip install -r requirements.txt   (or: pip install google-cloud-texttospeech). "
+            "Credentials are separate and are checked only when Google synthesis runs: "
+            "gcloud auth application-default login",
+            optional=True,
+        ),
         _check_python_package("jsonschema", "jsonschema", "pip install -r requirements.txt   (or: pip install jsonschema)"),
     ]
 
@@ -94,18 +113,29 @@ def _main() -> int:
     results = run_all()
     print("=== preflight ===\n")
     all_ready = True
+    width = max(len(r["component"]) for r in results)
     for r in results:
         if r["ready"]:
-            print(f"  READY    {r['component']:<12} {r['detail']}")
+            print(f"  READY    {r['component']:<{width}}  {r['detail']}")
+        elif r.get("optional"):
+            # Optional: reported honestly, but it does not make the machine
+            # not-ready -- only the google-chirp3 provider needs it.
+            print(f"  MISSING  {r['component']:<{width}}  {r['detail']}  (optional)")
+            print(f"           -> {r['hint']}")
         else:
             all_ready = False
-            print(f"  MISSING  {r['component']:<12} {r['detail']}")
+            print(f"  MISSING  {r['component']:<{width}}  {r['detail']}")
             print(f"           -> {r['hint']}")
     print()
     if all_ready:
-        print("READY: all components available.")
+        optional_missing = [r["component"] for r in results if not r["ready"] and r.get("optional")]
+        if optional_missing:
+            print(f"READY: all required components available "
+                  f"(optional not installed: {', '.join(optional_missing)}).")
+        else:
+            print("READY: all components available.")
     else:
-        missing = [r["component"] for r in results if not r["ready"]]
+        missing = [r["component"] for r in results if not r["ready"] and not r.get("optional")]
         print(f"NOT READY: missing {', '.join(missing)}")
     return 0 if all_ready else 1
 
