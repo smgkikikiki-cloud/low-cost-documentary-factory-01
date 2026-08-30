@@ -42,6 +42,15 @@ class ChunkError(RuntimeError):
     pass
 
 
+class RateLimited(ChunkError):
+    """The API refused a request for a transient or daily usage limit.
+
+    This is deliberately distinct from ordinary chunk failures: continuing to
+    submit the remaining chunks only burns more quota and obscures resume.
+    """
+    pass
+
+
 class OversizedAudio(ChunkError):
     pass
 
@@ -208,6 +217,8 @@ def worker():
 # well-known, non-sensitive google.api_core/genai exception names, so a short,
 # actionable hint for the common ones costs nothing in secret-safety.
 _KNOWN_ERROR_HINTS = {
+    "RateLimitError": "likely a rate limit or quota (HTTP 429) -- retry the same command later; "
+                      "the saved chunks will resume without re-synthesizing",
     "ResourceExhausted": "likely a rate limit or quota (HTTP 429) -- "
                           "preview TTS models often have very low per-minute limits; "
                           "see https://ai.google.dev/gemini-api/docs/rate-limits and your usage tier in AI Studio",
@@ -219,6 +230,17 @@ _KNOWN_ERROR_HINTS = {
     "DeadlineExceeded": "the SDK's own request deadline was hit inside the worker (separate from --timeout)",
 }
 
+_RATE_LIMIT_ERROR_NAMES = {"RateLimitError", "ResourceExhausted", "TooManyRequests", "QuotaExceeded"}
+
+
+def _worker_error_name(stderr: str):
+    """Return only the worker's deliberately safe exception class name."""
+    try:
+        name = json.loads(stderr)["error"]
+    except (json.JSONDecodeError, KeyError, TypeError, ValueError):
+        return None
+    return name if isinstance(name, str) and re.fullmatch(r"[A-Za-z_][A-Za-z0-9_]{0,64}", name) else None
+
 
 def _diagnose(stderr: str) -> str:
     """Turn the worker's safe {"error": "<ExceptionClassName>"} stderr line into a
@@ -227,11 +249,8 @@ def _diagnose(stderr: str) -> str:
     exactly that shape, so arbitrary/garbage subprocess stderr -- which could in
     principle contain leaked secret material from elsewhere -- is never echoed back.
     """
-    try:
-        name = json.loads(stderr)["error"]
-    except (json.JSONDecodeError, KeyError, TypeError, ValueError):
-        return ""
-    if not isinstance(name, str) or not re.fullmatch(r"[A-Za-z_][A-Za-z0-9_]{0,64}", name):
+    name = _worker_error_name(stderr)
+    if name is None:
         return ""
     hint = _KNOWN_ERROR_HINTS.get(name)
     return f": {name} ({hint})" if hint else f": {name}"
@@ -248,7 +267,10 @@ def request_pcm(cfg, text, timeout_sec):
         # subprocess.run kills and reaps the worker, unlike ThreadPoolExecutor.
         raise ChunkError(f"Gemini request exceeded {timeout_sec:g}s; worker terminated") from None
     if result.returncode:
-        raise ChunkError(f"Gemini request failed{_diagnose(result.stderr)}. No upstream response logged.")
+        error = f"Gemini request failed{_diagnose(result.stderr)}. No upstream response logged."
+        if _worker_error_name(result.stderr) in _RATE_LIMIT_ERROR_NAMES:
+            raise RateLimited(error)
+        raise ChunkError(error)
     try:
         return base64.b64decode(json.loads(result.stdout)["pcm"], validate=True)
     except (ValueError, KeyError, TypeError):
@@ -376,7 +398,7 @@ def _render_locked(episode, sm_path, master, identity, initial, manifest_path, a
     atomic_json(pointer, {"manifest_path": manifest_path.relative_to(episode).as_posix(), "alignment_status": "required"})
     manifest["status"] = "pending"
     atomic_json(manifest_path, manifest)
-    failures, index = [], 0
+    failures, index, rate_limited = [], 0, None
     while index < len(manifest["chunks"]):
         chunk = manifest["chunks"][index]
         rebuilt = make_chunk(chunk["units"], cfg)
@@ -399,7 +421,7 @@ def _render_locked(episode, sm_path, master, identity, initial, manifest_path, a
         try:
             if duration is None:
                 chunk["status"] = "pending"
-                for key in ("audio_path", "audio_sha256", "duration_sec", "error"):
+                for key in ("audio_path", "audio_sha256", "duration_sec", "error", "deferred_reason"):
                     chunk.pop(key, None)
                 atomic_json(manifest_path, manifest)
                 print(f"{chunk['chunk_id']}: generating {len(chunk['block_ids'])} block(s)", flush=True)
@@ -428,6 +450,16 @@ def _render_locked(episode, sm_path, master, identity, initial, manifest_path, a
                 manifest["chunks"][index:index + 1] = children
                 atomic_json(manifest_path, manifest)
                 continue
+        except RateLimited as exc:
+            # Keep this and every untouched chunk pending.  A 429 can be a
+            # per-minute, burst, or daily limit; automatic fan-out/retries are
+            # harmful in all three cases.  The next explicit invocation resumes.
+            chunk.update(status="pending", deferred_reason=str(exc))
+            chunk.pop("error", None)
+            rate_limited = (chunk["chunk_id"], str(exc))
+            atomic_json(manifest_path, manifest)
+            print(f"RATE LIMITED: stopped at {chunk['chunk_id']}; remaining chunks were not attempted", flush=True)
+            break
         except (ChunkError, OSError) as exc:
             chunk.update(status="failed", error=str(exc))
             failures.append((chunk["chunk_id"], str(exc)))
@@ -435,10 +467,12 @@ def _render_locked(episode, sm_path, master, identity, initial, manifest_path, a
         index += 1
     if digest(sm_path.read_bytes()) != identity["script_manifest_sha256"] or digest(master.read_bytes()) != identity["script_sha256"]:
         raise ChunkError("Locked script changed during generation; output cannot be handed off")
-    manifest["status"] = "generated" if not failures else "pending"
+    manifest["status"] = "generated" if not failures and rate_limited is None else "pending"
     atomic_json(manifest_path, manifest)
-    return {"manifest": manifest, "manifest_path": manifest_path, "complete": not failures,
-            "failures": failures, "alignment_required": True}
+    return {"manifest": manifest, "manifest_path": manifest_path,
+            "complete": not failures and rate_limited is None,
+            "failures": failures, "rate_limited": rate_limited,
+            "alignment_required": True}
 
 
 def alignment_gate(episode):

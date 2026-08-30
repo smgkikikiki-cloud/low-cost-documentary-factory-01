@@ -145,6 +145,27 @@ class Chunks(unittest.TestCase):
         self.assertTrue(result['complete'])
         self.assertEqual(calls, ['ข' * 1400])
 
+    def test_rate_limit_stops_without_attempting_remaining_chunks_then_resumes(self):
+        self.script(['ก' * 1400, 'ข' * 1400, 'ค' * 1400])
+        calls = []
+        def limited(cfg, text, timeout):
+            calls.append(text)
+            if len(calls) == 2:
+                raise g.RateLimited('Gemini request failed: RateLimitError')
+            return pcm()
+        result = self.run_chunks(limited)
+        self.assertFalse(result['complete'])
+        self.assertEqual(len(calls), 2)
+        self.assertEqual([c['status'] for c in result['manifest']['chunks']],
+                         ['generated', 'pending', 'pending'])
+        self.assertIn('RateLimitError', result['manifest']['chunks'][1]['deferred_reason'])
+        self.assertNotIn('deferred_reason', result['manifest']['chunks'][2])
+
+        resumed = []
+        result = self.run_chunks(lambda cfg, text, timeout: resumed.append(text) or pcm())
+        self.assertTrue(result['complete'])
+        self.assertEqual(resumed, ['ข' * 1400, 'ค' * 1400])
+
     def test_oversize_splits_blocks_and_checkpoints_children(self):
         calls = []
         def request(cfg, text, timeout):
@@ -237,6 +258,13 @@ class Chunks(unittest.TestCase):
         with patch.object(g.subprocess, 'run', return_value=failed):
             with self.assertRaisesRegex(g.ChunkError, 'ResourceExhausted'):
                 g.request_pcm(g.config(self.raw), 'test', 1)
+
+    def test_worker_rate_limit_becomes_distinct_error_without_leaking_stderr(self):
+        failed = subprocess.CompletedProcess([], 1, '', json.dumps({'error': 'RateLimitError'}))
+        with patch.object(g.subprocess, 'run', return_value=failed):
+            with self.assertRaises(g.RateLimited) as caught:
+                g.request_pcm(g.config(self.raw), 'test', 1)
+        self.assertIn('RateLimitError', str(caught.exception))
 
     def test_diagnose_only_echoes_the_safe_known_shape(self):
         self.assertEqual(g._diagnose(json.dumps({'error': 'PermissionDenied'})),
