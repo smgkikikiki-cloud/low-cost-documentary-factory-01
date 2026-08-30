@@ -231,6 +231,23 @@ class Chunks(unittest.TestCase):
                 g.request_pcm(g.config(self.raw), 'test', 1)
         self.assertNotIn('secret-api-key', str(caught.exception))
 
+    def test_worker_error_type_name_surfaces_as_a_diagnosable_hint(self):
+        stderr = json.dumps({'error': 'ResourceExhausted'})
+        failed = subprocess.CompletedProcess([], 1, '', stderr)
+        with patch.object(g.subprocess, 'run', return_value=failed):
+            with self.assertRaisesRegex(g.ChunkError, 'ResourceExhausted'):
+                g.request_pcm(g.config(self.raw), 'test', 1)
+
+    def test_diagnose_only_echoes_the_safe_known_shape(self):
+        self.assertEqual(g._diagnose(json.dumps({'error': 'PermissionDenied'})),
+                         ': PermissionDenied (likely an auth/billing problem (HTTP 403) -- '
+                         "check GEMINI_API_KEY and that billing/the model is enabled for this API key's project)")
+        self.assertEqual(g._diagnose(json.dumps({'error': 'SomeOtherExceptionType'})), ': SomeOtherExceptionType')
+        for garbage in ('secret-api-key', '', json.dumps({'error': 'not; safe$'}), json.dumps({'error': 12345}),
+                        json.dumps({'nope': 'ResourceExhausted'})):
+            with self.subTest(garbage=garbage):
+                self.assertEqual(g._diagnose(garbage), '')
+
     def test_second_writer_is_rejected(self):
         with g.episode_lock(self.ep), self.assertRaisesRegex(g.ChunkError, 'Another Gemini'):
             self.run_chunks()

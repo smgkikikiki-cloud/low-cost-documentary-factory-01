@@ -203,6 +203,40 @@ def worker():
         return 1
 
 
+# worker() already limits itself to the SDK exception's CLASS NAME on failure --
+# never the exception body or a URL, either of which could embed a key. These are
+# well-known, non-sensitive google.api_core/genai exception names, so a short,
+# actionable hint for the common ones costs nothing in secret-safety.
+_KNOWN_ERROR_HINTS = {
+    "ResourceExhausted": "likely a rate limit or quota (HTTP 429) -- "
+                          "preview TTS models often have very low per-minute limits; "
+                          "see https://ai.google.dev/gemini-api/docs/rate-limits and your usage tier in AI Studio",
+    "PermissionDenied": "likely an auth/billing problem (HTTP 403) -- "
+                         "check GEMINI_API_KEY and that billing/the model is enabled for this API key's project",
+    "Unauthenticated": "likely an invalid or missing API key (HTTP 401)",
+    "InvalidArgument": "likely a bad request parameter (HTTP 400) -- check model/voice names against the live catalog",
+    "NotFound": "likely an unknown model or voice name (HTTP 404)",
+    "DeadlineExceeded": "the SDK's own request deadline was hit inside the worker (separate from --timeout)",
+}
+
+
+def _diagnose(stderr: str) -> str:
+    """Turn the worker's safe {"error": "<ExceptionClassName>"} stderr line into a
+    short, actionable suffix for the parent's ChunkError -- e.g. ": ResourceExhausted
+    (likely a rate limit...)". Returns "" (a no-op suffix) for anything that isn't
+    exactly that shape, so arbitrary/garbage subprocess stderr -- which could in
+    principle contain leaked secret material from elsewhere -- is never echoed back.
+    """
+    try:
+        name = json.loads(stderr)["error"]
+    except (json.JSONDecodeError, KeyError, TypeError, ValueError):
+        return ""
+    if not isinstance(name, str) or not re.fullmatch(r"[A-Za-z_][A-Za-z0-9_]{0,64}", name):
+        return ""
+    hint = _KNOWN_ERROR_HINTS.get(name)
+    return f": {name} ({hint})" if hint else f": {name}"
+
+
 def request_pcm(cfg, text, timeout_sec):
     try:
         result = subprocess.run(
@@ -214,7 +248,7 @@ def request_pcm(cfg, text, timeout_sec):
         # subprocess.run kills and reaps the worker, unlike ThreadPoolExecutor.
         raise ChunkError(f"Gemini request exceeded {timeout_sec:g}s; worker terminated") from None
     if result.returncode:
-        raise ChunkError("Gemini request failed; check SDK/auth/service. No upstream response logged.")
+        raise ChunkError(f"Gemini request failed{_diagnose(result.stderr)}. No upstream response logged.")
     try:
         return base64.b64decode(json.loads(result.stdout)["pcm"], validate=True)
     except (ValueError, KeyError, TypeError):
