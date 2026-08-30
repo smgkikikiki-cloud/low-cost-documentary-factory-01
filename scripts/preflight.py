@@ -16,16 +16,19 @@ Checks:
   - edge-tts (Python package `edge_tts`, or the `edge-tts` CLI entry point)
   - google-cloud-texttospeech (Python package, OPTIONAL -- only the `google-chirp3`
     TTS provider needs it)
+  - google-genai (Python package, OPTIONAL -- only the `gemini-tts` TTS provider
+    needs it)
   - jsonschema (Python package)
 
 Optional components are reported but never fail the overall check, so a machine
 that only runs the edge-tts backend still reports READY.
 
-This checks PACKAGE AVAILABILITY only. Google credentials are deliberately NOT
-checked here: Application Default Credentials are resolved at the moment Google
-synthesis is actually requested (scripts/tts_render.py's google_client()), so
-running preflight -- or the whole edge-tts pipeline -- never requires a Google
-login.
+This checks PACKAGE AVAILABILITY only. Google/Gemini credentials are deliberately
+NOT checked here: Application Default Credentials (google-chirp3) and the
+GEMINI_API_KEY environment variable (gemini-tts) are both resolved only at the
+moment that backend's synthesis is actually requested (scripts/tts_render.py's
+google_client() / gemini_client()), so running preflight -- or the whole edge-tts
+pipeline -- never requires a Google login or a Gemini API key.
 
 Never auto-installs anything. Prints READY/MISSING per component with a short
 install hint for anything missing, then an overall summary.
@@ -103,6 +106,13 @@ def run_all() -> list:
             "pip install -r requirements.txt   (or: pip install google-cloud-texttospeech). "
             "Credentials are separate and are checked only when Google synthesis runs: "
             "gcloud auth application-default login",
+            optional=True,
+        ),
+        _check_python_package(
+            "google.genai", "google-genai",
+            "pip install -r requirements.txt   (or: pip install google-genai). "
+            "Auth is separate and is checked only when gemini-tts synthesis runs: "
+            "set the GEMINI_API_KEY environment variable (get a key at https://aistudio.google.com/apikey)",
             optional=True,
         ),
         _check_python_package("jsonschema", "jsonschema", "pip install -r requirements.txt   (or: pip install jsonschema)"),

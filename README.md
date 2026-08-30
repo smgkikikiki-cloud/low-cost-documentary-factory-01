@@ -8,7 +8,7 @@ master script. This repository turns that locked script into a finished video:
 
 - **Deterministic ingestion** (`scripts/ingest_script.py`) — no LLM — turns
   `master_script.md` into `script_manifest.json`.
-- **TTS** (`scripts/tts_render.py`, edge-tts or Google Chirp 3: HD) renders each block's narration and its
+- **TTS** (`scripts/tts_render.py`, edge-tts | Google Chirp 3: HD | Gemini TTS) renders each block's narration and its
   *measured* duration becomes `tts_manifest.json`.
 - **Claude — B-DISCOVER/B-EDIT** (`agents/agent_b_archive_visual_editor.md`) finds and
   verifies real archival visuals against the locked narration
@@ -56,7 +56,7 @@ schemas/                JSON Schema for every active episode state file
 scripts/ingest_script.py     deterministic master_script.md -> script_manifest.json
 scripts/preflight.py         checks ffmpeg/ffprobe/yt-dlp/edge-tts/jsonschema on PATH
                              (+ optional google-cloud-texttospeech)
-scripts/tts_render.py        narration renderer (edge-tts | google-chirp3), one file per block
+scripts/tts_render.py        narration renderer (edge-tts | google-chirp3 | gemini-tts), one file per block
 scripts/tts_audition.py      Chirp 3: HD voice audition, writes only to temp/audition/
 scripts/media_search.py      yt-dlp candidate metadata search (no download)
 scripts/media_download.py    download one selected video or direct-URL asset
@@ -90,6 +90,7 @@ python run_episode.py ingest --channel ForeignCarsTH \
 
 python run_episode.py tts ForeignCarsTH_jeep-wrangler-yj            # channel's active tts config
 python run_episode.py tts ForeignCarsTH_jeep-wrangler-yj --profile google-chirp3
+python run_episode.py tts ForeignCarsTH_jeep-wrangler-yj --profile gemini-tts   # needs $GEMINI_API_KEY
 
 # Claude performs B-DISCOVER (writes asset_inventory.json)
 # Claude performs B-EDIT (writes edit_plan.json)

@@ -22,6 +22,12 @@
       "voice": "th-TH-Chirp3-HD-Charon",
       "speaking_rate": 1.0,
       "input_mode": "text"
+    },
+    "gemini-tts": {
+      "provider": "gemini-tts",
+      "model": "gemini-3.1-flash-tts-preview",
+      "voice": "Charon",
+      "max_chunk_chars": 900
     }
   }
 }
