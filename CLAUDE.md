@@ -20,7 +20,7 @@ doesn't, anymore. See "Who does what" below.**
 |---|---|---|
 | **Upstream OpenAI writer** | Outside this repository | Research, sourcing, thesis, story selection, pacing, structure, final Thai narration. Input: a vehicle/topic name + hook. Output: one locked `master_script.md`. |
 | **Deterministic ingestion** | `scripts/ingest_script.py` | Turns `master_script.md` into `script_manifest.json`. No LLM. |
-| **TTS** | `scripts/tts_render.py` (edge-tts, Google Chirp 3: HD, or Gemini TTS) | Renders each block's narration to audio; its measured duration becomes `tts_manifest.json`. |
+| **TTS** | `scripts/tts_render.py` for Edge/Chirp; `scripts/tts_gemini_chunks.py` for Gemini | Edge/Chirp measure block files. Gemini produces continuous multi-block chunks, then requires actual block alignment before downstream use. |
 | **Claude (B-DISCOVER / B-EDIT)** | `agents/agent_b_archive_visual_editor.md` | Finds and verifies real visual material (`asset_inventory.json`), then assembles it into a concrete timeline (`edit_plan.json`). Decides only what is shown and how, never what is said. |
 | **FFmpeg renderer** | `scripts/render_episode.py` | Executes `edit_plan.json` exactly. No creative decisions. |
 
@@ -43,7 +43,7 @@ master_script.md                      -- written upstream, supplied externally
     |  deterministic ingestion (scripts/ingest_script.py, no LLM)
     v
 script_manifest.json                  -- locked narration, source_refs as hints
-    |  TTS (scripts/tts_render.py, edge-tts | google-chirp3 | gemini-tts)
+    |  Edge/Chirp block TTS, OR Gemini chunks -> actual block alignment (required)
     v
 tts_manifest.json                     -- MEASURED per-block audio duration
     |  Claude -- B-DISCOVER
@@ -56,6 +56,11 @@ edit_plan.json                        -- complete, deterministic visual timeline
     v
 final.mp4
 ```
+
+Gemini chunk generation is implemented; automatic block alignment is still a
+separate implementation gate. While `tts_chunks.json` selects Gemini chunks,
+`status` and rendering remain blocked even if an old Edge `tts_manifest.json` is
+fully generated. Never copy estimated chunk duration into final block timings.
 
 One Claude production agent, two modes (not two agents) — see
 `agents/agent_b_archive_visual_editor.md`.
@@ -163,22 +168,14 @@ has the full production detail; this list is the index.
   credentials are deliberately not checked here — Application Default
   Credentials are resolved only when Google synthesis actually runs, so the
   edge-tts pipeline never requires a Google login.
-- `scripts/tts_render.py` — the real TTS renderer, with three backends selected by
-  the channel config's `provider`: `edge-tts`, `google-chirp3` (Google Cloud
-  Chirp 3: HD, Application Default Credentials), or `gemini-tts` (Gemini API,
-  Gemini 3.1 Flash TTS Preview via `google-genai`, authenticated by the
-  `GEMINI_API_KEY` environment variable -- never stored in this repository). A
-  small dispatch, deliberately not a provider framework. One audio file per
-  `script_manifest.json` block (`.mp3` for edge-tts/google-chirp3, `.wav` for
-  gemini-tts, which returns raw PCM), real measured `duration_sec` via
-  `media_probe.probe()`, a per-block/per-chunk synthesis timeout (120 s default)
-  so a hung request can never stall an episode, crash-safe resume that probes
-  existing audio rather than trusting a checkpoint, and atomic
-  `tts_manifest.json` checkpoints after every measured block that only ever
-  claim `status: "generated"` when every block genuinely rendered. gemini-tts
-  splits a long block's narration into multiple sub-2-minute synthesis requests
-  at sentence boundaries and concatenates the resulting audio into one file per
-  block -- `narration_text` itself is never altered.
+- `scripts/tts_render.py` — Edge/Chirp block rendering, fingerprinted audio,
+  measured block manifests and rollback. Gemini block synthesis is disabled.
+- `scripts/tts_gemini_chunks.py` — the approved conversational Gemini 3.1/Charon
+  path: conservative punctuation cleanup, neighboring-block packing, WAV/receipt
+  per chunk, ffprobe and complete-sample validation, 120-second audio rejection
+  with safe boundary splits, killable request process, and atomic resume.
+  Does not change locked scripts or write invented block timings. See
+  `docs/gemini_production.md` for the exact CLI, files and alignment gate.
 - `scripts/tts_audition.py` — voice audition for Google Chirp 3: HD. Renders ONE
   real narration block with several candidate voices into
   `episodes/<id>/temp/audition/` so they can be compared on the actual script.

@@ -27,7 +27,7 @@ This checks PACKAGE AVAILABILITY only. Google/Gemini credentials are deliberatel
 NOT checked here: Application Default Credentials (google-chirp3) and the
 GEMINI_API_KEY environment variable (gemini-tts) are both resolved only at the
 moment that backend's synthesis is actually requested (scripts/tts_render.py's
-google_client() / gemini_client()), so running preflight -- or the whole edge-tts
+google_client() / tts_gemini_chunks.render_chunks()), so running preflight -- or the whole edge-tts
 pipeline -- never requires a Google login or a Gemini API key.
 
 Never auto-installs anything. Prints READY/MISSING per component with a short

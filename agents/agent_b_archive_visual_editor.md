@@ -4,6 +4,12 @@
 + `tts_manifest.json` + `asset_inventory.json` (B-EDIT)
 **Writes:** `asset_inventory.json` (B-DISCOVER), then `edit_plan.json` (B-EDIT)
 
+**Gemini gate:** run `python run_episode.py status <episode_id>` before discovery.
+If `tts_chunks.json` selects Gemini chunk audio, block alignment is required first;
+an older generated Edge/Chirp `tts_manifest.json` cannot satisfy this gate. Do not
+estimate block times from characters, divide chunk durations proportionally, or
+rewrite the locked script. See `docs/gemini_production.md`.
+
 **The execution layer is now real, runnable code**, invoked either directly or via
 `run_episode.py`: `scripts/media_search.py` (yt-dlp candidate metadata),
 `scripts/media_download.py` (selected-video and direct-asset download),

@@ -8,8 +8,9 @@ master script. This repository turns that locked script into a finished video:
 
 - **Deterministic ingestion** (`scripts/ingest_script.py`) — no LLM — turns
   `master_script.md` into `script_manifest.json`.
-- **TTS** (`scripts/tts_render.py`, edge-tts | Google Chirp 3: HD | Gemini TTS) renders each block's narration and its
-  *measured* duration becomes `tts_manifest.json`.
+- **TTS** renders Edge/Chirp blocks through `scripts/tts_render.py`. Gemini uses
+  `scripts/tts_gemini_chunks.py` for continuous multi-block narration; actual
+  block alignment is required before it can produce downstream timings.
 - **Claude — B-DISCOVER/B-EDIT** (`agents/agent_b_archive_visual_editor.md`) finds and
   verifies real archival visuals against the locked narration
   (`asset_inventory.json`, using `scripts/media_search.py`/`media_download.py`/
@@ -56,7 +57,8 @@ schemas/                JSON Schema for every active episode state file
 scripts/ingest_script.py     deterministic master_script.md -> script_manifest.json
 scripts/preflight.py         checks ffmpeg/ffprobe/yt-dlp/edge-tts/jsonschema on PATH
                              (+ optional google-cloud-texttospeech)
-scripts/tts_render.py        narration renderer (edge-tts | google-chirp3 | gemini-tts), one file per block
+scripts/tts_render.py        Edge/Chirp narration, one file per block
+scripts/tts_gemini_chunks.py  Gemini multi-block chunks, requires later block alignment
 scripts/tts_audition.py      Chirp 3: HD voice audition, writes only to temp/audition/
 scripts/media_search.py      yt-dlp candidate metadata search (no download)
 scripts/media_download.py    download one selected video or direct-URL asset
@@ -92,7 +94,8 @@ python run_episode.py tts ForeignCarsTH_jeep-wrangler-yj            # channel's 
 python run_episode.py tts ForeignCarsTH_jeep-wrangler-yj --profile google-chirp3
 python run_episode.py tts ForeignCarsTH_jeep-wrangler-yj --profile gemini-tts   # needs $GEMINI_API_KEY
 
-# Claude performs B-DISCOVER (writes asset_inventory.json)
+# Gemini: stop at BLOCK ALIGNMENT REQUIRED; do not use old Edge timings.
+# Claude performs B-DISCOVER only after measured block timings are ready.
 # Claude performs B-EDIT (writes edit_plan.json)
 
 python run_episode.py validate ForeignCarsTH_jeep-wrangler-yj
@@ -119,3 +122,21 @@ That architecture, its schemas, and its five test episodes were retired in the
 script-first migration and moved to `legacy/` for historical reference. See
 `legacy/README.md`. Nothing in the active pipeline reads from or depends on anything
 under `legacy/`.
+
+## Gemini production chunks
+
+The approved Gemini 3.1 / Charon path is documented in
+[docs/gemini_production.md](docs/gemini_production.md). It preserves the existing
+episode and Edge/Chirp profiles, uses the approved conversational prompt and
+punctuation cleanup, checkpoints measured WAVs per chunk, and rejects audio over
+120 seconds. Chunk generation is not block alignment: discovery remains gated.
+
+```bat
+py run_episode.py tts ForeignCarsTH_land-cruiser-70 --profile gemini-tts --dry-run
+py run_episode.py tts ForeignCarsTH_land-cruiser-70 --profile gemini-tts
+py run_episode.py status ForeignCarsTH_land-cruiser-70
+```
+
+The real episode and key remain on Windows; a cloud coding checkout lacking them
+does not disprove an earlier local audition. Do not re-ingest or replace the
+existing episode merely to populate the cloud checkout.

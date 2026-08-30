@@ -198,6 +198,9 @@ def _resolve_asset_path(asset: dict, episode_dir: Path) -> Path:
 
 def render_episode(episode_dir: Path) -> Path:
     episode_dir = Path(episode_dir)
+    from tts_gemini_chunks import alignment_gate
+    if alignment_gate(episode_dir):
+        raise RenderError("Gemini chunk selection has no measured block alignment; rendering is blocked.")
 
     # 1. Validate everything first. Refuse to render an invalid plan rather than
     # guessing how to interpret it -- checked before even requiring ffmpeg on PATH,

@@ -2,23 +2,10 @@
 """Real V0 TTS renderer. One audio file per script_manifest.json block, real
 measured durations written to tts_manifest.json.
 
-Three backends, selected by the channel config's `provider` field:
-
-    provider: "edge-tts"       -- Microsoft Edge TTS (the original V0 backend)
-    provider: "google-chirp3"  -- Google Cloud Text-to-Speech, Chirp 3: HD voices
-    provider: "gemini-tts"     -- Gemini API, Gemini 3.1 Flash TTS Preview
-
-This is a small dispatch, NOT a provider framework: no registry, no plugins, no
-factories. Each backend is one `elif` branch plus one small `_synthesize_*`
-function, and that is the intended ceiling.
-
-gemini-tts authenticates with an API key (env var GEMINI_API_KEY), unlike
-google-chirp3's Application Default Credentials -- different Google product,
-different SDK (`google-genai`, not `google-cloud-texttospeech`), different auth
-model. Nothing about that key is ever read from or written to this repository;
-see gemini_client(). gemini-tts also returns raw PCM (16-bit/24kHz/mono), not
-MP3, so its rendered files are `.wav` (wrapped with the stdlib `wave` module),
-while edge-tts and google-chirp3 remain `.mp3`.
+Block backends: edge-tts and google-chirp3. Gemini uses the separate
+scripts/tts_gemini_chunks.py renderer, selected by run_episode.py, because a
+Gemini performance can span multiple original blocks. This module still resolves
+Gemini config for fingerprint inspection, but refuses block-level Gemini rendering.
 
 Only `block.narration_text` is ever sent to speech -- never the title, the
 optional_deck, source_refs, or any URL. The narration text is never rewritten,
@@ -80,24 +67,18 @@ requiring it on the command line every time.
 """
 import argparse
 import asyncio
-import base64
-import concurrent.futures
 import hashlib
 import json
-import os
 import re
 import shutil
 import sys
-import wave
-from io import BytesIO
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import media_probe  # noqa: E402
 import episode_paths  # noqa: E402
 
-# One narration paragraph is a few seconds of speech; anything past two minutes is
-# a hung request, not slow synthesis.
+# Request wall-clock budget; independent of generated audio duration.
 DEFAULT_SYNTHESIS_TIMEOUT_SEC = 120.0
 
 PROVIDER_EDGE = "edge-tts"
@@ -105,12 +86,6 @@ PROVIDER_GOOGLE = "google-chirp3"
 PROVIDER_GEMINI = "gemini-tts"
 SUPPORTED_PROVIDERS = (PROVIDER_EDGE, PROVIDER_GOOGLE, PROVIDER_GEMINI)
 
-DEFAULT_GEMINI_MODEL = "gemini-3.1-flash-tts-preview"
-# Conservative characters-per-generation-request ceiling so a single request stays
-# comfortably under the requested 2-minute-per-chunk budget. Not a Google-documented
-# number -- Gemini TTS has no published max spoken duration per request, only an
-# 8,192-input-token limit -- so this errs low rather than risk an overlong chunk.
-DEFAULT_GEMINI_MAX_CHUNK_CHARS = 900
 
 
 class TTSRenderError(RuntimeError):
@@ -181,32 +156,11 @@ def resolve_tts_config(tts_config: dict) -> dict:
         }
 
     if provider == PROVIDER_GEMINI:
+        from tts_gemini_chunks import config, ChunkError
         try:
-            max_chunk_chars = int(tts_config.get("max_chunk_chars", DEFAULT_GEMINI_MAX_CHUNK_CHARS))
-        except (TypeError, ValueError):
-            raise TTSRenderError(f"max_chunk_chars must be an integer, got {tts_config.get('max_chunk_chars')!r}")
-        if max_chunk_chars < 50:
-            raise TTSRenderError(f"max_chunk_chars {max_chunk_chars} is too small to be useful (minimum 50).")
-        # The style instruction is prepended to the TEXT SENT TO THE API ONLY -- it
-        # is never written into narration_text or master_script.md. It steers
-        # delivery (Gemini TTS is instruction-following, e.g. "Say cheerfully: ...")
-        # without touching the locked script. It IS part of the fingerprint: a
-        # different instruction is a different-sounding rendition.
-        style_instruction = tts_config.get(
-            "style_instruction",
-            "Read the following documentary narration aloud in Thai, in a warm, "
-            "natural, conversational tone, as if speaking to an interested friend. "
-            "Keep pacing natural with normal pauses at punctuation. Do not add, "
-            "omit, or reinterpret any words -- narrate exactly this text:",
-        )
-        return {
-            "provider": PROVIDER_GEMINI,
-            "voice": voice,
-            "model": tts_config.get("model", DEFAULT_GEMINI_MODEL),
-            "style_instruction": style_instruction,
-            "max_chunk_chars": max_chunk_chars,
-            "audio_encoding": "pcm16_24000_mono",
-        }
+            return config(tts_config)
+        except (ChunkError, ValueError, TypeError) as exc:
+            raise TTSRenderError(str(exc)) from exc
 
     raise TTSRenderError(
         f"Unknown tts provider {provider!r}. Supported: {', '.join(SUPPORTED_PROVIDERS)}."
@@ -238,6 +192,9 @@ def tts_config_fingerprint(tts_config: dict) -> str:
     disk; the hash is what actually separates configurations.
     """
     effective = resolve_tts_config(tts_config)
+    if effective["provider"] == PROVIDER_GEMINI:
+        from tts_gemini_chunks import digest
+        return "gemini-chunks_" + digest(effective)[:16]
     canonical = json.dumps(effective, sort_keys=True, separators=(",", ":"), ensure_ascii=False)
     digest = hashlib.sha256(canonical.encode("utf-8")).hexdigest()[:8]
     safe_provider = re.sub(r"[^A-Za-z0-9._-]+", "_", effective["provider"])
@@ -260,7 +217,7 @@ def _synthesize(cfg: dict, text: str, out_path: Path, timeout_sec: float) -> Non
         elif cfg["provider"] == PROVIDER_GOOGLE:
             _synthesize_google(cfg, text, out_path, timeout_sec)
         else:
-            _synthesize_gemini(cfg, text, out_path, timeout_sec)
+            raise TTSRenderError("Gemini requires the multi-block chunk renderer; use run_episode.py tts --profile gemini-tts")
     except TTSRenderError:
         _discard_partial(out_path)
         raise
@@ -401,185 +358,6 @@ def list_google_voices(language_code: str) -> list:
     return sorted(out, key=lambda d: d["name"])
 
 
-def gemini_client(timeout_sec: float = DEFAULT_SYNTHESIS_TIMEOUT_SEC):
-    """Build a Gemini API client from the GEMINI_API_KEY environment variable
-    ONLY. The key is read from the environment at call time and never written to
-    disk, logged, or stored anywhere in this repository.
-
-    Raises TTSRenderError with an actionable message if the client package is
-    missing or the environment variable isn't set -- checked explicitly (rather
-    than letting the SDK look it up implicitly) so a missing key fails with a
-    clear message before any audio or manifest file is touched.
-    """
-    try:
-        from google import genai
-    except ImportError as e:
-        raise TTSRenderError(
-            "The 'google-genai' python package is not installed. Run: pip install -r requirements.txt "
-            "(or: pip install google-genai)"
-        ) from e
-
-    api_key = os.environ.get("GEMINI_API_KEY")
-    if not api_key:
-        raise TTSRenderError(
-            "GEMINI_API_KEY is not set in the environment. gemini-tts authenticates with an API "
-            "key (unlike google-chirp3's Application Default Credentials) -- nothing is stored in "
-            "this repository. Fix on the machine running this:\n"
-            "  1. get a key from https://aistudio.google.com/apikey\n"
-            "  2. set it for this shell only, e.g. (PowerShell) $env:GEMINI_API_KEY = \"...\"\n"
-            "     or (bash) export GEMINI_API_KEY=\"...\"\n"
-            "Never put the key in a config file that gets committed."
-        )
-
-    try:
-        return genai.Client(api_key=api_key)
-    except Exception as e:
-        raise TTSRenderError(f"Could not create a Gemini API client: {type(e).__name__}: {e}") from e
-
-
-_SENTENCE_SPLIT_RE = re.compile(r"(?<=[.!?ฯๆ])\s+|(?<=[।॥])\s*")
-
-
-def _split_sentences(text: str) -> list:
-    """Best-effort sentence split for chunk packing, not a linguistic analyzer.
-
-    Thai is written with no reliable inter-sentence punctuation the way English
-    has '.', so this also breaks on whitespace runs (paragraph/clause breaks the
-    upstream writer already put in the locked text) as a fallback -- it only ever
-    decides where a chunk BOUNDARY may fall, it never removes or reorders any
-    words. If nothing matches, the whole text is one "sentence" and the char-count
-    packer below falls back to a hard character split.
-    """
-    parts = [p.strip() for p in _SENTENCE_SPLIT_RE.split(text) if p.strip()]
-    return parts or ([text] if text.strip() else [])
-
-
-def _chunk_text_for_tts(text: str, max_chars: int) -> list:
-    """Split `text` into chunks no longer than max_chars, breaking only at
-    sentence/whitespace boundaries found by _split_sentences -- never mid-word.
-    Pure function, no I/O, no network: exactly what gets sent to the API, in
-    order; concatenating the chunks (with single spaces) reconstructs the
-    original words exactly.
-
-    A single "sentence" longer than max_chars (no natural break point) is kept
-    whole rather than cut mid-word -- exceeding the soft chunk-duration budget
-    is preferable to ever sending a truncated word to the API.
-    """
-    sentences = _split_sentences(text)
-    chunks = []
-    current = []
-    current_len = 0
-    for sentence in sentences:
-        added_len = len(sentence) + (1 if current else 0)
-        if current and current_len + added_len > max_chars:
-            chunks.append(" ".join(current))
-            current, current_len = [sentence], len(sentence)
-        else:
-            current.append(sentence)
-            current_len += added_len
-    if current:
-        chunks.append(" ".join(current))
-    return chunks or [text]
-
-
-def _clean_for_synthesis(text: str) -> str:
-    """A minimal, conservative cleanup applied ONLY to the copy of text sent to
-    the TTS API -- narration_text/master_script.md are never touched, and this
-    never changes a word, a number, or a fact.
-
-    Strips literal Markdown emphasis/heading/code characters that have no place
-    in spoken narration (ingestion shouldn't leave any, but this is defensive)
-    and collapses whitespace runs. Punctuation that actually carries meaning
-    (periods, commas, Thai punctuation) is left completely alone.
-    """
-    cleaned = re.sub(r"[*_`#]+", "", text)
-    cleaned = re.sub(r"\s+", " ", cleaned).strip()
-    return cleaned
-
-
-def _call_with_timeout(fn, timeout_sec: float):
-    """Run a synchronous callable bounded by timeout_sec, raising
-    concurrent.futures.TimeoutError if it doesn't return in time.
-
-    google-genai's client calls are synchronous (not asyncio, unlike edge_tts),
-    so the same asyncio.wait_for used for the other two backends doesn't apply
-    here; a daemon worker thread + Future.result(timeout=...) gives the same
-    guarantee that matters for this module -- render_episode_tts's loop is never
-    blocked past timeout_sec. A genuinely stuck underlying network call in the
-    worker thread cannot be forcibly killed (Python has no safe thread-kill); it
-    is abandoned as a daemon thread so the process can still exit, exactly the
-    same practical limitation asyncio.wait_for has around a non-cooperating task.
-    """
-    with concurrent.futures.ThreadPoolExecutor(max_workers=1, thread_name_prefix="tts-gemini") as pool:
-        future = pool.submit(fn)
-        return future.result(timeout=timeout_sec)
-
-
-def _synthesize_gemini(cfg: dict, text: str, out_path: Path, timeout_sec: float) -> None:
-    """Gemini API (Gemini 3.1 Flash TTS Preview) via google-genai's Interactions
-    API. Long blocks are split into <= max_chunk_chars requests (see
-    _chunk_text_for_tts) so no single request risks exceeding the requested
-    ~2-minute-per-generation budget; the per-chunk PCM is concatenated in order
-    and wrapped as one WAV file for the whole block, so downstream code still
-    sees exactly one audio file per block_id.
-
-    Each chunk gets its OWN timeout_sec budget (not a shared one across the whole
-    block) so a long block chunked into N pieces isn't penalized for needing more
-    requests -- consistent with the per-request timeout the other two backends
-    apply per single call.
-    """
-    client = cfg.get("_client") or gemini_client(timeout_sec)
-    chunks = _chunk_text_for_tts(_clean_for_synthesis(text), cfg["max_chunk_chars"])
-
-    pcm_parts = []
-    for i, chunk in enumerate(chunks, start=1):
-        prompt = f"{cfg['style_instruction']} {chunk}"
-
-        def _call(chunk_text=prompt):
-            return client.interactions.create(
-                model=cfg["model"],
-                input=chunk_text,
-                response_format={"type": "audio"},
-                generation_config={"speech_config": [{"voice": cfg["voice"]}]},
-            )
-
-        try:
-            interaction = _call_with_timeout(_call, timeout_sec)
-        except concurrent.futures.TimeoutError as e:
-            raise TTSRenderError(
-                f"synthesis timed out after {timeout_sec:g}s on chunk {i}/{len(chunks)} "
-                f"(gemini-tts, voice={cfg['voice']!r})"
-            ) from e
-        except Exception as e:
-            raise TTSRenderError(
-                f"gemini-tts synthesis failed on chunk {i}/{len(chunks)} for voice={cfg['voice']!r}: "
-                f"{type(e).__name__}: {e}"
-            ) from e
-
-        audio = getattr(interaction, "output_audio", None)
-        data = getattr(audio, "data", None) if audio else None
-        if not data:
-            raise TTSRenderError(
-                f"gemini-tts returned no audio for chunk {i}/{len(chunks)}, voice={cfg['voice']!r}"
-            )
-        pcm_parts.append(base64.b64decode(data) if isinstance(data, str) else data)
-
-    if not pcm_parts:
-        raise TTSRenderError(f"gemini-tts produced no audio chunks for voice={cfg['voice']!r} (empty narration?)")
-
-    # Gemini TTS's documented output format: 16-bit PCM, 24000 Hz, mono. Every
-    # chunk shares this format (same model/voice/config), so concatenating the raw
-    # PCM frames before wrapping in ONE WAV header is exact -- no re-encoding.
-    buf = BytesIO()
-    with wave.open(buf, "wb") as wf:
-        wf.setnchannels(1)
-        wf.setsampwidth(2)
-        wf.setframerate(24000)
-        for part in pcm_parts:
-            wf.writeframes(part)
-    out_path.write_bytes(buf.getvalue())
-
-
 # --------------------------------------------------------------------------
 # File handling
 # --------------------------------------------------------------------------
@@ -650,6 +428,8 @@ def adopt_legacy_audio(episode_dir: Path, tts_config: dict) -> list:
 
     Returns the list of destination paths that were created.
     """
+    if tts_config.get("provider") == PROVIDER_GEMINI:
+        raise TTSRenderError("Legacy block MP3 files cannot be adopted as Gemini chunks")
     fingerprint = tts_config_fingerprint(tts_config)
     dest_dir = episode_paths.audio_config_dir(Path(episode_dir), fingerprint)
     dest_dir.mkdir(parents=True, exist_ok=True)
@@ -687,6 +467,8 @@ def render_episode_tts(
     Progress for every block is printed to stdout as it happens, flushed, so a long
     episode is visibly making progress on Windows CMD instead of looking hung.
     """
+    if tts_config.get("provider") == PROVIDER_GEMINI:
+        raise TTSRenderError("Gemini produces multi-block chunks; use run_episode.py tts EPISODE --profile gemini-tts")
     episode_dir = Path(episode_dir)
     sm_path = episode_dir / "script_manifest.json"
     if not sm_path.exists():
@@ -714,8 +496,6 @@ def render_episode_tts(
     # touching anything, so an auth problem can never leave a half-rendered episode.
     if cfg["provider"] == PROVIDER_GOOGLE:
         cfg["_client"] = google_client(timeout_sec)
-    elif cfg["provider"] == PROVIDER_GEMINI:
-        cfg["_client"] = gemini_client(timeout_sec)
 
     audio_ext = audio_file_extension(cfg)
     audio_dir = episode_paths.audio_config_dir(episode_dir, fingerprint)
@@ -787,6 +567,8 @@ def render_episode_tts(
     manifest = _build_manifest(episode_id, rendered_blocks, complete=complete)
     _write_manifest_atomic(tts_manifest_path, manifest)
 
+    if complete:
+        (episode_dir / "tts_chunks.json").unlink(missing_ok=True)
     return {
         "manifest": manifest, "failures": failures, "complete": complete,
         "fingerprint": fingerprint, "audio_dir": audio_dir,
@@ -804,10 +586,6 @@ def _main() -> int:
     parser.add_argument("--volume", default="+0%", help="edge-tts only")
     parser.add_argument("--speaking-rate", type=float, default=1.0, help="google-chirp3 only (0.25-2.0)")
     parser.add_argument("--input-mode", default="text", choices=["text", "ssml"], help="google-chirp3 only")
-    parser.add_argument("--model", default=None, help=f"gemini-tts only (default {DEFAULT_GEMINI_MODEL!r})")
-    parser.add_argument("--style-instruction", default=None, help="gemini-tts only: delivery instruction prepended to each API call, never written to the script")
-    parser.add_argument("--max-chunk-chars", type=int, default=None,
-                        help=f"gemini-tts only: max chars per synthesis request (default {DEFAULT_GEMINI_MAX_CHUNK_CHARS})")
     parser.add_argument("--no-resume", action="store_true", help="Re-synthesize every block even if valid audio already exists")
     parser.add_argument("--timeout", type=float, default=DEFAULT_SYNTHESIS_TIMEOUT_SEC,
                         help=f"Per-block synthesis timeout in seconds (default {DEFAULT_SYNTHESIS_TIMEOUT_SEC:g})")
@@ -821,8 +599,6 @@ def _main() -> int:
         "provider": args.provider, "voice": args.voice, "language_code": args.language_code,
         "rate": args.rate, "pitch": args.pitch, "volume": args.volume,
         "speaking_rate": args.speaking_rate, "input_mode": args.input_mode,
-        "model": args.model, "style_instruction": args.style_instruction,
-        "max_chunk_chars": args.max_chunk_chars,
     }
     tts_config = {k: v for k, v in tts_config.items() if v is not None}
 

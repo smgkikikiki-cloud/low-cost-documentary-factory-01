@@ -12,5 +12,5 @@
 
 edge-tts
 google-cloud-texttospeech
-google-genai
+google-genai>=2.3.0
 jsonschema

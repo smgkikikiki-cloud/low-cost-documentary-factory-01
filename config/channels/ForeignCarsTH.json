@@ -27,7 +27,8 @@
       "provider": "gemini-tts",
       "model": "gemini-3.1-flash-tts-preview",
       "voice": "Charon",
-      "max_chunk_chars": 900
+      "target_sec": 95,
+      "estimate_chars_per_sec": 14
     }
   }
 }

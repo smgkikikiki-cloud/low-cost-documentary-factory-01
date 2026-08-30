@@ -38,6 +38,7 @@ import preflight as preflight_mod  # noqa: E402
 import tts_render  # noqa: E402
 import validate_episode  # noqa: E402
 import episode_paths  # noqa: E402
+import tts_gemini_chunks  # noqa: E402
 
 ROOT = Path(__file__).resolve().parent
 EPISODES_DIR = ROOT / "episodes"
@@ -155,13 +156,32 @@ def select_tts_config(channel: dict, profile: str = None) -> dict:
     return tts_config
 
 
-def run_tts(episode_dir: Path, profile: str = None) -> int:
+def run_tts(episode_dir: Path, profile: str = None, dry_run=False, timeout_sec=120) -> int:
     sm = json.loads((episode_dir / "script_manifest.json").read_text(encoding="utf-8"))
     channel = load_channel(sm["channel_id"])
     tts_config = select_tts_config(channel, profile)
 
+    if tts_config.get("provider") == "gemini-tts":
+        try:
+            result = tts_gemini_chunks.render_chunks(episode_dir, tts_config, dry_run=dry_run, timeout_sec=timeout_sec)
+        except (tts_gemini_chunks.ChunkError, OSError, ValueError, KeyError, TypeError) as e:
+            print(f"error: {e}", file=sys.stderr)
+            return 1
+        if dry_run:
+            print(json.dumps(result, ensure_ascii=False, indent=2))
+            return 0
+        print(f"Chunk manifest: {result['manifest_path']}")
+        print(f"Chunks: {result['manifest']['status']}; BLOCK ALIGNMENT REQUIRED before B-DISCOVER.")
+        print("Existing tts_manifest.json was preserved; its old block timings do not authorize Gemini discovery.")
+        for chunk_id, reason in result["failures"]:
+            print(f"  FAILED {chunk_id}: {reason}", file=sys.stderr)
+        return 0 if result["complete"] else 1
+    if dry_run:
+        print("error: --dry-run currently supports Gemini chunk planning only", file=sys.stderr)
+        return 1
+
     try:
-        result = tts_render.render_episode_tts(episode_dir, tts_config)
+        result = tts_render.render_episode_tts(episode_dir, tts_config, timeout_sec=timeout_sec)
     except tts_render.TTSRenderError as e:
         print(f"error: {e}", file=sys.stderr)
         return 1
@@ -208,6 +228,10 @@ def compute_status(episode_dir: Path) -> str:
     sm = validate_episode.load(sm_path)
     silent = validate_episode.Report()
     sm_blocks = validate_episode.validate_script_manifest(sm, silent)
+
+    chunk_gate = tts_gemini_chunks.alignment_gate(episode_dir)
+    if chunk_gate:
+        return chunk_gate
 
     tts_path = episode_dir / "tts_manifest.json"
     tts = validate_episode.load(tts_path) if tts_path.exists() else {}
@@ -263,6 +287,8 @@ def main() -> int:
 
     tts_parser = subparsers.add_parser("tts", help="Render narration audio and measure real durations")
     tts_parser.add_argument("episode", help="episode_id or path to the episode folder")
+    tts_parser.add_argument("--dry-run", action="store_true", help="Plan Gemini chunks without credentials, API calls or file changes")
+    tts_parser.add_argument("--timeout", type=float, default=120, help="Wall-clock timeout per request; independent of the 120s audio cap")
     tts_parser.add_argument("--profile", default=None,
                             help="Use a named entry from the channel's tts_profiles (e.g. google-chirp3) "
                                  "instead of its active 'tts' config")
@@ -290,7 +316,7 @@ def main() -> int:
         return 0
 
     if args.command == "tts":
-        return run_tts(resolve_episode_dir(args.episode), args.profile)
+        return run_tts(resolve_episode_dir(args.episode), args.profile, args.dry_run, args.timeout)
 
     if args.command == "validate":
         return run_validate(resolve_episode_dir(args.episode), args.quiet)

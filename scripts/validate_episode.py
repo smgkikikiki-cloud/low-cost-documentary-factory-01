@@ -604,6 +604,13 @@ def main() -> int:
         sm_blocks = validate_script_manifest(sm, report)
     if tts_path.exists() and sm_blocks:
         tts_durations, tts_complete = validate_tts_manifest(tts, sm_blocks, report)
+    from tts_gemini_chunks import alignment_gate
+    chunk_gate = alignment_gate(ep_dir)
+    if chunk_gate:
+        tts_complete = False
+        report.note(f"{chunk_gate}: old block timings cannot authorize Gemini discovery/editing")
+        if ai.get("status") in ("gathered", "approved") or ep_doc.get("status") in ("planned", "approved", "rendered"):
+            report.error("Gemini chunk selection requires measured block alignment before visual production")
     if ai_path.exists() and sm_blocks:
         gate_open = validate_block_coverage_gate(ai, sm_blocks, tts_durations, tts_complete, report)
     if ep_path.exists() and sm_blocks and ai_path.exists():
