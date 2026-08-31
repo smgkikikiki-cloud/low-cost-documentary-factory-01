@@ -95,7 +95,12 @@ class Visuals(unittest.TestCase):
 
     def test_collection_before_tts_no_key_no_narration_edits(self):
         before = {f: (self.ep / f).read_bytes() for f in ("master_script.md", "script_manifest.json", "tts_manifest.json", "edit_plan.json")}
-        with patch.dict(os.environ, {}, clear=True):
+        # Keep PATH/SystemRoot and other runtime settings; only the TTS
+        # credential is irrelevant to visual production.
+        original_path = os.environ.get("PATH")
+        with patch.dict(os.environ):
+            os.environ.pop("GEMINI_API_KEY", None)
+            self.assertEqual(os.environ.get("PATH"), original_path)
             self.reviewed()
         state = self.ws().status()
         self.assertEqual((state["collection"], state["reviewed"], state["inventory_status"]), ("AVAILABLE", 1, "pending"))

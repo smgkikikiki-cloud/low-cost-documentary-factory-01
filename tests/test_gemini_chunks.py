@@ -69,15 +69,22 @@ class Chunks(unittest.TestCase):
 
     def test_no_api_or_writes_in_dry_run(self):
         before = {p.name: p.read_bytes() for p in self.ep.iterdir()}
-        with patch.dict(os.environ, {}, clear=True):
+        with patch.dict(os.environ):
+            os.environ.pop('GEMINI_API_KEY', None)
             result = g.render_chunks(self.ep, self.raw, dry_run=True)
         self.assertEqual(result['status'], 'planned')
         self.assertEqual(before, {p.name: p.read_bytes() for p in self.ep.iterdir()})
 
     def test_missing_key_leaves_all_files_untouched(self):
         before = {p.name: p.read_bytes() for p in self.ep.iterdir()}
-        with patch.dict(os.environ, {}, clear=True), self.assertRaisesRegex(g.ChunkError, 'GEMINI_API_KEY'):
-            g.render_chunks(self.ep, self.raw)
+        # Remove only the credential. Clearing PATH hides ffprobe on Windows
+        # and tests a missing dependency instead of the missing-key guard.
+        original_path = os.environ.get('PATH')
+        with patch.dict(os.environ):
+            os.environ.pop('GEMINI_API_KEY', None)
+            self.assertEqual(os.environ.get('PATH'), original_path)
+            with self.assertRaisesRegex(g.ChunkError, 'GEMINI_API_KEY'):
+                g.render_chunks(self.ep, self.raw)
         self.assertEqual(before, {p.name: p.read_bytes() for p in self.ep.iterdir()})
 
     def test_master_hash_mismatch_fails_before_api(self):

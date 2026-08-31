@@ -315,11 +315,15 @@ def episode_lock(episode):
         stream.seek(0)
         if os.name == "nt":
             import msvcrt
-            if not stream.read(1):
-                stream.write(b"0")
-                stream.flush()
-            stream.seek(0)
             try:
+                # Windows byte-range locks prohibit reading the locked byte
+                # through a second handle. Inspect file size without reading
+                # content, then attempt the nonblocking lock at offset zero.
+                stream.seek(0, 2)
+                if stream.tell() == 0:
+                    stream.write(b"0")
+                    stream.flush()
+                stream.seek(0)
                 msvcrt.locking(stream.fileno(), msvcrt.LK_NBLCK, 1)
             except OSError:
                 raise ChunkError("Another Gemini render is active for this episode") from None
