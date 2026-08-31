@@ -7,6 +7,11 @@
   "required": ["episode_id", "status", "assets", "block_coverage"],
   "additionalProperties": false,
   "properties": {
+    "script_manifest_sha256": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
+    "tts_manifest_sha256": {
+      "type": "string", "pattern": "^[0-9a-f]{64}$",
+      "description": "Set only by measured coverage; any later audio selection change invalidates that coverage."
+    },
     "episode_id": {
       "type": "string"
     },
@@ -14,7 +19,7 @@
       "type": "string",
       "enum": ["pending", "gathered", "approved"],
       "default": "pending",
-      "description": "pending: B-DISCOVER has not run. gathered: every script_manifest.json block has exactly one block_coverage entry, none is critical_gap, and overall_effective_coverage (see agents/agent_b_archive_visual_editor.md) is >= 0.90. approved: reviewed. B-EDIT is gated on this reaching gathered or approved."
+      "description": "pending: collection/review may already be in progress, but measured coverage is not ready. gathered: every script block has one measured coverage entry, none is critical_gap, overall_effective_coverage >= 0.90. approved: reviewed. B-EDIT remains gated on measured coverage."
     },
     "environment_limitations": {
       "type": "array",
@@ -49,6 +54,24 @@
           "required": ["duration_sec"]
         },
         "properties": {
+          "source_sha256": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
+          "inspected_source_sha256": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
+          "tags": { "type": "array", "items": { "type": "string" } },
+          "viewed_evidence": {
+            "type": "array", "uniqueItems": true, "items": { "type": "string" },
+            "description": "Episode-relative evidence paths Claude actually viewed; extracting frames is not viewing them."
+          },
+          "inspection_evidence": {
+            "type": "array", "items": {
+              "type": "object", "additionalProperties": false,
+              "required": ["frame_path", "sha256"],
+              "properties": {
+                "frame_path": { "type": "string" },
+                "sha256": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
+                "timestamp_sec": { "type": "number", "minimum": 0 }
+              }
+            }
+          },
           "asset_id": { "type": "string" },
           "source_url": {
             "type": "string",

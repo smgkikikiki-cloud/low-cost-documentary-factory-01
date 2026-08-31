@@ -608,10 +608,15 @@ def main() -> int:
     chunk_gate = alignment_gate(ep_dir)
     if chunk_gate:
         tts_complete = False
-        report.note(f"{chunk_gate}: old block timings cannot authorize Gemini discovery/editing")
+        report.note(f"{chunk_gate}: collection is allowed; old block timings cannot authorize coverage/editing")
         if ai.get("status") in ("gathered", "approved") or ep_doc.get("status") in ("planned", "approved", "rendered"):
-            report.error("Gemini chunk selection requires measured block alignment before visual production")
+            report.error("Gemini chunk selection requires measured block alignment before coverage/B-EDIT")
     if ai_path.exists() and sm_blocks:
+        from visual_assets import validate_managed_inventory, VisualError
+        try:
+            validate_managed_inventory(ai, ep_dir)
+        except (VisualError, OSError, ValueError, KeyError, TypeError) as exc:
+            report.error(f"asset_inventory integrity: {exc}")
         gate_open = validate_block_coverage_gate(ai, sm_blocks, tts_durations, tts_complete, report)
     if ep_path.exists() and sm_blocks and ai_path.exists():
         validate_edit_plan(ep_doc, sm_blocks, ai, tts_durations, tts_complete, report)

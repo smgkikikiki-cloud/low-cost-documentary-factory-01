@@ -1,6 +1,8 @@
 __pycache__/
 *.pyc
 .tts_chunks.lock
+.visual.lock
+asset_library/media/
 
 # Downloaded/rendered media is large and non-deterministic to regenerate byte-for-
 # byte -- keep only the small JSON/text state files under episodes/ in git.

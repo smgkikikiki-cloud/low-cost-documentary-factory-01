@@ -53,6 +53,7 @@ _source_scoped_dir().
 import argparse
 import hashlib
 import json
+import math
 import re
 import shutil
 import subprocess
@@ -127,8 +128,10 @@ def compute_sample_interval(duration_sec: float, target_frames: int = 25, min_in
 
     Pure arithmetic, no I/O -- deterministic and unit-testable without ffmpeg.
     """
-    if duration_sec <= 0 or target_frames <= 0:
-        return min_interval_sec
+    if (not isinstance(target_frames, int) or isinstance(target_frames, bool) or not 1 <= target_frames <= 100
+            or not math.isfinite(duration_sec) or duration_sec <= 0
+            or not math.isfinite(min_interval_sec) or min_interval_sec <= 0):
+        raise MediaProbeError("Sampling requires positive finite duration/interval and 1-100 target frames")
     return max(duration_sec / target_frames, min_interval_sec)
 
 
@@ -169,6 +172,8 @@ def _extract_frames(path: str, timestamps: list, out_dir: str, prefix: str, wind
             raise MediaProbeError(f"ffmpeg frame extraction failed at t={ts}s on {path}: {e.stderr.strip()}") from e
         except subprocess.TimeoutExpired as e:
             raise MediaProbeError(f"ffmpeg timed out extracting frame at t={ts}s on {path}") from e
+        if not frame_path.is_file() or frame_path.stat().st_size == 0:
+            raise MediaProbeError(f"ffmpeg produced no frame at t={ts}s on {path}")
         frame_paths.append({"timestamp_sec": ts, "frame_path": str(frame_path)})
     return frame_paths
 
@@ -217,8 +222,10 @@ def fine_contact_sheet(
 
     Returns a list of {timestamp_sec, frame_path}.
     """
-    if end_sec <= start_sec:
-        raise MediaProbeError(f"end_sec ({end_sec}) must exceed start_sec ({start_sec})")
+    duration = probe(path)["duration_sec"]
+    if (not all(isinstance(v, (int, float)) and not isinstance(v, bool) and math.isfinite(v)
+                for v in (start_sec, end_sec, duration)) or not 0 <= start_sec < end_sec <= duration):
+        raise MediaProbeError("Inspection window must be finite and inside the measured source duration")
 
     window = end_sec - start_sec
     interval = compute_sample_interval(window, target_frames, min_interval_sec)

@@ -12,7 +12,8 @@ master script. This repository turns that locked script into a finished video:
   `scripts/tts_gemini_chunks.py` for continuous multi-block narration; actual
   block alignment is required before it can produce downstream timings.
 - **Claude — B-DISCOVER/B-EDIT** (`agents/agent_b_archive_visual_editor.md`) finds and
-  verifies real archival visuals against the locked narration
+  verifies real archival visuals against the locked narration (collection may
+  start before TTS; measured coverage and B-EDIT still wait for aligned audio)
   (`asset_inventory.json`, using `scripts/media_search.py`/`media_download.py`/
   `media_probe.py`), then assembles a concrete, deterministic timeline
   (`edit_plan.json`). Claude decides only what is shown and how — never what is said.
@@ -26,12 +27,18 @@ is real, deterministic Python.
 Episode state is just JSON files on disk — see `CLAUDE.md` for the full pipeline and
 invariants, and `schemas/` for the shape of each file.
 
+The reusable visual workflow is documented in
+[docs/visual_production.md](docs/visual_production.md). `run_episode.py visual`
+provides search/add/inspect/review/publish/reuse for any topic or channel; it never
+calls a model or needs a TTS API key. Claude makes all visual decisions.
+
 ## Pipeline
 
 ```
 master_script.md -> ingest_script.py -> script_manifest.json
+                  -> Claude collection/review/reuse -> pending asset_inventory
                   -> TTS -> tts_manifest.json (MEASURED, not estimated)
-                  -> Claude B-DISCOVER -> asset_inventory.json
+                  -> Claude B-DISCOVER measured coverage -> asset_inventory.json
                   -> Claude B-EDIT -> edit_plan.json
                   -> FFmpeg renderer -> final.mp4
 ```
@@ -63,6 +70,7 @@ scripts/tts_audition.py      Chirp 3: HD voice audition, writes only to temp/aud
 scripts/media_search.py      yt-dlp candidate metadata search (no download)
 scripts/media_download.py    download one selected video or direct-URL asset
 scripts/media_probe.py       deterministic ffprobe/ffmpeg helper (probe, contact sheets)
+scripts/visual_assets.py     collection/review/reuse before TTS; measured coverage afterward
 scripts/render_episode.py    the real FFmpeg renderer -> render/final.mp4
 scripts/validate_episode.py  deterministic cross-file validator
 scripts/episode_paths.py     the one shared episode-local directory layout
@@ -95,7 +103,8 @@ python run_episode.py tts ForeignCarsTH_jeep-wrangler-yj --profile google-chirp3
 python run_episode.py tts ForeignCarsTH_jeep-wrangler-yj --profile gemini-tts   # needs $GEMINI_API_KEY
 
 # Gemini: stop at BLOCK ALIGNMENT REQUIRED; do not use old Edge timings.
-# Claude performs B-DISCOVER only after measured block timings are ready.
+# Claude can collect visuals NOW; only coverage/B-EDIT waits for measured timings.
+python run_episode.py visual status ForeignCarsTH_jeep-wrangler-yj
 # Claude performs B-EDIT (writes edit_plan.json)
 
 python run_episode.py validate ForeignCarsTH_jeep-wrangler-yj
@@ -129,7 +138,8 @@ The approved Gemini 3.1 / Charon path is documented in
 [docs/gemini_production.md](docs/gemini_production.md). It preserves the existing
 episode and Edge/Chirp profiles, uses the approved conversational prompt and
 punctuation cleanup, checkpoints measured WAVs per chunk, and rejects audio over
-120 seconds. Chunk generation is not block alignment: discovery remains gated.
+120 seconds. Chunk generation is not block alignment: coverage/B-EDIT remains
+gated, while visual collection can proceed independently.
 
 ```bat
 py run_episode.py tts ForeignCarsTH_land-cruiser-70 --profile gemini-tts --dry-run

@@ -62,28 +62,28 @@ def download_video(url: str, out_dir, max_height: int = 1080, timeout_sec: int =
         "-f", fmt,
         "--merge-output-format", "mp4",
         "--no-playlist",
+        "--no-simulate",
+        "--print", "after_move:filepath",
         "-o", out_template,
+        "--",
         url,
     ]
 
-    before = {p for p in out_dir.iterdir() if p.is_file()}
     try:
-        result = subprocess.run(cmd, capture_output=True, text=True, timeout=timeout_sec)
+        result = subprocess.run(cmd, capture_output=True, text=True, encoding="utf-8", timeout=timeout_sec)
     except subprocess.TimeoutExpired as e:
         raise MediaDownloadError(f"yt-dlp download timed out after {timeout_sec}s for {url}") from e
     if result.returncode != 0:
         raise MediaDownloadError(f"yt-dlp failed for {url}: {result.stderr.strip()[-2000:]}")
 
-    after = {p for p in out_dir.iterdir() if p.is_file()}
-    new_files = [p for p in (after - before) if p.suffix.lower() != ".part"]
-    if not new_files:
-        raise MediaDownloadError(
-            f"yt-dlp reported success but no new file appeared in {out_dir} for {url} "
-            f"(it may already have been downloaded previously -- check for an existing file with this video's id)"
-        )
-
-    video_files = [p for p in new_files if p.suffix.lower() in _VIDEO_EXTENSIONS]
-    chosen = video_files[0] if video_files else new_files[0]
+    # yt-dlp reports the actual merged path even on an already-downloaded source.
+    # Directory-difference guessing previously mistook a successful resume for failure.
+    paths = [Path(line.strip()).resolve() for line in result.stdout.splitlines() if line.strip()]
+    video_files = [p for p in paths if p.is_relative_to(out_dir.resolve()) and p.is_file()
+                   and p.suffix.lower() in _VIDEO_EXTENSIONS]
+    if len(set(video_files)) != 1:
+        raise MediaDownloadError("yt-dlp did not report exactly one existing output video")
+    chosen = video_files[0]
     return {"local_path": str(chosen.resolve()), "filename": chosen.name}
 
 

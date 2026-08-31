@@ -211,6 +211,12 @@ def render_episode(episode_dir: Path) -> Path:
     ai = validate_episode.load(episode_dir / "asset_inventory.json")
     ep = validate_episode.load(episode_dir / "edit_plan.json")
 
+    from visual_assets import validate_managed_inventory, VisualError
+    try:
+        validate_managed_inventory(ai, episode_dir)
+    except (VisualError, OSError, ValueError, KeyError, TypeError) as exc:
+        raise RenderError(f"Visual inventory is stale or damaged: {exc}") from None
+
     sm_blocks = validate_episode.validate_script_manifest(sm, report)
     tts_durations, tts_complete = validate_episode.validate_tts_manifest(tts, sm_blocks, report)
     gate_open = validate_episode.validate_block_coverage_gate(ai, sm_blocks, tts_durations, tts_complete, report)

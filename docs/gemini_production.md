@@ -104,7 +104,9 @@ each accepted chunk, preserve chunk-to-block ordering (including blocks split
 across chunks), slice/assemble without dropping or duplicating samples, and probe
 the final per-block files before publishing `tts_manifest.json`. The measured
 chunk/audio hashes provide the identity that alignment must bind to. Its quality
-must be tested on the actual Land Cruiser audio before discovery is enabled.
+must be tested on actual episode audio before measured coverage/B-EDIT is enabled.
+Visual collection, source inspection and shared-cache reuse can run independently
+while this gate is closed; see `docs/visual_production.md`.
 
 Until that stage is implemented and verified, do not manually clear the pointer
 to bypass alignment and do not use old provider timings for the new narration.

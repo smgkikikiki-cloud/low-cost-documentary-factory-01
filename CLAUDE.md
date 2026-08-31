@@ -43,10 +43,12 @@ master_script.md                      -- written upstream, supplied externally
     |  deterministic ingestion (scripts/ingest_script.py, no LLM)
     v
 script_manifest.json                  -- locked narration, source_refs as hints
+    |  Claude B-DISCOVER collection may start NOW via run_episode.py visual
+    |  (pending asset_inventory, inspected sources, cross-episode reuse)
     |  Edge/Chirp block TTS, OR Gemini chunks -> actual block alignment (required)
     v
 tts_manifest.json                     -- MEASURED per-block audio duration
-    |  Claude -- B-DISCOVER
+    |  Claude -- B-DISCOVER measured coverage
     v
 asset_inventory.json                  -- real, verified visual material
     |  Claude -- B-EDIT
@@ -58,9 +60,12 @@ final.mp4
 ```
 
 Gemini chunk generation is implemented; automatic block alignment is still a
-separate implementation gate. While `tts_chunks.json` selects Gemini chunks,
+separate implementation gate. Visual collection does not wait for this gate.
+While `tts_chunks.json` selects Gemini chunks,
 `status` and rendering remain blocked even if an old Edge `tts_manifest.json` is
 fully generated. Never copy estimated chunk duration into final block timings.
+Use `visual status` for collection readiness. See `docs/visual_production.md` for
+search/add/inspect/review/publish/reuse and the separate measured coverage command.
 
 One Claude production agent, two modes (not two agents) — see
 `agents/agent_b_archive_visual_editor.md`.
@@ -102,6 +107,8 @@ One Claude production agent, two modes (not two agents) — see
    and a video's `usable_segments` may only be recorded for footage actually
    inspected. Titles, captions and search snippets establish what an asset
    *claims* to show, never what it shows.
+   Collection may already contain inspected assets while status is `pending` and
+   `block_coverage` is empty. Only measured coverage may promote the inventory.
 7. **A usable segment is a permitted range, not an indivisible clip.** B-EDIT may
    select any subrange of a `usable_segments` entry (or several different
    subranges of the same segment across different clips), as long as each
@@ -157,7 +164,7 @@ has the full production detail; this list is the index.
 - `schemas/` — JSON Schema (draft-07) for every active episode state file
   (`script_manifest.json`, `tts_manifest.json`, `asset_inventory.json`,
   `edit_plan.json`). Validate against these before handing off between stages.
-- `run_episode.py` — CLI: `preflight`, `ingest`, `tts`, `validate`, `render`,
+- `run_episode.py` — CLI: `preflight`, `ingest`, `tts`, `visual`, `validate`, `render`,
   `status`.
 - `scripts/ingest_script.py` — deterministic, LLM-free `master_script.md` →
   `script_manifest.json` converter. Atomic: a malformed script fails before any
@@ -186,6 +193,11 @@ has the full production detail; this list is the index.
   metadata search (no download), and download of one selected video or one
   selected direct-URL asset. Claude decides what to search for and select; these
   only execute the fetch.
+- `scripts/visual_assets.py` — topic-independent collection/review/reuse CLI over
+  those helpers. Uses the existing pending inventory and flat shared index,
+  adds source/evidence hashes and atomic writes, and computes coverage only from
+  actual measured block audio. No narration edits or model calls. See
+  `docs/visual_production.md`.
 - `scripts/media_probe.py` — deterministic ffprobe/ffmpeg helper: `probe()` for
   duration/dimensions/fps/codec (video or audio), `coarse_contact_sheet()` /
   `fine_contact_sheet()` for adaptive-interval frame sampling so Claude can
@@ -215,8 +227,11 @@ has the full production detail; this list is the index.
 ```bash
 python run_episode.py preflight
 python run_episode.py ingest --channel <channel_id> --topic "<topic>" --script <path/to/master_script.md>
+python run_episode.py visual status <episode_id>
+# Claude can collect/inspect/reuse assets immediately, independently of TTS.
 python run_episode.py tts <episode_id> [--profile <tts_profile>]
-# Claude performs B-DISCOVER (writes asset_inventory.json)
+# Claude supplies allocations; visual coverage calculates measured targets/gaps.
+python run_episode.py visual coverage <episode_id> --plan allocations.json
 # Claude performs B-EDIT (writes edit_plan.json)
 python run_episode.py validate <episode_id>
 python run_episode.py render <episode_id>

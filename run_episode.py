@@ -39,6 +39,7 @@ import tts_render  # noqa: E402
 import validate_episode  # noqa: E402
 import episode_paths  # noqa: E402
 import tts_gemini_chunks  # noqa: E402
+import visual_assets  # noqa: E402
 
 ROOT = Path(__file__).resolve().parent
 EPISODES_DIR = ROOT / "episodes"
@@ -171,8 +172,9 @@ def run_tts(episode_dir: Path, profile: str = None, dry_run=False, timeout_sec=1
             print(json.dumps(result, ensure_ascii=False, indent=2))
             return 0
         print(f"Chunk manifest: {result['manifest_path']}")
-        print(f"Chunks: {result['manifest']['status']}; BLOCK ALIGNMENT REQUIRED before B-DISCOVER.")
-        print("Existing tts_manifest.json was preserved; its old block timings do not authorize Gemini discovery.")
+        print(f"Chunks: {result['manifest']['status']}; BLOCK ALIGNMENT REQUIRED before coverage/B-EDIT.")
+        print("Visual collection is available now: python run_episode.py visual status <episode_id>")
+        print("Existing tts_manifest.json was preserved; its old block timings do not authorize Gemini coverage.")
         for chunk_id, reason in result["failures"]:
             print(f"  FAILED {chunk_id}: {reason}", file=sys.stderr)
         return 0 if result["complete"] else 1
@@ -243,6 +245,10 @@ def compute_status(episode_dir: Path) -> str:
 
     ai_path = episode_dir / "asset_inventory.json"
     ai = validate_episode.load(ai_path) if ai_path.exists() else {}
+    try:
+        visual_assets.validate_managed_inventory(ai, episode_dir)
+    except (visual_assets.VisualError, OSError, ValueError, KeyError, TypeError):
+        return "B-DISCOVER REQUIRED"
     gate_open = validate_episode.validate_block_coverage_gate(ai, sm_blocks, tts_durations, tts_complete, validate_episode.Report())
     if not gate_open:
         return "B-DISCOVER REQUIRED"
@@ -276,6 +282,7 @@ def main() -> int:
     subparsers = parser.add_subparsers(dest="command", required=True)
 
     subparsers.add_parser("preflight", help="Check ffmpeg/ffprobe/yt-dlp/edge-tts/jsonschema availability")
+    visual_assets.add_parser(subparsers)
 
     ingest_parser = subparsers.add_parser(
         "ingest",
@@ -308,6 +315,9 @@ def main() -> int:
     if args.command == "preflight":
         return preflight_mod._main()
 
+    if args.command == "visual":
+        return visual_assets.run(args, resolve_episode_dir(args.episode))
+
     if args.command == "ingest":
         episode_dir = ingest_episode(args.channel, args.topic, Path(args.script))
         print(f"Ingested episode at {episode_dir.relative_to(ROOT)}")
@@ -327,6 +337,7 @@ def main() -> int:
     if args.command == "status":
         episode_dir = resolve_episode_dir(args.episode)
         print(compute_status(episode_dir))
+        print("Visual collection can run independently: py run_episode.py visual status " + args.episode)
         return 0
 
     return 1

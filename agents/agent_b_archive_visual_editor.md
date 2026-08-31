@@ -1,14 +1,16 @@
 # Claude Production Agent — B-DISCOVER / B-EDIT
 
-**Reads:** `script_manifest.json` + `tts_manifest.json` (B-DISCOVER); `script_manifest.json`
+**Reads:** `script_manifest.json` (B-DISCOVER collection), plus `tts_manifest.json`
+only for measured coverage; `script_manifest.json`
 + `tts_manifest.json` + `asset_inventory.json` (B-EDIT)
 **Writes:** `asset_inventory.json` (B-DISCOVER), then `edit_plan.json` (B-EDIT)
 
-**Gemini gate:** run `python run_episode.py status <episode_id>` before discovery.
-If `tts_chunks.json` selects Gemini chunk audio, block alignment is required first;
-an older generated Edge/Chirp `tts_manifest.json` cannot satisfy this gate. Do not
+**Gemini gate:** collection is available before TTS via `run_episode.py visual`.
+If `tts_chunks.json` selects Gemini chunk audio, block alignment is required before
+coverage/B-EDIT; an older generated Edge/Chirp manifest cannot satisfy this gate. Do not
 estimate block times from characters, divide chunk durations proportionally, or
-rewrite the locked script. See `docs/gemini_production.md`.
+rewrite the locked script. See `docs/visual_production.md` for the collection,
+review, reuse and measured-coverage commands, and `docs/gemini_production.md`.
 
 **The execution layer is now real, runnable code**, invoked either directly or via
 `run_episode.py`: `scripts/media_search.py` (yt-dlp candidate metadata),
@@ -16,17 +18,17 @@ rewrite the locked script. See `docs/gemini_production.md`.
 `scripts/media_probe.py` (probe/contact-sheets), `scripts/tts_render.py` (narration
 audio), `scripts/render_episode.py` (the FFmpeg renderer), and
 `scripts/validate_episode.py` (the deterministic validator). None of it has been
-exercised against a real episode in this development environment (`ffmpeg`,
-`ffprobe`, and `yt-dlp` are not installed here -- see `python run_episode.py
-preflight`); the canonical execution environment is wherever those are actually on
-PATH. **What is not automated, by design:** B-DISCOVER and B-EDIT themselves are not
+exercised against a real publisher's episode in this development environment.
+The visual test suite exercises local generated fixtures, real ffmpeg/ffprobe and
+a short render; external search/download tests are mocked. Run `preflight` on the
+actual production machine. **What is not automated, by design:** B-DISCOVER and B-EDIT themselves are not
 Python code -- they are this Claude Code session's own judgment, using the tools
 above. See **Operational workflow** below for exactly how.
 
 One agent, two modes -- not two agents:
 
-- **B-DISCOVER**: `script_manifest.json` + `tts_manifest.json` → discover, inspect,
-  and select visual material → `asset_inventory.json`.
+- **B-DISCOVER**: from the locked script, collect/inspect/reuse material immediately
+  into a pending `asset_inventory.json`; after TTS, allocate measured coverage.
 - **B-EDIT**: `script_manifest.json` + `tts_manifest.json` + `asset_inventory.json`
   → `edit_plan.json`.
 
@@ -70,7 +72,17 @@ to look "dynamic."
 
 ## B-DISCOVER
 
-### Purpose: block-runtime-centric coverage, driven by MEASURED audio
+### Collection can start immediately; coverage uses MEASURED audio
+
+Collection and coverage are two parts of this same mode, not new agents. Use
+`python run_episode.py visual status <episode_id>` after ingestion. Search and
+review real sources while TTS is pending, absent or quota-limited. Keep inventory
+status `pending` and coverage empty until actual block timings are ready.
+
+Before audio exists, use bounded searches driven by the locked script's subjects.
+Do not claim a footage coverage percentage, invent target seconds, or search
+indefinitely to fill an unknown runtime. All topics/channels use the same tools;
+no car-specific keywords, source lists or episode IDs are built into the code.
 
 The old architecture planned visuals against an editorial outline's *estimated*
 runtime. That intermediary is gone. The script is already complete and locked, so
@@ -287,11 +299,12 @@ discovery-is-not-verification rule above.
 
 ### Operational workflow (executable)
 
-This is the concrete, run-it-yourself version of B-DISCOVER, block by block:
+This is the concrete, run-it-yourself version of B-DISCOVER, block by block.
+The managed CLI in `docs/visual_production.md` wraps the same helpers with atomic
+inventory updates, reusable media caching and checksummed inspection evidence:
 
-1. **Read the inputs.** `script_manifest.json` (locked narration, block order) and
-   `tts_manifest.json` (must be `status: "generated"` -- run
-   `python run_episode.py tts <episode_id>` first if it isn't). Also skim
+1. **Read the inputs.** `script_manifest.json` (locked narration, block order).
+   Collection does NOT wait for `tts_manifest.json`; measured coverage does. Also skim
    `asset_library/index.json` for anything already tagged/reusable from a past
    episode.
 2. **Derive search subjects from the LOCKED block narration** -- read
@@ -325,9 +338,14 @@ This is the concrete, run-it-yourself version of B-DISCOVER, block by block:
    for a coarse full-video pass, then a `--start S --end E` fine pass around any
    window that looks promising. Actually look at the extracted frames before
    recording anything -- see **Discovery is not verification**.
-7. **Record honestly** in `asset_inventory.json`: the asset (with real
-   `verification_method`/`exact_subject_match`), its `usable_segments` (only for
-   frames actually viewed), and the block's `block_coverage` allocation.
+7. **Record honestly** with `visual review`: the asset, actual viewed evidence,
+   `verification_method`/`exact_subject_match` and observed `usable_segments`.
+   Generating frames alone never upgrades verification. Publish reusable assets
+   to the local shared cache via `visual publish`. If TTS is not aligned/measured,
+   stop with inventory `pending` and no coverage. Once measured, author allocation
+   JSON and run `visual coverage`; it calculates targets/ratios and checks source
+   bounds. Use `visual reopen` (preserving a coverage snapshot) if more collection
+   is needed after that pass. It refuses to invalidate an existing edit plan.
 8. **Run the validator:** `python run_episode.py validate <episode_id>` (or `-q` for
    errors/warnings only) after each meaningful update -- it catches the mechanical
    contract violations (ratio math, segment bounds, honest `relevance: exact`, ...)
@@ -366,8 +384,8 @@ built:
   host or an archive.
 - Image files can be read and viewed directly. Scanned PDFs may need their embedded
   images extracted first.
-- `ffmpeg`/`ffprobe` are not installed in this development environment as of this
-  writing -- `scripts/media_probe.py` will raise `MediaProbeError` until they are.
+- Tool availability is machine-specific; check `preflight` rather than assuming
+  the cloud checkout and the user's Windows installation have identical tools.
 
 ---
 
@@ -386,11 +404,13 @@ asset_library/
 Each `index.json` entry carries just enough to find something again: an id, a
 `subject`/free-text tags, `source_url` and/or `local_path` (under `media/`),
 `asset_type`, `reusable`, and (for video) known `usable_segments` if any were already
-recorded. Simple deterministic keyword/tag filtering over this file is enough for V0
-lookups. There is no schema file for this convention; it deliberately stays this
-small. When B-DISCOVER selects an asset worth keeping for future reuse, it may add an
-entry here in addition to that episode's `asset_inventory.json` -- the two are not
-required to stay in lockstep.
+recorded. `visual search --local-only` implements deterministic keyword/tag
+filtering. `visual publish` caches the reviewed source plus evidence; `visual reuse`
+copies them into a new episode with portable paths, retains source inspection,
+and resets exact-subject relevance for the new narration. Legacy index entries
+remain searchable but must be imported/inspected before managed reuse. Shared
+media is gitignored; an index alone is not the cached footage. No new database or
+semantic model is involved. See `docs/visual_production.md`.
 
 ---
 

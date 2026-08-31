@@ -43,12 +43,12 @@ def search_video_candidates(query: str, max_results: int = 5, timeout_sec: int =
     for that result -- never guessed or invented.
     """
     _require_yt_dlp()
-    if max_results < 1:
-        raise MediaSearchError("max_results must be >= 1")
+    if not query.strip() or not 1 <= max_results <= 20:
+        raise MediaSearchError("Supply a query and max_results between 1 and 20")
 
     cmd = ["yt-dlp", "--skip-download", "--dump-json", "--no-warnings", f"ytsearch{max_results}:{query}"]
     try:
-        result = subprocess.run(cmd, capture_output=True, text=True, timeout=timeout_sec)
+        result = subprocess.run(cmd, capture_output=True, text=True, encoding="utf-8", timeout=timeout_sec)
     except subprocess.TimeoutExpired as e:
         raise MediaSearchError(f"yt-dlp search timed out after {timeout_sec}s for query {query!r}") from e
 
