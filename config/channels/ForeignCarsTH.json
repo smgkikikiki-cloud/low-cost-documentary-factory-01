@@ -1,0 +1,48 @@
+{
+  "channel_id": "ForeignCarsTH",
+  "output_language": "en",
+  "tts": {
+    "provider": "google-chirp3",
+    "language_code": "en-US",
+    "voice": "en-US-Chirp3-HD-Charon",
+    "speaking_rate": 1.0,
+    "input_mode": "text"
+  },
+  "tts_profiles": {
+    "google-chirp3-en": {
+      "provider": "google-chirp3",
+      "language_code": "en-US",
+      "voice": "en-US-Chirp3-HD-Charon",
+      "speaking_rate": 1.0,
+      "input_mode": "text"
+    },
+    "edge-tts-en": {
+      "provider": "edge-tts",
+      "voice": "en-US-GuyNeural",
+      "rate": "+0%",
+      "pitch": "+0Hz",
+      "volume": "+0%"
+    },
+    "edge-tts": {
+      "provider": "edge-tts",
+      "voice": "th-TH-NiwatNeural",
+      "rate": "+0%",
+      "pitch": "+0Hz",
+      "volume": "+0%"
+    },
+    "google-chirp3": {
+      "provider": "google-chirp3",
+      "language_code": "th-TH",
+      "voice": "th-TH-Chirp3-HD-Charon",
+      "speaking_rate": 1.0,
+      "input_mode": "text"
+    },
+    "gemini-tts": {
+      "provider": "gemini-tts",
+      "model": "gemini-3.1-flash-tts-preview",
+      "voice": "Charon",
+      "target_sec": 95,
+      "estimate_chars_per_sec": 14
+    }
+  }
+}

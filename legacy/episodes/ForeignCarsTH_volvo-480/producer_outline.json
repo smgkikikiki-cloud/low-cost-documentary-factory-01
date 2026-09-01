@@ -1,0 +1,152 @@
+{
+  "episode_id": "ForeignCarsTH_volvo-480",
+  "status": "drafted",
+  "thesis": "The Volvo 480 (1986-1995) was Volvo's first front-wheel-drive car and the only Volvo ever built with pop-up headlights -- but the headlights, and the integrated bumpers alongside them, weren't a styling whim. They were engineered specifically to satisfy US safety regulation, because the 480 was developed from early on with an American launch in mind. That launch was postponed indefinitely in February 1988 over a weak dollar, and no 480 was ever officially sold in the United States. Everything distinctive about how the car looked was built for a market it never reached.",
+  "thesis_claim_ids": ["top01_only_popup_headlights", "eng01_popup_headlight_rationale", "eng02_us_bumpers_designed_in", "mkt01_us_sports_wagon_plan", "mkt02_us_plan_cancelled"],
+  "hook": "The Volvo 480 is the only Volvo ever built with pop-up headlights. That much people remember. What almost nobody remembers is why it has them -- and the answer involves a country this car was never actually allowed to be sold in.",
+  "hook_claim_ids": ["top01_only_popup_headlights", "eng01_popup_headlight_rationale", "mkt02_us_plan_cancelled"],
+  "estimated_runtime_sec": 600,
+  "runtime_rationale": "10.0 minutes -- at the channel's preferred_minutes center, within normal_range_minutes [9, 11]. Built directly under the ForeignCarsTH 4-act act_structure (config/channels/ForeignCarsTH.json) during a single from-scratch A-PRE research pass, so evidence was gathered per-act rather than adapted after the fact: Act 1 ~72s (12%), Act 2 ~138s (23%), Act 3 ~258s (43%), Act 4 ~132s (22%) -- all within the channel's narration_share_pct targets, with Act 3 the longest as intended. One claim (eng04_lotus_porsche_marketing_claim) came back unresolved after research and is excluded from narration per allowed_in_narration=false; it is not needed to support any act at target length, so no further research pass was required to fill a gap.",
+  "open_questions": [
+    "eng04: Volvo's own marketing credited Lotus (suspension) and Porsche (engine tuning), but owner/enthusiast forum discussion disputes how much of this was genuine engineering collaboration versus marketing embellishment. No authoritative_secondary or primary source was found to settle this within the research budget for this episode. Kept unresolved and excluded from narration; a period Volvo press kit or a specialist restoration/technical history source would be the way to resolve it if a future pass wants to use it.",
+    "prod03: no source found documents a single specific reason for the September 1995 discontinuation (unlike, say, a manufacturer exit or a named successor model launch). Treated honestly as an unremarkable end-of-lifecycle wind-down rather than invented drama."
+  ],
+  "beats": [
+    {
+      "beat_id": "b1_cold_open",
+      "act": 1,
+      "estimated_narration_sec": 72,
+      "purpose": "Establish why this car deserves a video: its unmistakable, only-one-of-its-kind styling, raising the question of why without answering it yet.",
+      "summary": "The Volvo 480 (1986-1995) was Volvo's first front-wheel-drive production car and the only Volvo ever built with pop-up headlights, paired with a glass-hatchback rear styled as a nod to the classic 1800ES. Nothing before or since in Volvo's lineup has looked like it.",
+      "supporting_claim_ids": ["top01_only_popup_headlights", "des01_wedge_1800es_influence"],
+      "unresolved_claim_ids": [],
+      "narration_direction": "Lead with the visual singularity and the pop-up headlights as Volvo's one and only use of them. Tease that the headlights have a stranger story than 'it looked cool' without explaining the regulation yet -- that's Act 3.",
+      "visual_requests": [
+        {"request_id": "V001", "beat_id": "b1_cold_open", "subject": "Volvo 480 exterior, front 3/4 with headlights both up and down", "desired_asset_type": ["photo"], "description": "Show the pop-up headlights in both retracted and raised positions if possible, plus the overall wedge profile.", "priority": "high", "exact_subject_required": true},
+        {"request_id": "V002", "beat_id": "b1_cold_open", "subject": "Volvo 480 rear glass hatchback", "desired_asset_type": ["photo"], "description": "Rear 3/4 view showing the glass hatchback styling.", "priority": "medium", "exact_subject_required": true}
+      ]
+    },
+    {
+      "beat_id": "b2_galaxy_origin",
+      "act": 2,
+      "estimated_narration_sec": 65,
+      "purpose": "Explain the corporate and historical conditions that created the project -- where it came from institutionally.",
+      "summary": "The project began in 1978 as 'Project Galaxy,' an internal Volvo program to build front-wheel-drive replacements for the 200- and 300-series. In 1982, the whole program was sold to Volvo Car B.V. in the Netherlands -- the successor company to DAF -- and split into three model lines. The 480 was the first of them to reach production.",
+      "supporting_claim_ids": ["dev01_project_galaxy_origin"],
+      "unresolved_claim_ids": [],
+      "narration_direction": "Establish that this wasn't originally a Swedish project in the way people assume -- it became a Dutch one. This sets up Act 3's explanation of the shared platform and Renault engines.",
+      "visual_requests": [
+        {"request_id": "V003", "beat_id": "b2_galaxy_origin", "subject": "Volvo Born, Netherlands plant (period or contemporary)", "desired_asset_type": ["photo", "contextual_video"], "description": "The Dutch factory where the 480 and its Galaxy-project siblings were built.", "priority": "low", "exact_subject_required": false}
+      ]
+    },
+    {
+      "beat_id": "b3_designers_gestation",
+      "act": 2,
+      "estimated_narration_sec": 73,
+      "purpose": "Introduce who shaped the car and how long it took -- the human and timeline conditions behind the project.",
+      "summary": "The design was led by John de Vries and Peter Horbury. From the first sketches in 1979 to the October 1985 press launch and March 1986 Geneva Motor Show debut, it took roughly six years to reach the public, with European sales beginning that May.",
+      "supporting_claim_ids": ["dev02_designers_devries_horbury", "dev03_six_year_gestation_launch"],
+      "unresolved_claim_ids": [],
+      "narration_direction": "Close Act 2 on the sense of a long, deliberate gestation -- this wasn't a rushed styling exercise, which makes Act 3's regulation-driven design choices land as considered engineering rather than an afterthought.",
+      "visual_requests": [
+        {"request_id": "V004", "beat_id": "b3_designers_gestation", "subject": "1986 Geneva Motor Show or period Volvo design studio imagery", "desired_asset_type": ["photo"], "description": "Period imagery of the car's public debut or its design development.", "priority": "low", "exact_subject_required": false}
+      ]
+    },
+    {
+      "beat_id": "b4_headlight_engineering",
+      "act": 3,
+      "estimated_narration_sec": 60,
+      "purpose": "Open the main act with its clearest example: explain the actual engineering reason behind the car's signature feature.",
+      "summary": "The pop-up headlights existed because of a US regulation -- NHTSA's rule requiring headlamps to sit within a minimum height band above the road. Popping the lights up only when in use let the 480 satisfy that height rule while keeping a low, aerodynamic nose the rest of the time. It's the same reason many low-slung cars of that era used pop-up headlights.",
+      "supporting_claim_ids": ["eng01_popup_headlight_rationale"],
+      "unresolved_claim_ids": [],
+      "narration_direction": "WHAT (pop-up mechanism) -> WHY (US minimum headlight height rule) -> consequence (kept the low nose while satisfying regulation). Don't yet reveal that the car was never sold in the US -- that's the Act 4 payoff.",
+      "visual_requests": [
+        {"request_id": "V005", "beat_id": "b4_headlight_engineering", "subject": "Volvo 480 headlight mechanism close-up, raising or lowered", "desired_asset_type": ["photo", "contextual_video"], "description": "Close detail of the pop-up headlight mechanism in motion or in the raised position.", "priority": "high", "exact_subject_required": false}
+      ]
+    },
+    {
+      "beat_id": "b5_engineered_for_america",
+      "act": 3,
+      "estimated_narration_sec": 68,
+      "purpose": "Widen the regulation-driven design point beyond the headlights and reveal the larger reason: the car was engineered for a specific market from early on.",
+      "summary": "It wasn't just the headlights. The integrated bumpers were also engineered specifically to meet US bumper-safety standards. Both choices reflected the same fact: a US launch had been part of the plan almost from the start. Volvo intended to introduce the 480 in America in fall 1987, marketed as a 2+2 'sports wagon.'",
+      "supporting_claim_ids": ["eng02_us_bumpers_designed_in", "mkt01_us_sports_wagon_plan"],
+      "unresolved_claim_ids": [],
+      "narration_direction": "This is the beat that plants the dramatic irony the episode pays off in Act 4. State the US plan plainly and specifically (2+2 sports wagon, fall 1987) so the later cancellation lands as a real reversal, not a vague 'it didn't work out.'",
+      "visual_requests": []
+    },
+    {
+      "beat_id": "b6_renault_engine_inheritance",
+      "act": 3,
+      "estimated_narration_sec": 65,
+      "purpose": "Explain another of the car's odd characteristics -- a Swedish coupe running French engines -- as a consequence of its corporate origin, not a one-off choice.",
+      "summary": "As the first Galaxy-project car to reach production, the 480 set the mechanical template its later siblings would copy: floorpan, suspension, transmissions, brakes, and Renault-sourced engines. The Renault engines weren't chosen specifically for the 480 -- they came from the shared platform decisions made when the project was Dutch-run, inherited rather than picked fresh.",
+      "supporting_claim_ids": ["eng03_shared_galaxy_platform"],
+      "unresolved_claim_ids": [],
+      "narration_direction": "Connect directly back to beat 2's Project Galaxy/Volvo Car B.V. origin -- this is the payoff of that setup. Frame it as: the car's Dutch corporate parentage explains its French engines, not Swedish tradition.",
+      "visual_requests": [
+        {"request_id": "V006", "beat_id": "b6_renault_engine_inheritance", "subject": "Volvo 480 engine bay", "desired_asset_type": ["photo"], "description": "Engine bay shot showing the Renault-sourced powerplant.", "priority": "medium", "exact_subject_required": false}
+      ]
+    },
+    {
+      "beat_id": "b7_sporting_pretense",
+      "act": 3,
+      "estimated_narration_sec": 65,
+      "purpose": "Close Act 3 by addressing how seriously Volvo wanted this car to be taken as a genuine sports coupe, including an honest note that not every claim about its engineering pedigree is settled.",
+      "summary": "Between the wedge nose, the glass hatch, and the low stance, Volvo clearly wanted the 480 read as a real sports coupe, not just a shape exercise. Volvo's own marketing went further, crediting Lotus with the suspension tuning and Porsche with engine work -- claims that specialists and owners still debate the depth of today.",
+      "supporting_claim_ids": ["des01_wedge_1800es_influence"],
+      "unresolved_claim_ids": ["eng04_lotus_porsche_marketing_claim"],
+      "narration_direction": "Only mention the Lotus/Porsche marketing claim briefly and clearly hedged ('Volvo's own marketing credited...though how much was real engineering work is something specialists still argue about') -- never state it as settled fact, and if it doesn't earn its place, cut it entirely per the unresolved-claim handling rule rather than explaining the research gap behind it.",
+      "visual_requests": []
+    },
+    {
+      "beat_id": "b8_us_plan_cancelled",
+      "act": 4,
+      "estimated_narration_sec": 30,
+      "purpose": "Pay off Act 3's setup: what happened to the American launch the whole design had been built around.",
+      "summary": "In February 1988, Volvo postponed the US launch indefinitely, citing unfavorable market conditions and a weak dollar. No Volvo 480 was ever officially sold in the United States. Every regulation-driven design choice in Act 3 had been built for a market the car never actually reached.",
+      "supporting_claim_ids": ["mkt02_us_plan_cancelled"],
+      "unresolved_claim_ids": [],
+      "narration_direction": "This is the thesis's central irony landing. Keep it tight and let the reversal speak for itself rather than over-explaining it.",
+      "visual_requests": []
+    },
+    {
+      "beat_id": "b9_reception_arc",
+      "act": 4,
+      "estimated_narration_sec": 35,
+      "purpose": "Cover how the car was actually received and how that changed over its production life.",
+      "summary": "Early cars had real quality problems -- water leaks, an unreliable 'intelligent' electronics module -- serious enough that one Dutch magazine nicknamed it 'the coupe from hell.' Volvo progressively fixed most of these issues in service, and reliability had markedly improved by the early-1990s revisions.",
+      "supporting_claim_ids": ["rec01_coupe_from_hell_nickname", "rec02_reliability_improved_over_time"],
+      "unresolved_claim_ids": [],
+      "narration_direction": "Give this an arc -- rocky start, genuine improvement -- rather than settling on the nickname as the final word. Attribute the nickname to one Dutch magazine, not a universal reputation.",
+      "visual_requests": []
+    },
+    {
+      "beat_id": "b10_production_scale",
+      "act": 4,
+      "estimated_narration_sec": 40,
+      "purpose": "Close out the factual record: how many were built, where they sold, what it cost at the end, and how it quietly ended.",
+      "summary": "76,375 were built in total between 1986 and 1995, all at Volvo's Born, Netherlands plant. The UK was its strongest market by far, with 22,421 sold there. The final 'Celebration' special edition retailed at £16,245. Production simply ended on September 7, 1995, after about nine years -- no single dramatic reason, just a platform running its course.",
+      "supporting_claim_ids": ["prod01_total_production", "prod02_uk_strongest_market", "price01_celebration_edition_price", "prod03_discontinued_no_stated_reason"],
+      "unresolved_claim_ids": [],
+      "narration_direction": "State plainly, without inventing a dramatic cancellation story -- the honest fact is that it just wound down, which is itself worth saying directly rather than papering over.",
+      "visual_requests": [
+        {"request_id": "V007", "beat_id": "b10_production_scale", "subject": "Volvo 480 Celebration edition, final model year", "desired_asset_type": ["photo"], "description": "The final special edition for the closing production-numbers beat.", "priority": "low", "exact_subject_required": true}
+      ]
+    },
+    {
+      "beat_id": "b11_legacy",
+      "act": 4,
+      "estimated_narration_sec": 27,
+      "purpose": "Close on a meaningful reflection rather than repeating that the car was unusual.",
+      "summary": "Today the 480 is a niche but genuine collector car -- valued for rarity and character rather than dramatic appreciation, an average example worth around £2,710, with the rare GT variant, of which only about 250 were built, especially sought after. The pop-up headlights that were never legally required outside America are now exactly what people remember it for.",
+      "supporting_claim_ids": ["legacy01_collector_rarity_today"],
+      "unresolved_claim_ids": [],
+      "narration_direction": "Land on the irony that closes the loop with the hook: a feature engineered for a country that never got the car is now its defining, most-remembered trait everywhere else.",
+      "visual_requests": [
+        {"request_id": "V008", "beat_id": "b11_legacy", "subject": "Volvo 480 in contemporary collector or show context", "desired_asset_type": ["photo"], "description": "Modern image of a preserved or collector-owned 480.", "priority": "low", "exact_subject_required": false}
+      ]
+    }
+  ]
+}

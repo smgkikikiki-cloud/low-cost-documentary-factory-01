@@ -1,0 +1,77 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "edit_plan.schema.json",
+  "title": "EditPlan",
+  "description": "B-EDIT's deterministic, machine-executable timeline handed to the renderer (FFmpeg). Built from script_manifest.json's locked blocks (positioned on the timeline using ACTUAL measured narration timing from tts_manifest.json) plus asset_inventory.json's block_coverage allocations. No creative decisions remain for the renderer -- it only executes. Every clip distinguishes TWO timelines: timeline_start_sec/timeline_end_sec (where the clip appears in the FINAL DOCUMENTARY) versus source_start_sec/source_end_sec (which range is taken from the SOURCE asset, video only). A usable_segment recorded during B-DISCOVER is a permitted source RANGE, not an indivisible clip -- B-EDIT may use any subrange of it, or several different subranges across different clips, as long as each stays inside the segment's own start_sec/end_sec. The ordered clips must provide continuous coverage of [0, total measured narration duration] -- no gaps, no overlaps, subject only to a small rounding tolerance.",
+  "type": "object",
+  "required": ["episode_id", "status", "clips"],
+  "additionalProperties": false,
+  "properties": {
+    "episode_id": {
+      "type": "string"
+    },
+    "status": {
+      "type": "string",
+      "enum": ["pending", "planned", "rendered"],
+      "default": "pending"
+    },
+    "clips": {
+      "type": "array",
+      "description": "The complete ordered visual timeline, sorted by timeline_start_sec ascending, continuous and non-overlapping across [0, total measured narration duration]. Prefer fewer, longer, coherent clips over frequent cuts -- there is no 'change image every N seconds' rule; a strong clip may run long if it still supports the narration.",
+      "items": {
+        "type": "object",
+        "required": ["clip_id", "block_id", "asset_id", "timeline_start_sec", "timeline_end_sec"],
+        "additionalProperties": false,
+        "not": {
+          "required": ["segment_id", "still_treatment"]
+        },
+        "if": {
+          "required": ["segment_id"]
+        },
+        "then": {
+          "required": ["source_start_sec", "source_end_sec"]
+        },
+        "properties": {
+          "clip_id": { "type": "string" },
+          "block_id": {
+            "type": "string",
+            "description": "References a block_id from script_manifest.json"
+          },
+          "asset_id": {
+            "type": "string",
+            "description": "References an asset_id from asset_inventory.json"
+          },
+          "segment_id": {
+            "type": "string",
+            "description": "Video only, and required for a video clip. References one of the asset's usable_segments[].segment_id from asset_inventory.json. A clip must not carry both segment_id and still_treatment -- a clip is either a video clip or a still/document clip, never both."
+          },
+          "timeline_start_sec": {
+            "type": "number",
+            "minimum": 0,
+            "description": "Where this clip starts in the FINAL DOCUMENTARY (e.g. 202.0 = 03:22)."
+          },
+          "timeline_end_sec": {
+            "type": "number",
+            "minimum": 0,
+            "description": "Where this clip ends in the FINAL DOCUMENTARY. Must exceed timeline_start_sec."
+          },
+          "source_start_sec": {
+            "type": "number",
+            "minimum": 0,
+            "description": "Video only, required when segment_id is set. Where the used range starts WITHIN THE SOURCE asset. Must fall inside the referenced usable_segment's own [start_sec, end_sec] -- the segment is a permitted range, not a fixed clip; this may be any subrange of it. No playback-rate creativity in V0: (timeline_end_sec - timeline_start_sec) must equal (source_end_sec - source_start_sec) within a small deterministic tolerance -- no speed changes, no implicit looping, no freeze-frame extension."
+          },
+          "source_end_sec": {
+            "type": "number",
+            "minimum": 0,
+            "description": "Video only, required when segment_id is set. Must exceed source_start_sec and stay inside the referenced usable_segment."
+          },
+          "still_treatment": {
+            "type": "string",
+            "enum": ["static", "slow_zoom_in", "slow_zoom_out", "pan_left", "pan_right"],
+            "description": "Stills/documents only -- a clip with this set must not carry segment_id/source_start_sec/source_end_sec. Deliberately small enum, not a motion-graphics system. The renderer executes exactly this, it does not choose."
+          }
+        }
+      }
+    }
+  }
+}

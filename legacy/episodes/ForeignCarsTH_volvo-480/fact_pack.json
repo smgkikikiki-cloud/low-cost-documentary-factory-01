@@ -1,0 +1,480 @@
+{
+  "episode_id": "ForeignCarsTH_volvo-480",
+  "status": "verified",
+  "research_language": "auto",
+  "working_language": "en",
+  "quirk_lead": {
+    "text": "The only Volvo ever built with pop-up headlights",
+    "note": "Research lead only -- CONFIRMED by research as far as sources indicate, but the interesting story is not the headlights themselves, it's WHY a Swedish coupe got them: a regulation from a market it was never actually sold in. See top01/eng01."
+  },
+  "claims": [
+    {
+      "claim_id": "top01_only_popup_headlights",
+      "normalized_claim": "The Volvo 480, launched in 1986, was the first series-produced front-wheel-drive Volvo and the only Volvo model built with pop-up headlights.",
+      "claim_type": "fact",
+      "time_context": "1986-1995",
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/Volvo_480",
+          "title": "Volvo 480",
+          "publisher": "Wikipedia",
+          "source_language": "en",
+          "source_classification": "reference_source",
+          "access_status": "read_full",
+          "evidence_note": "States the 480 was Volvo's first series-produced FWD car and had a unique frontal design with pop-up headlights unlike any previous Volvo."
+        },
+        {
+          "url": "https://www.hotcars.com/a-look-back-at-the-volvo-480/",
+          "title": "A Look Back At The Volvo 480",
+          "publisher": "HotCars",
+          "source_language": "en",
+          "source_classification": "reputable_secondary",
+          "access_status": "search_snippet_only",
+          "evidence_note": "Independently states the 480 was Volvo's only model with pop-up headlights and the first FWD Volvo."
+        }
+      ],
+      "perspective": "timeless_or_historical_fact",
+      "confidence": "high",
+      "allowed_in_narration": true,
+      "safe_wording": "The Volvo 480 was Volvo's first front-wheel-drive production car and the only Volvo ever built with pop-up headlights.",
+      "forbidden_or_unsupported_inference": ["That Volvo built other pop-up-headlight models before or after"],
+      "conflicting_evidence": [],
+      "notes": "Quirk lead confirmed as far as available sourcing indicates -- no exhaustive negative-claim search across Volvo's full model history was performed, standard for a 'only X ever' claim at this research depth."
+    },
+    {
+      "claim_id": "des01_wedge_1800es_influence",
+      "normalized_claim": "The 480's rear was a glass-hatchback design explicitly influenced by the styling of the classic Volvo 1800ES of the early 1970s, combined with a low, wedge-shaped front end.",
+      "claim_type": "fact",
+      "time_context": "1986",
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/Volvo_480",
+          "title": "Volvo 480",
+          "publisher": "Wikipedia",
+          "source_language": "en",
+          "source_classification": "reference_source",
+          "access_status": "read_full",
+          "evidence_note": "States the rear design was influenced by the 1800ES; describes the car as a low-slung wedge shape."
+        }
+      ],
+      "perspective": "timeless_or_historical_fact",
+      "confidence": "high",
+      "allowed_in_narration": true,
+      "safe_wording": "The rear was a glass hatchback styled as a nod to the classic Volvo 1800ES, paired with a low wedge-shaped nose that looked like nothing else Volvo had built.",
+      "forbidden_or_unsupported_inference": [],
+      "conflicting_evidence": [],
+      "notes": ""
+    },
+    {
+      "claim_id": "dev01_project_galaxy_origin",
+      "normalized_claim": "Development began in 1978 as part of Volvo's internal 'Project Galaxy,' aimed at creating front-wheel-drive replacements for the 200- and 300-series. In 1982 the entire project was sold to Volvo Car B.V. in the Netherlands, the successor company to DAF. The project split into three model lines: the 480 (internally G13), the 460 (G14), and the 440 (G15).",
+      "claim_type": "fact",
+      "time_context": "1978-1986",
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/Volvo_440/460",
+          "title": "Volvo 440/460",
+          "publisher": "Wikipedia",
+          "source_language": "en",
+          "source_classification": "reference_source",
+          "access_status": "read_full",
+          "evidence_note": "Directly names Project Galaxy, the 1978 start date, the 1982 sale to Volvo Car B.V., and the G13/G14/G15 designations."
+        },
+        {
+          "url": "https://dyler.com/blog/160/volvo-300-series-not-a-typical-hatchback-born-with-the-help-of-daf",
+          "title": "Volvo 300 Series: not a Typical Hatchback, Born with the Help of DAF",
+          "publisher": "Dyler",
+          "source_language": "en",
+          "source_classification": "reputable_secondary",
+          "access_status": "search_snippet_only",
+          "evidence_note": "Independently corroborates the DAF/Volvo Car B.V. Dutch heritage behind this generation of Volvos."
+        }
+      ],
+      "perspective": "timeless_or_historical_fact",
+      "confidence": "high",
+      "allowed_in_narration": true,
+      "safe_wording": "It began in 1978 as part of an internal program called Project Galaxy; in 1982 the whole project was sold to Volvo Car B.V. in the Netherlands, the company that had grown out of DAF, and split into three model lines -- the 480 was the first of them.",
+      "forbidden_or_unsupported_inference": ["That Volvo Car B.V. was DAF itself rather than a successor company"],
+      "conflicting_evidence": [],
+      "notes": ""
+    },
+    {
+      "claim_id": "dev02_designers_devries_horbury",
+      "normalized_claim": "The 480's design was led by John de Vries and Peter Horbury.",
+      "claim_type": "fact",
+      "time_context": "1978-1986",
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/Volvo_480",
+          "title": "Volvo 480",
+          "publisher": "Wikipedia",
+          "source_language": "en",
+          "source_classification": "reference_source",
+          "access_status": "read_full",
+          "evidence_note": "Names both designers directly."
+        }
+      ],
+      "perspective": "timeless_or_historical_fact",
+      "confidence": "high",
+      "allowed_in_narration": true,
+      "safe_wording": "The design was led by John de Vries and Peter Horbury.",
+      "forbidden_or_unsupported_inference": [],
+      "conflicting_evidence": [],
+      "notes": ""
+    },
+    {
+      "claim_id": "dev03_six_year_gestation_launch",
+      "normalized_claim": "From first sketches in 1979 to the press launch on October 15, 1985, and public debut at the March 1986 Geneva Motor Show, the 480 took roughly six years from conception to production, with European sales beginning in May 1986.",
+      "claim_type": "fact",
+      "time_context": "1979-1986",
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/Volvo_480",
+          "title": "Volvo 480",
+          "publisher": "Wikipedia",
+          "source_language": "en",
+          "source_classification": "reference_source",
+          "access_status": "read_full",
+          "evidence_note": "Gives the press launch date, Geneva debut, and May 1986 European sales start."
+        }
+      ],
+      "perspective": "timeless_or_historical_fact",
+      "confidence": "high",
+      "allowed_in_narration": true,
+      "safe_wording": "From the first sketches in 1979 to its October 1985 press launch and March 1986 Geneva Motor Show debut, it took about six years to reach the public; European sales began that May.",
+      "forbidden_or_unsupported_inference": [],
+      "conflicting_evidence": [],
+      "notes": ""
+    },
+    {
+      "claim_id": "eng01_popup_headlight_rationale",
+      "normalized_claim": "The pop-up headlights were engineered to satisfy US NHTSA minimum headlight-height regulation (FMVSS 108, requiring headlamps between roughly 22 and 54 inches above the road) while allowing the car to keep a low, aerodynamic nose when the lights were retracted.",
+      "claim_type": "fact",
+      "time_context": "1979-1986",
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/Volvo_480",
+          "title": "Volvo 480",
+          "publisher": "Wikipedia",
+          "source_language": "en",
+          "source_classification": "reference_source",
+          "access_status": "read_full",
+          "evidence_note": "States the pop-up headlights were incorporated to meet NHTSA standards on minimum headlight height while maintaining the aerodynamic shape."
+        },
+        {
+          "url": "https://carbuzz.com/pop-up-headlights-banned-but-giant-trucks-are-legal/",
+          "title": "Why Are Pop-Up Headlights Banned For Pedestrian Safety When Giant Pickup Trucks Are Legal?",
+          "publisher": "Carbuzz",
+          "source_language": "en",
+          "source_classification": "reputable_secondary",
+          "access_status": "read_full",
+          "evidence_note": "Independently confirms the general industry mechanism: FMVSS 108's minimum headlamp-height rule was the reason low-slung cars of this era widely used pop-up headlights."
+        }
+      ],
+      "perspective": "timeless_or_historical_fact",
+      "confidence": "high",
+      "allowed_in_narration": true,
+      "safe_wording": "The pop-up headlights existed to satisfy a US minimum-headlight-height rule while letting the nose stay low and aerodynamic when the lights weren't in use -- the same reason many low-slung cars of that era used them.",
+      "forbidden_or_unsupported_inference": ["That the regulation was Swedish or European rather than American"],
+      "conflicting_evidence": [],
+      "notes": "The irony (see nissan-style Act 4 payoff in eng02/mkt02) is that this American regulation shaped the car's signature feature even though it was never officially sold in the US."
+    },
+    {
+      "claim_id": "eng02_us_bumpers_designed_in",
+      "normalized_claim": "The 480 was developed with an eventual US launch in mind from early on; its integrated bumpers were specifically engineered to comply with US crash-safety bumper standards.",
+      "claim_type": "fact",
+      "time_context": "1979-1987",
+      "sources": [
+        {
+          "url": "https://www.retromotor.co.uk/features/volvo-480-euro-wedge/",
+          "title": "Volvo 480: a sporty Swede that wasn't sensible or square",
+          "publisher": "RetroMotor",
+          "source_language": "en",
+          "source_classification": "reputable_secondary",
+          "access_status": "read_partial",
+          "evidence_note": "States the integrated bumpers were expressly designed to comply with strict US regulations, alongside the pop-up headlights."
+        }
+      ],
+      "perspective": "timeless_or_historical_fact",
+      "confidence": "medium",
+      "allowed_in_narration": true,
+      "safe_wording": "Its integrated bumpers, like the headlights, were engineered from the start to meet US safety rules, because a US launch was part of the plan almost from the beginning.",
+      "forbidden_or_unsupported_inference": [],
+      "conflicting_evidence": [],
+      "notes": "Single-sourced background detail reinforcing eng01's pattern; not central enough on its own to need a second independent source."
+    },
+    {
+      "claim_id": "eng03_shared_galaxy_platform",
+      "normalized_claim": "As the first Galaxy-project model to reach production, the 480 established the floorpan, front and rear suspension, Renault-sourced engines, transmissions, and braking systems that its later siblings (the 460 and 440) would share.",
+      "claim_type": "fact",
+      "time_context": "1986-1990",
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/Volvo_440/460",
+          "title": "Volvo 440/460",
+          "publisher": "Wikipedia",
+          "source_language": "en",
+          "source_classification": "reference_source",
+          "access_status": "read_full",
+          "evidence_note": "States the 440/460 shared floorpan, suspension, Renault engines, transmissions, and brakes with the earlier 480."
+        }
+      ],
+      "perspective": "timeless_or_historical_fact",
+      "confidence": "high",
+      "allowed_in_narration": true,
+      "safe_wording": "As the first of the Galaxy-project cars to reach showrooms, the 480 set the mechanical template -- floorpan, suspension, Renault-sourced engines, transmissions, brakes -- that its later siblings the 460 and 440 would reuse.",
+      "forbidden_or_unsupported_inference": ["That the 480 was derived from the 440/460 rather than the other way around"],
+      "conflicting_evidence": [],
+      "notes": "This explains why a Swedish coupe ran French Renault engines: it inherited that choice from the shared Dutch-developed Galaxy platform, not a one-off decision for the 480 specifically."
+    },
+    {
+      "claim_id": "eng04_lotus_porsche_marketing_claim",
+      "normalized_claim": "Volvo marketed the 480 as having suspension tuning input from Lotus and engine tuning input from Porsche; enthusiast and owner-club discussion disputes how much of this was genuine engineering collaboration versus marketing embellishment, with one view suggesting Renault/Volvo engineers may have used Porsche-held patents rather than direct Porsche involvement.",
+      "claim_type": "reputation_assessment",
+      "time_context": "1986-2020s",
+      "sources": [
+        {
+          "url": "https://www.volvo-480-europe.org/forum/viewtopic.php?t=795",
+          "title": "porsche and lotus helped volvo with the 480?",
+          "publisher": "Volvo 480 Club Europe (owner forum)",
+          "source_language": "en",
+          "source_classification": "discovery_only",
+          "access_status": "search_snippet_only",
+          "evidence_note": "Owner/enthusiast forum discussion questioning the depth of Lotus/Porsche involvement versus marketing claims; not an authoritative source on its own but reflects a real, persistent dispute among specialists."
+        },
+        {
+          "url": "https://www.hotcars.com/a-look-back-at-the-volvo-480/",
+          "title": "A Look Back At The Volvo 480",
+          "publisher": "HotCars",
+          "source_language": "en",
+          "source_classification": "reputable_secondary",
+          "access_status": "search_snippet_only",
+          "evidence_note": "Repeats the Lotus-suspension and Porsche-engine claim as commonly stated, without independent verification of the engineering depth."
+        }
+      ],
+      "perspective": "contemporary",
+      "confidence": "unresolved",
+      "allowed_in_narration": false,
+      "safe_wording": "Volvo's own marketing credited Lotus and Porsche with tuning the 480 -- though how much of that was real engineering work versus a marketing flourish is something even specialists still argue about.",
+      "forbidden_or_unsupported_inference": ["That Lotus or Porsche engineers were directly and substantially involved in development", "That the claim is simply false"],
+      "conflicting_evidence": ["Owner/enthusiast forum discussion suggests the involvement may have been limited to patent licensing rather than direct engineering collaboration, contradicting the marketing framing"],
+      "notes": "Marked unresolved/not allowed per confidence=unresolved rule -- no authoritative_secondary or primary source was found within this research pass to settle the dispute either way. If included at all in narration, must be framed as an open disagreement (per fact_pack invariant), not stated as fact -- and only if the disagreement itself is judged worth narrating."
+    },
+    {
+      "claim_id": "mkt01_us_sports_wagon_plan",
+      "normalized_claim": "Volvo planned to launch the 480 in the United States as a 2+2 'sports wagon' in fall 1987.",
+      "claim_type": "fact",
+      "time_context": "1986-1987",
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/Volvo_480",
+          "title": "Volvo 480",
+          "publisher": "Wikipedia",
+          "source_language": "en",
+          "source_classification": "reference_source",
+          "access_status": "read_full",
+          "evidence_note": "States the planned fall 1987 US launch as a 2+2 sports wagon."
+        }
+      ],
+      "perspective": "timeless_or_historical_fact",
+      "confidence": "high",
+      "allowed_in_narration": true,
+      "safe_wording": "Volvo had planned to launch it in the United States in the fall of 1987, marketed as a 2+2 'sports wagon.'",
+      "forbidden_or_unsupported_inference": [],
+      "conflicting_evidence": [],
+      "notes": ""
+    },
+    {
+      "claim_id": "mkt02_us_plan_cancelled",
+      "normalized_claim": "The US launch was postponed indefinitely in February 1988, officially citing unfavorable market conditions and the weakness of the US dollar exchange rate at the time; no Volvo 480 was ever officially sold in the United States.",
+      "claim_type": "fact",
+      "time_context": "1988",
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/Volvo_480",
+          "title": "Volvo 480",
+          "publisher": "Wikipedia",
+          "source_language": "en",
+          "source_classification": "reference_source",
+          "access_status": "read_full",
+          "evidence_note": "States the February 1988 postponement citing unfavorable market conditions and the dollar exchange rate."
+        }
+      ],
+      "perspective": "timeless_or_historical_fact",
+      "confidence": "high",
+      "allowed_in_narration": true,
+      "safe_wording": "In February 1988 Volvo postponed the US launch indefinitely, citing unfavorable market conditions and a weak dollar -- it was never officially sold in the United States.",
+      "forbidden_or_unsupported_inference": ["That the car failed in the US market -- it never actually reached it"],
+      "conflicting_evidence": [],
+      "notes": "Pays off eng01/eng02: the entire headlight and bumper engineering effort was built for a market the car never entered."
+    },
+    {
+      "claim_id": "rec01_coupe_from_hell_nickname",
+      "normalized_claim": "Early production 480s suffered enough quality problems -- primarily water leaks and an unreliable 'intelligent' central electronics module -- that a Dutch publication nicknamed it 'the coupe from hell.'",
+      "claim_type": "reputation_assessment",
+      "time_context": "1986-1990",
+      "sources": [
+        {
+          "url": "https://classics.honestjohn.co.uk/reviews/volvo/480/running",
+          "title": "Volvo 480ES and Turbo (1986-1995) Review",
+          "publisher": "Honest John",
+          "source_language": "en",
+          "source_classification": "reputable_secondary",
+          "access_status": "read_full",
+          "evidence_note": "States poor Dutch build quality led one magazine to nickname it 'the coupe from hell,' and details the water-leak and electronics-module failure pattern."
+        }
+      ],
+      "perspective": "contemporary",
+      "confidence": "medium",
+      "allowed_in_narration": true,
+      "safe_wording": "Early cars had enough quality problems -- water leaks, a flaky 'intelligent' electronics module -- that one Dutch magazine nicknamed it 'the coupe from hell.'",
+      "forbidden_or_unsupported_inference": ["That every 480 built suffered these problems", "That the nickname was universal rather than from one publication"],
+      "conflicting_evidence": [],
+      "notes": "Single reputable secondary source; kept airable but attributed to 'one Dutch magazine' rather than stated as universal reputation."
+    },
+    {
+      "claim_id": "rec02_reliability_improved_over_time",
+      "normalized_claim": "Quality and reliability issues were progressively addressed in service through the early 1990s, and most of the early problems were resolved by later production years.",
+      "claim_type": "fact",
+      "time_context": "1988-1993",
+      "sources": [
+        {
+          "url": "https://classics.honestjohn.co.uk/reviews/volvo/480/running",
+          "title": "Volvo 480ES and Turbo (1986-1995) Review",
+          "publisher": "Honest John",
+          "source_language": "en",
+          "source_classification": "reputable_secondary",
+          "access_status": "read_full",
+          "evidence_note": "States the car was progressively improved and almost all problems were solved in service, with reliability improving after early-1990s revisions."
+        }
+      ],
+      "perspective": "retrospective_judgment",
+      "confidence": "medium",
+      "allowed_in_narration": true,
+      "safe_wording": "Volvo progressively fixed most of these problems in service, and reliability had markedly improved by the early 1990s revisions.",
+      "forbidden_or_unsupported_inference": [],
+      "conflicting_evidence": [],
+      "notes": ""
+    },
+    {
+      "claim_id": "prod01_total_production",
+      "normalized_claim": "76,375 Volvo 480s were produced in total between 1986 and 1995, assembled at the Born, Netherlands plant.",
+      "claim_type": "statistic",
+      "time_context": "1986-1995",
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/Volvo_480",
+          "title": "Volvo 480",
+          "publisher": "Wikipedia",
+          "source_language": "en",
+          "source_classification": "reference_source",
+          "access_status": "read_full",
+          "evidence_note": "States total production of 76,375 units across 1986-1995 at the Born, Netherlands plant."
+        }
+      ],
+      "perspective": "timeless_or_historical_fact",
+      "confidence": "high",
+      "allowed_in_narration": true,
+      "safe_wording": "In total, 76,375 were built between 1986 and 1995, all assembled at Volvo's Born plant in the Netherlands.",
+      "forbidden_or_unsupported_inference": [],
+      "conflicting_evidence": [],
+      "notes": ""
+    },
+    {
+      "claim_id": "prod02_uk_strongest_market",
+      "normalized_claim": "The United Kingdom was the 480's strongest single market, with 22,421 units sold there -- more than any other country.",
+      "claim_type": "statistic",
+      "time_context": "1986-1995",
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/Volvo_480",
+          "title": "Volvo 480",
+          "publisher": "Wikipedia",
+          "source_language": "en",
+          "source_classification": "reference_source",
+          "access_status": "read_full",
+          "evidence_note": "States the UK was the strongest market with 22,421 sales, the highest of any country."
+        }
+      ],
+      "perspective": "timeless_or_historical_fact",
+      "confidence": "high",
+      "allowed_in_narration": true,
+      "safe_wording": "The UK ended up as its single strongest market -- 22,421 sold there, more than anywhere else, nearly a third of total production.",
+      "forbidden_or_unsupported_inference": [],
+      "conflicting_evidence": [],
+      "notes": ""
+    },
+    {
+      "claim_id": "prod03_discontinued_no_stated_reason",
+      "normalized_claim": "Production ended on September 7, 1995, after roughly nine years on sale; sources do not document a single specific stated reason for discontinuation.",
+      "claim_type": "fact",
+      "time_context": "1995",
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/Volvo_480",
+          "title": "Volvo 480",
+          "publisher": "Wikipedia",
+          "source_language": "en",
+          "source_classification": "reference_source",
+          "access_status": "read_full",
+          "evidence_note": "Gives the exact end-of-production date without stating a specific documented cause."
+        }
+      ],
+      "perspective": "timeless_or_historical_fact",
+      "confidence": "high",
+      "allowed_in_narration": true,
+      "safe_wording": "Production ended on September 7, 1995, after about nine years -- available sources don't point to one specific documented reason, unlike a dramatic single event.",
+      "forbidden_or_unsupported_inference": ["That it was cancelled due to a specific crisis, lawsuit, or single dramatic event -- no source supports that"],
+      "conflicting_evidence": [],
+      "notes": "An honest absence, not a gap to paper over -- most aging platforms end production quietly as a model simply runs its course and is not replaced in kind."
+    },
+    {
+      "claim_id": "price01_celebration_edition_price",
+      "normalized_claim": "The final 'Celebration' special edition, sold at the end of the production run, retailed at £16,245 in the UK.",
+      "claim_type": "statistic",
+      "time_context": "1995",
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/Volvo_480",
+          "title": "Volvo 480",
+          "publisher": "Wikipedia",
+          "source_language": "en",
+          "source_classification": "reference_source",
+          "access_status": "read_full",
+          "evidence_note": "States the final Celebration edition's UK retail price."
+        }
+      ],
+      "perspective": "timeless_or_historical_fact",
+      "confidence": "high",
+      "allowed_in_narration": true,
+      "safe_wording": "The final 'Celebration' special edition retailed in the UK at £16,245.",
+      "forbidden_or_unsupported_inference": ["That this was the launch price rather than the final-year price"],
+      "conflicting_evidence": [],
+      "notes": "UK/1995-specific; do not imply this was the original 1986 launch price."
+    },
+    {
+      "claim_id": "legacy01_collector_rarity_today",
+      "normalized_claim": "Today the 480 is a niche but genuine collector car, valued more for rarity and character than dramatic financial appreciation -- an average example is worth around £2,710, with the rarest variant (the GT, of which only about 250 were built) particularly sought after.",
+      "claim_type": "fact",
+      "time_context": "2020s",
+      "sources": [
+        {
+          "url": "https://www.theclassicvaluer.com/cars/volvo/480",
+          "title": "Volvo 480 For Sale & Price Guide",
+          "publisher": "The Classic Valuer",
+          "source_language": "en",
+          "source_classification": "reputable_secondary",
+          "access_status": "read_full",
+          "evidence_note": "States current average value (£2,710), price range, and rarity of the GT variant (~250 built)."
+        }
+      ],
+      "perspective": "retrospective_judgment",
+      "confidence": "medium",
+      "allowed_in_narration": true,
+      "safe_wording": "Today it's a niche collector car -- valued more for its rarity and character than for big financial appreciation, with an average example worth around £2,710 and the rare GT variant, of which only about 250 were built, especially sought after.",
+      "forbidden_or_unsupported_inference": ["That values are rapidly appreciating -- source describes steady niche interest, not a boom"],
+      "conflicting_evidence": [],
+      "notes": ""
+    }
+  ]
+}

@@ -1,0 +1,496 @@
+{
+  "episode_id": "ForeignCarsTH_renault-avantime",
+  "status": "verified",
+  "research_language": "auto",
+  "working_language": "en",
+  "quirk_lead": {
+    "text": "Only production car ever built with gullwing doors on both sides",
+    "note": "Research lead only -- DISPROVEN by research. The Avantime did NOT have gullwing doors; it featured a double-kinematic parallel-opening hinge system. This inaccuracy drives the episode's corrective narrative."
+  },
+  "claims": [
+    {
+      "claim_id": "top01_quirk_false",
+      "normalized_claim": "The Renault Avantime did not have gullwing doors. It had two very long conventional doors with a double-kinematic parallel-opening hinge system that moved forward and out simultaneously to minimize outswing.",
+      "claim_type": "fact",
+      "time_context": "2001-2003",
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/Renault_Avantime",
+          "title": "Renault Avantime",
+          "publisher": "Wikipedia",
+          "source_language": "en",
+          "source_classification": "reference_source",
+          "access_status": "read_full",
+          "evidence_note": "Describes the double-kinematic door system and clarifies the doors were not gullwing."
+        },
+        {
+          "url": "https://petrolblog.com/articles/coupéspace-driving-the-renault-avantime",
+          "title": "Coupéspace: Driving the Renault Avantime",
+          "publisher": "Petrolblog",
+          "source_language": "en",
+          "source_classification": "reputable_secondary",
+          "access_status": "read_full",
+          "evidence_note": "Details the door mechanism and engineering solution for the long doors."
+        }
+      ],
+      "perspective": "timeless_or_historical_fact",
+      "confidence": "high",
+      "allowed_in_narration": true,
+      "safe_wording": "The Avantime did not have gullwing doors; instead it used a double-kinematic hinge system on two unusually long conventional doors.",
+      "forbidden_or_unsupported_inference": ["That the Avantime had any gullwing door mechanism"],
+      "conflicting_evidence": [],
+      "notes": "This claim directly contradicts the episode's initial quirk premise. This is intentional and demonstrates the quirk-as-lead principle: research corrects the premise."
+    },
+    {
+      "claim_id": "des01_designer_mettroz",
+      "normalized_claim": "Thierry Métroz designed the Avantime's exterior under Patrick Le Quément's design direction. Métroz's stated goal was: 'We wanted someone walking around the car to be continually astonished.'",
+      "claim_type": "quote",
+      "time_context": "2001",
+      "sources": [
+        {
+          "url": "https://petrolblog.com/articles/coupéspace-driving-the-renault-avantime",
+          "title": "Coupéspace: Driving the Renault Avantime",
+          "publisher": "Petrolblog",
+          "source_language": "en",
+          "source_classification": "reputable_secondary",
+          "access_status": "read_full",
+          "evidence_note": "Attributes the 'continually astonished' quote directly to Métroz."
+        }
+      ],
+      "perspective": "timeless_or_historical_fact",
+      "confidence": "high",
+      "allowed_in_narration": true,
+      "safe_wording": "Thierry Métroz designed the exterior, saying the goal was to make people 'continually astonished' when viewing the car.",
+      "forbidden_or_unsupported_inference": [],
+      "conflicting_evidence": [],
+      "notes": ""
+    },
+    {
+      "claim_id": "eng01_door_engineering",
+      "normalized_claim": "The Avantime's doors were 1.4 meters long to provide rear-seat access in a 2-door configuration. The double-kinematic hinge system solved the parking outswing problem by moving the door forward and out simultaneously.",
+      "claim_type": "fact",
+      "time_context": "2001-2003",
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/Renault_Avantime",
+          "title": "Renault Avantime",
+          "publisher": "Wikipedia",
+          "source_language": "en",
+          "source_classification": "reference_source",
+          "access_status": "read_full",
+          "evidence_note": "Describes the double-kinematic hinge and its engineering purpose."
+        },
+        {
+          "url": "https://petrolblog.com/articles/coupéspace-driving-the-renault-avantime",
+          "title": "Coupéspace: Driving the Renault Avantime",
+          "publisher": "Petrolblog",
+          "source_language": "en",
+          "source_classification": "reputable_secondary",
+          "access_status": "read_full",
+          "evidence_note": "Explains the 1.4-meter door length and the engineering solution for minimizing outswing."
+        }
+      ],
+      "perspective": "timeless_or_historical_fact",
+      "confidence": "high",
+      "allowed_in_narration": true,
+      "safe_wording": "The Avantime's 1.4-meter doors gave rear-seat access, requiring an engineering solution to minimize outswing. The double-kinematic system moved the door forward and out simultaneously.",
+      "forbidden_or_unsupported_inference": [],
+      "conflicting_evidence": [],
+      "notes": ""
+    },
+    {
+      "claim_id": "des02_no_bpillars",
+      "normalized_claim": "The Avantime was designed without B-pillars (the pillars between front and rear windows), creating a frameless glass effect from front to rear.",
+      "claim_type": "fact",
+      "time_context": "2001-2003",
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/Renault_Avantime",
+          "title": "Renault Avantime",
+          "publisher": "Wikipedia",
+          "source_language": "en",
+          "source_classification": "reference_source",
+          "access_status": "read_full",
+          "evidence_note": "Describes the pillarless design and frameless window effect."
+        }
+      ],
+      "perspective": "timeless_or_historical_fact",
+      "confidence": "high",
+      "allowed_in_narration": true,
+      "safe_wording": "The Avantime had no B-pillars, creating frameless glass from front to rear.",
+      "forbidden_or_unsupported_inference": [],
+      "conflicting_evidence": [],
+      "notes": ""
+    },
+    {
+      "claim_id": "des03_interior_features",
+      "normalized_claim": "The Avantime's interior featured theater seating with elevated rear seats, a full panoramic sunroof with automatic opening, and aluminum space-frame construction.",
+      "claim_type": "fact",
+      "time_context": "2001-2003",
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/Renault_Avantime",
+          "title": "Renault Avantime",
+          "publisher": "Wikipedia",
+          "source_language": "en",
+          "source_classification": "reference_source",
+          "access_status": "read_full",
+          "evidence_note": "Lists interior design features including theater seating, panoramic roof, and construction method."
+        }
+      ],
+      "perspective": "timeless_or_historical_fact",
+      "confidence": "high",
+      "allowed_in_narration": true,
+      "safe_wording": "The interior featured elevated 'theater seating' in the rear, a full panoramic auto-opening roof, and aluminum space-frame construction.",
+      "forbidden_or_unsupported_inference": [],
+      "conflicting_evidence": [],
+      "notes": ""
+    },
+    {
+      "claim_id": "prod01_production_total",
+      "normalized_claim": "8,557 Renault Avantimes were produced across three model years (2001, 2002, 2003), making it one of the rarest 2000s-era production cars.",
+      "claim_type": "statistic",
+      "time_context": "2001-2003",
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/Renault_Avantime",
+          "title": "Renault Avantime",
+          "publisher": "Wikipedia",
+          "source_language": "en",
+          "source_classification": "reference_source",
+          "access_status": "read_full",
+          "evidence_note": "States 8,557 total units built across three production years."
+        }
+      ],
+      "perspective": "timeless_or_historical_fact",
+      "confidence": "high",
+      "allowed_in_narration": true,
+      "safe_wording": "Just 8,557 Avantimes were built across the three model years.",
+      "forbidden_or_unsupported_inference": [],
+      "conflicting_evidence": [],
+      "notes": ""
+    },
+    {
+      "claim_id": "prod02_sales_by_year",
+      "normalized_claim": "First-year sales (2001) were 772 units; 2002 peaked at 5,037 units; production declined sharply in 2003 before ending in February.",
+      "claim_type": "statistic",
+      "time_context": "2001-2003",
+      "sources": [
+        {
+          "url": "https://www.goodcarbadcar.net/renault-avantime-sales-figures/",
+          "title": "Renault Avantime Sales Figures",
+          "publisher": "GCBC",
+          "source_language": "en",
+          "source_classification": "reputable_secondary",
+          "access_status": "read_full",
+          "evidence_note": "Year-by-year breakdown of sales figures."
+        }
+      ],
+      "perspective": "timeless_or_historical_fact",
+      "confidence": "high",
+      "allowed_in_narration": true,
+      "safe_wording": "Sales peaked in 2002 with 5,037 units; the first year saw only 772 sales, followed by sharp decline in 2003.",
+      "forbidden_or_unsupported_inference": [],
+      "conflicting_evidence": [],
+      "notes": ""
+    },
+    {
+      "claim_id": "prod03_manufacturing_matra",
+      "normalized_claim": "The Avantime was designed by Renault but manufactured by Matra at the Romorantin facility in France. Romorantin was originally built to produce the Renault Espace; when Renault moved Espace production in-house, Matra needed work, leading to the Avantime contract.",
+      "claim_type": "fact",
+      "time_context": "2001-2003",
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/Renault_Avantime",
+          "title": "Renault Avantime",
+          "publisher": "Wikipedia",
+          "source_language": "en",
+          "source_classification": "reference_source",
+          "access_status": "read_full",
+          "evidence_note": "Details manufacturing partnership, Romorantin location, and historical context of the facility."
+        }
+      ],
+      "perspective": "timeless_or_historical_fact",
+      "confidence": "high",
+      "allowed_in_narration": true,
+      "safe_wording": "Renault designed it, but Matra built every Avantime at its Romorantin plant—a facility originally built for Espace production that Renault had moved in-house.",
+      "forbidden_or_unsupported_inference": [],
+      "conflicting_evidence": [],
+      "notes": ""
+    },
+    {
+      "claim_id": "eng02_engine_options",
+      "normalized_claim": "Three engine options were offered: a 2.0-liter turbo gasoline (163 hp), a 2.2-liter turbo diesel (148 hp), and a 3.0-liter V6 gasoline (207 hp).",
+      "claim_type": "statistic",
+      "time_context": "2001-2003",
+      "sources": [
+        {
+          "url": "https://www.autoevolution.com/cars/renault-avantime-2001.html",
+          "title": "RENAULT Avantime Specs, Performance & Photos - 2001, 2002, 2003",
+          "publisher": "autoevolution",
+          "source_language": "en",
+          "source_classification": "reference_source",
+          "access_status": "read_full",
+          "evidence_note": "Comprehensive engine specifications and performance data."
+        }
+      ],
+      "perspective": "timeless_or_historical_fact",
+      "confidence": "high",
+      "allowed_in_narration": true,
+      "safe_wording": "Engine choices ranged from a 2.0-liter turbo (163 hp) and 2.2-liter diesel (148 hp) up to a 3.0-liter V6 (207 hp).",
+      "forbidden_or_unsupported_inference": [],
+      "conflicting_evidence": [],
+      "notes": ""
+    },
+    {
+      "claim_id": "mkt01_target_sales",
+      "normalized_claim": "Renault and Matra initially targeted annual sales of 20,000 units per year.",
+      "claim_type": "statistic",
+      "time_context": "2001",
+      "sources": [
+        {
+          "url": "https://www.dacemotorgroup.co.uk/blog/renault-avantime-the-luxury-mpv-coup-that-was-too-strange-to-survive",
+          "title": "Renault Avantime: The Luxury MPV-Coupé That Was Too Strange to Survive",
+          "publisher": "Dace Motor Group",
+          "source_language": "en",
+          "source_classification": "reputable_secondary",
+          "access_status": "read_full",
+          "evidence_note": "Describes the original sales target and how far short actual sales fell."
+        }
+      ],
+      "perspective": "timeless_or_historical_fact",
+      "confidence": "medium",
+      "allowed_in_narration": true,
+      "safe_wording": "Renault and Matra initially hoped to sell 20,000 units annually.",
+      "forbidden_or_unsupported_inference": [],
+      "conflicting_evidence": [],
+      "notes": ""
+    },
+    {
+      "claim_id": "mkt02_actual_sales_gap",
+      "normalized_claim": "Actual average sales were approximately 2,850 units per year (8,557 total ÷ 3 years), representing less than 15% of the original annual target of 20,000 units.",
+      "claim_type": "derived_comparison",
+      "time_context": "2001-2003",
+      "sources": [],
+      "perspective": "timeless_or_historical_fact",
+      "confidence": "high",
+      "allowed_in_narration": true,
+      "safe_wording": "Actual production averaged under 2,900 units annually—less than 15 percent of target.",
+      "forbidden_or_unsupported_inference": [],
+      "conflicting_evidence": [],
+      "notes": "Derived from prod01_production_total and mkt01_target_sales.",
+      "source_claim_ids": ["prod01_production_total", "mkt01_target_sales"],
+      "calculation": "(8557 / 3) / 20000 * 100",
+      "result": "Actual average sales of ~2,850 units/year (14.26%) compared to 20,000 unit/year target"
+    },
+    {
+      "claim_id": "nissan01_infiniti_plan",
+      "normalized_claim": "After Renault and Nissan formed their alliance in 1999, the companies considered a plan to sell an Infiniti-badged version of the Avantime in North America.",
+      "claim_type": "fact",
+      "time_context": "1999-2001",
+      "sources": [
+        {
+          "url": "https://www.motor1.com/features/739433/america-almost-got-renault-avantime/",
+          "title": "America Almost Got the Wonderfully Quirky Renault Avantime",
+          "publisher": "Motor1",
+          "source_language": "en",
+          "source_classification": "authoritative_secondary",
+          "access_status": "read_full",
+          "evidence_note": "Describes the Renault-Nissan alliance and the Infiniti-badged variant discussion."
+        }
+      ],
+      "perspective": "timeless_or_historical_fact",
+      "confidence": "high",
+      "allowed_in_narration": true,
+      "safe_wording": "After forming their alliance in 1999, Renault and Nissan considered selling an Infiniti-badged version in North America.",
+      "forbidden_or_unsupported_inference": [],
+      "conflicting_evidence": [],
+      "notes": ""
+    },
+    {
+      "claim_id": "nissan02_infiniti_rejected",
+      "normalized_claim": "The Infiniti Avantime plan was rejected. Renault and Nissan accountants calculated that converting the Avantime to meet US safety and emissions regulations would cost approximately $83.7 million, which both companies deemed unjustifiable given the car's limited market appeal.",
+      "claim_type": "statistic",
+      "time_context": "2000",
+      "sources": [
+        {
+          "url": "https://www.motor1.com/features/739433/america-almost-got-renault-avantime/",
+          "title": "America Almost Got the Wonderfully Quirky Renault Avantime",
+          "publisher": "Motor1",
+          "source_language": "en",
+          "source_classification": "authoritative_secondary",
+          "access_status": "read_full",
+          "evidence_note": "Reports the $83.7 million conversion cost estimate and the companies' rejection decision."
+        }
+      ],
+      "perspective": "timeless_or_historical_fact",
+      "confidence": "medium",
+      "allowed_in_narration": true,
+      "safe_wording": "The plan was rejected; converting the Avantime to US specifications was estimated to cost $83.7 million, which both companies deemed not worth the investment.",
+      "forbidden_or_unsupported_inference": ["That the cost was exactly $83.7M rather than an estimate"],
+      "conflicting_evidence": [],
+      "notes": ""
+    },
+    {
+      "claim_id": "nissan03_no_infiniti_built",
+      "normalized_claim": "No Infiniti-badged Avantime was ever manufactured. The plan remained a strategic consideration only.",
+      "claim_type": "fact",
+      "time_context": "2001-2003",
+      "sources": [
+        {
+          "url": "https://www.motor1.com/features/739433/america-almost-got-renault-avantime/",
+          "title": "America Almost Got the Wonderfully Quirky Renault Avantime",
+          "publisher": "Motor1",
+          "source_language": "en",
+          "source_classification": "authoritative_secondary",
+          "access_status": "read_full",
+          "evidence_note": "Confirms no Infiniti version was actually built; plan was rejected before production."
+        }
+      ],
+      "perspective": "timeless_or_historical_fact",
+      "confidence": "high",
+      "allowed_in_narration": true,
+      "safe_wording": "No Infiniti Avantime was ever actually built; the plan remained a road-not-taken decision.",
+      "forbidden_or_unsupported_inference": [],
+      "conflicting_evidence": [],
+      "notes": ""
+    },
+    {
+      "claim_id": "compet01_vel_satis_launch",
+      "normalized_claim": "The Renault Vel Satis (an upmarket sedan/MPV hybrid) launched in 2002, just one year into Avantime production. Both cars competed for Renault's luxury-car development budget and marketing attention.",
+      "claim_type": "fact",
+      "time_context": "2001-2002",
+      "sources": [
+        {
+          "url": "https://www.thetruthaboutcars.com/2020/12/rare-rides-the-absolutely-epic-2002-renault-avantime-a-big-sales-flop/",
+          "title": "Rare Rides: The Absolutely Epic 2002 Renault Avantime, a Big Sales Flop",
+          "publisher": "The Truth About Cars",
+          "source_language": "en",
+          "source_classification": "reputable_secondary",
+          "access_status": "read_full",
+          "evidence_note": "Describes Vel Satis launch timing and market competition with the Avantime."
+        }
+      ],
+      "perspective": "timeless_or_historical_fact",
+      "confidence": "high",
+      "allowed_in_narration": true,
+      "safe_wording": "In 2002, Renault launched the Vel Satis, another luxury vehicle that competed with the Avantime for Renault's marketing and development budget.",
+      "forbidden_or_unsupported_inference": [],
+      "conflicting_evidence": [],
+      "notes": ""
+    },
+    {
+      "claim_id": "compet02_vel_satis_outsold",
+      "normalized_claim": "The Vel Satis was more commercially successful than the Avantime. Approximately 64,000 Vel Satis were produced worldwide versus 8,557 Avantimes.",
+      "claim_type": "derived_comparison",
+      "time_context": "2001-2003",
+      "sources": [],
+      "perspective": "timeless_or_historical_fact",
+      "confidence": "medium",
+      "allowed_in_narration": true,
+      "safe_wording": "The Vel Satis outsold the Avantime decisively: roughly 64,000 produced worldwide versus just 8,557 Avantimes.",
+      "forbidden_or_unsupported_inference": ["That the Vel Satis was objectively better-designed"],
+      "conflicting_evidence": [],
+      "notes": "Derived from Vel Satis production (from compet01 source) and prod01_production_total.",
+      "source_claim_ids": ["prod01_production_total"],
+      "calculation": "64000 / 8557",
+      "result": "Vel Satis outsold Avantime by approximately 7.5 times"
+    },
+    {
+      "claim_id": "disc01_matra_exit",
+      "normalized_claim": "Matra, the Avantime's manufacturer, decided to exit automotive production in 2003. This decision was partly driven by financial losses incurred by poor Avantime sales.",
+      "claim_type": "fact",
+      "time_context": "2003",
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/Renault_Avantime",
+          "title": "Renault Avantime",
+          "publisher": "Wikipedia",
+          "source_language": "en",
+          "source_classification": "reference_source",
+          "access_status": "read_full",
+          "evidence_note": "States that Matra exited automotive production in 2003 partly due to Avantime losses."
+        }
+      ],
+      "perspective": "timeless_or_historical_fact",
+      "confidence": "high",
+      "allowed_in_narration": true,
+      "safe_wording": "Matra, the car's builder, exited automotive production in 2003 partly because of losses from the Avantime's poor sales.",
+      "forbidden_or_unsupported_inference": [],
+      "conflicting_evidence": [],
+      "notes": ""
+    },
+    {
+      "claim_id": "disc02_relocation_rejected",
+      "normalized_claim": "When Matra decided to exit, Renault chose to discontinue the Avantime rather than relocate production to one of Renault's own factories. The cost of restarting production elsewhere was deemed prohibitive.",
+      "claim_type": "fact",
+      "time_context": "2003",
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/Renault_Avantime",
+          "title": "Renault Avantime",
+          "publisher": "Wikipedia",
+          "source_language": "en",
+          "source_classification": "reference_source",
+          "access_status": "read_full",
+          "evidence_note": "Describes Renault's decision to discontinue rather than relocate production."
+        }
+      ],
+      "perspective": "timeless_or_historical_fact",
+      "confidence": "high",
+      "allowed_in_narration": true,
+      "safe_wording": "Renault chose to discontinue the Avantime rather than move production to one of its own plants, judging the costs of retooling too high to justify.",
+      "forbidden_or_unsupported_inference": [],
+      "conflicting_evidence": [],
+      "notes": ""
+    },
+    {
+      "claim_id": "design01_hybrid_genre",
+      "normalized_claim": "The Avantime was marketed as a unique hybrid of sports coupe and family MPV (minivan). It was a 4-seat, 2-door vehicle with unusual proportions that blended high-performance styling with practical interior space.",
+      "claim_type": "fact",
+      "time_context": "2001-2003",
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/Renault_Avantime",
+          "title": "Renault Avantime",
+          "publisher": "Wikipedia",
+          "source_language": "en",
+          "source_classification": "reference_source",
+          "access_status": "read_full",
+          "evidence_note": "Describes the coupe-MPV hybrid positioning and seating configuration."
+        }
+      ],
+      "perspective": "timeless_or_historical_fact",
+      "confidence": "high",
+      "allowed_in_narration": true,
+      "safe_wording": "The Avantime was an unusual 4-seat, 2-door hybrid of sports coupe and family minivan—fast-looking but family-practical.",
+      "forbidden_or_unsupported_inference": [],
+      "conflicting_evidence": [],
+      "notes": ""
+    },
+    {
+      "claim_id": "legacy01_production_rarity",
+      "normalized_claim": "With only 8,557 units built, the Avantime is today one of the rarest 2000s-era production cars and is increasingly sought after by collectors interested in automotive design oddities and failures.",
+      "claim_type": "fact",
+      "time_context": "2001-2026",
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/Renault_Avantime",
+          "title": "Renault Avantime",
+          "publisher": "Wikipedia",
+          "source_language": "en",
+          "source_classification": "reference_source",
+          "access_status": "read_full",
+          "evidence_note": "Notes the rarity status and collector interest in preserved examples."
+        }
+      ],
+      "perspective": "retrospective_judgment",
+      "confidence": "medium",
+      "allowed_in_narration": true,
+      "safe_wording": "With only 8,557 built, the Avantime is now one of the rarest 2000s-era cars and increasingly sought by collectors.",
+      "forbidden_or_unsupported_inference": [],
+      "conflicting_evidence": [],
+      "notes": ""
+    }
+  ]
+}

@@ -1,0 +1,139 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "producer_outline.schema.json",
+  "title": "ProducerOutline",
+  "description": "Agent A's (A3 Story Architecture) structural plan for the episode. Downstream of fact_pack.json: every supporting_claim_ids/unresolved_claim_ids entry must reference a claim_id that exists there, and this file must not introduce factual claims fact_pack.json doesn't contain. visual_requests are requests to Agent B, not evidence that any asset exists.",
+  "type": "object",
+  "required": ["episode_id", "status", "thesis", "beats"],
+  "additionalProperties": false,
+  "properties": {
+    "episode_id": {
+      "type": "string"
+    },
+    "status": {
+      "type": "string",
+      "enum": ["pending", "drafted", "approved"],
+      "default": "pending"
+    },
+    "thesis": {
+      "type": "string",
+      "description": "The one-sentence argument/story the episode is built around. Must be supported by fact_pack.json claims, not auto-derived from episode_brief.quirk."
+    },
+    "thesis_claim_ids": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "fact_pack.json claim_ids backing every factual assertion in the thesis. All must be allowed_in_narration: true -- an unresolved claim must never reach the thesis."
+    },
+    "hook": {
+      "type": "string",
+      "description": "The cold-open line(s) meant to grab attention before the thesis unfolds"
+    },
+    "hook_claim_ids": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "fact_pack.json claim_ids backing every factual assertion in the hook. All must be allowed_in_narration: true -- an unresolved claim must never reach the hook."
+    },
+    "estimated_runtime_sec": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "Set by Agent A during A3, after fact_pack.json and the beat structure exist -- never hardcoded. Should sit near the channel's runtime_policy.preferred_minutes (config/channels/<channel_id>.json) as a center of gravity, not a fixed target; actual length follows evidence density, story density, and expected visual density. Never pad to a target."
+    },
+    "runtime_rationale": {
+      "type": "string",
+      "description": "Why this runtime, in terms of evidence density / story density / visual density -- not required, but keeps the estimate auditable instead of a bare number"
+    },
+    "open_questions": {
+      "type": "array",
+      "description": "Outline-level open questions that aren't tied to one fact_pack claim (e.g. structural/strategic questions). Per-claim uncertainty belongs in fact_pack.json instead.",
+      "items": { "type": "string" }
+    },
+    "beats": {
+      "type": "array",
+      "description": "Ordered narrative beats making up the episode",
+      "items": {
+        "type": "object",
+        "required": [
+          "beat_id",
+          "purpose",
+          "summary",
+          "supporting_claim_ids",
+          "unresolved_claim_ids",
+          "narration_direction",
+          "visual_requests"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "beat_id": { "type": "string" },
+          "act": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 4,
+            "description": "Optional. Which act (1-4) this beat belongs to, for channels whose config defines an act_structure (see config/channels/<channel_id>.json). Acts are fixed and ordered; beats within an act are flexible. Omit entirely for channels/episodes not using an act structure."
+          },
+          "estimated_narration_sec": {
+            "type": "integer",
+            "minimum": 0,
+            "description": "Optional. This beat's share of estimated_runtime_sec, for act-structured channels balancing narration time across acts. Not required when act is omitted."
+          },
+          "purpose": {
+            "type": "string",
+            "description": "Why this beat exists -- its narrative function in the episode"
+          },
+          "summary": { "type": "string" },
+          "supporting_claim_ids": {
+            "type": "array",
+            "items": { "type": "string" },
+            "description": "fact_pack.json claim_ids (allowed_in_narration: true) this beat is built on"
+          },
+          "unresolved_claim_ids": {
+            "type": "array",
+            "items": { "type": "string" },
+            "description": "fact_pack.json claim_ids this beat references but that are NOT allowed_in_narration -- must be framed as open/unconfirmed if mentioned at all, never stated as fact"
+          },
+          "narration_direction": {
+            "type": "string",
+            "description": "Guidance for the A4 localized-writing stage -- talking points and tone, NOT final narration text"
+          },
+          "visual_requests": {
+            "type": "array",
+            "description": "Structured requests to Agent B. A request, not evidence the asset exists.",
+            "items": {
+              "type": "object",
+              "required": [
+                "request_id",
+                "beat_id",
+                "subject",
+                "desired_asset_type",
+                "description",
+                "priority",
+                "exact_subject_required"
+              ],
+              "additionalProperties": false,
+              "properties": {
+                "request_id": { "type": "string" },
+                "beat_id": { "type": "string" },
+                "subject": { "type": "string" },
+                "desired_asset_type": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "enum": ["video", "photo", "advertisement", "brochure", "document", "magazine_scan", "map", "chart", "contextual_video"]
+                  }
+                },
+                "description": { "type": "string" },
+                "priority": {
+                  "type": "string",
+                  "enum": ["low", "medium", "high"]
+                },
+                "exact_subject_required": {
+                  "type": "boolean",
+                  "description": "If true, only footage/imagery of the exact subject satisfies this request -- generic/contextual substitutes are not acceptable. If false, contextual/period-appropriate substitutes are acceptable."
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

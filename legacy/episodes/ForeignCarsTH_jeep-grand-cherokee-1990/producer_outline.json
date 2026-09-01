@@ -1,0 +1,86 @@
+{
+  "episode_id": "ForeignCarsTH_jeep-grand-cherokee-1990",
+  "status": "drafted",
+  "thesis": "There was no 1990 Grand Cherokee -- the truck took seven years to cross two different car companies (AMC, then Chrysler) before it reached the public in January 1992, and even its most famous moment, driving through a plate-glass window at its own unveiling, is usually misremembered: popular memory puts the company's boss behind the wheel, when it was actually the company's president, with the mayor of Detroit riding along for a stunt built on fake theatrical glass. The real story -- a delayed, disputed, multi-company gestation capped by a stunt more mythologized than accurately recalled -- is more interesting than either the wrong date or the wrong driver.",
+  "thesis_claim_ids": ["topic01_no_1990_existence", "dev01_amc_chrysler_origin", "reveal02_stunt_core", "reveal03_lutz_title"],
+  "hook": "You've probably heard the story: Jeep's boss drove a brand-new Grand Cherokee through a plate-glass window to launch it. Except it wasn't 1990, it wasn't real glass, and it wasn't the boss driving.",
+  "hook_claim_ids": ["topic01_no_1990_existence", "reveal02_stunt_core", "reveal03_lutz_title"],
+  "estimated_runtime_sec": 610,
+  "runtime_rationale": "Just over 10 minutes -- at the floor of the channel's normal_range_minutes and well below the 12-minute preferred_minutes center. Justification: this episode opens by correcting its own premise (no 1990 car exists), which compresses rather than expands the cold open; several supporting claims are single-sourced background (prod01, prod02, plant01, tech01, gen01) held at medium confidence and used as color rather than expanded into their own beats; one claim (reveal04, Iacocca's role) is unresolved and explicitly excluded from narration; and the price data (price01) is a hedged range rather than a clean number, which shortens rather than pads that beat. Six moderate beats fit comfortably under 12 minutes without stretching thin material.",
+  "open_questions": [
+    "price01: no single canonical 1993 base MSRP was found (figures ranged $18,990-$21,898 across aggregators, possibly reflecting 2-door vs. loaded-4-door confusion). A period Chrysler/Jeep press kit or brochure would resolve this better than aggregator sites.",
+    "reveal04: one source claims Iacocca personally delayed the launch to late 1992, but that source (Hagerty Media) returned HTTP 403 on direct fetch and the claim is only known via a search-engine synthesis, not a read source. Worth a retry via an archived/cached version, or a different Chrysler-history source, before deciding whether it belongs in the episode at all.",
+    "dev02: the Shinoda design-credit litigation and settlement figure is reputation-sensitive (implies AMC took credit for another designer's work) and currently rests on Wikipedia alone. Worth a second, independent source (a design-history retrospective or period trade-press piece) before leaning on it narratively rather than as a brief aside."
+  ],
+  "beats": [
+    {
+      "beat_id": "b1_cold_open",
+      "purpose": "Open on the famous stunt as commonly (mis)remembered, setting up the corrections that follow.",
+      "summary": "At its 1992 Detroit debut, a new Jeep was driven up a flight of stairs and through a plate-glass window in front of a stunned crowd -- one of the most talked-about vehicle launches in automotive history, and one popular memory gets wrong in more than one way.",
+      "supporting_claim_ids": ["reveal01_debut_date_venue", "reveal02_stunt_core"],
+      "unresolved_claim_ids": [],
+      "narration_direction": "Lead with the spectacle before naming any executive or date specifics -- let the hook's correction land in b2/b4, not here. Do not yet say who was driving.",
+      "visual_requests": [
+        {"request_id": "V001", "beat_id": "b1_cold_open", "subject": "1992 Detroit Cobo Hall plate-glass-window Jeep stunt", "desired_asset_type": ["photo", "contextual_video"], "description": "Archival footage or photos of the actual January 1992 unveiling stunt at Cobo Hall.", "priority": "high", "exact_subject_required": true},
+        {"request_id": "V002", "beat_id": "b1_cold_open", "subject": "1993 Jeep Grand Cherokee exterior", "desired_asset_type": ["photo"], "description": "Clean exterior shot of an early ZJ Grand Cherokee for establishing the vehicle itself.", "priority": "medium", "exact_subject_required": true}
+      ]
+    },
+    {
+      "beat_id": "b2_no_1990_car",
+      "purpose": "Address the episode's own premise head-on: correct the date before building any further narrative on it.",
+      "summary": "There was no Grand Cherokee in 1990 -- the nameplate simply didn't exist yet. It was still two years from its public debut and wouldn't reach buyers until the 1993 model year.",
+      "supporting_claim_ids": ["topic01_no_1990_existence"],
+      "unresolved_claim_ids": [],
+      "narration_direction": "State this plainly and without apology -- it's a genuine finding, not an error to gloss over. Use it as a pivot into 'so what was happening in 1990?' which leads into b3's development story.",
+      "visual_requests": [
+        {"request_id": "V003", "beat_id": "b2_no_1990_car", "subject": "Late-1980s Jeep Cherokee (XJ) and Wagoneer (SJ)", "desired_asset_type": ["photo"], "description": "The two models the Grand Cherokee was eventually meant to sit between/replace, shown as what actually existed circa 1990.", "priority": "medium", "exact_subject_required": true}
+      ]
+    },
+    {
+      "beat_id": "b3_seven_year_gestation",
+      "purpose": "Tell the real development story: a project that outlived the company that started it.",
+      "summary": "The truck's roots go back to roughly 1985, under American Motors -- a company Chrysler didn't even own yet. A 1985 prototype design by stylist Larry Shinoda led to a design-credit dispute that Chrysler later settled for over $200,000, well after buying AMC outright in 1987 and carrying the program forward itself.",
+      "supporting_claim_ids": ["dev01_amc_chrysler_origin", "dev02_shinoda_design_dispute"],
+      "unresolved_claim_ids": [],
+      "narration_direction": "This is the beat that answers b2's pivot. Keep dev02 as a brief, clearly-attributed aside ('according to one account') given it's single-sourced and reputation-sensitive -- don't build a whole dramatic sequence on the lawsuit alone.",
+      "visual_requests": [
+        {"request_id": "V004", "beat_id": "b3_seven_year_gestation", "subject": "AMC Kenosha or Chrysler Highland Park facilities, mid-1980s", "desired_asset_type": ["photo", "contextual_video"], "description": "Period-appropriate AMC/Chrysler corporate or design-studio imagery for the development-era section.", "priority": "low", "exact_subject_required": false}
+      ]
+    },
+    {
+      "beat_id": "b4_the_real_story_of_the_stunt",
+      "purpose": "Deliver the thesis's second correction: who was actually driving, and what was actually real.",
+      "summary": "The driver through the window wasn't Chrysler's chairman -- that was still Lee Iacocca. It was Bob Lutz, Chrysler's president, who drove from the Jefferson North Assembly Plant with Detroit's mayor riding along and a police escort. The glass itself was fake theatrical 'sugar glass,' built to shatter safely for the cameras.",
+      "supporting_claim_ids": ["reveal02_stunt_core", "reveal03_lutz_title"],
+      "unresolved_claim_ids": ["reveal04_iacocca_role_unresolved"],
+      "narration_direction": "This is the core corrective beat -- state plainly that popular retellings often get the driver's role wrong, then give the accurate version. Do NOT mention Iacocca ordering a delay (reveal04) -- that claim is unresolved and excluded from narration; if Iacocca is mentioned at all here, it is only to clarify he was chairman and was NOT in the vehicle.",
+      "visual_requests": [
+        {"request_id": "V005", "beat_id": "b4_the_real_story_of_the_stunt", "subject": "Bob Lutz, early 1990s Chrysler era", "desired_asset_type": ["photo"], "description": "Period photo of Bob Lutz as Chrysler president.", "priority": "medium", "exact_subject_required": true},
+        {"request_id": "V006", "beat_id": "b4_the_real_story_of_the_stunt", "subject": "Jefferson North Assembly Plant, early 1990s", "desired_asset_type": ["photo"], "description": "Exterior or period photo of the Detroit plant the stunt vehicle departed from.", "priority": "low", "exact_subject_required": false}
+      ]
+    },
+    {
+      "beat_id": "b5_what_you_actually_bought",
+      "purpose": "Ground the spectacle in what a buyer actually got in 1993.",
+      "summary": "Engines ranged from a 190-horsepower inline-six up to a 245-horsepower V8 by the final model year, plus a diesel sold only outside the US. It launched with a standard driver's airbag on every model and was marketed as the first mid-size SUV offering V8 power -- at a price that, depending on trim and source, ran roughly $19,000 to $22,000.",
+      "supporting_claim_ids": ["eng01_engine_lineup", "tech01_firsts_claims", "price01_launch_price_range"],
+      "unresolved_claim_ids": [],
+      "narration_direction": "Use price01's hedged range explicitly -- 'roughly $19,000 to $22,000 depending on trim,' never a single unqualified figure. tech01's 'firsts' language must stay scoped to 'mid-size SUV,' not broadened to 'first SUV ever.'",
+      "visual_requests": [
+        {"request_id": "V007", "beat_id": "b5_what_you_actually_bought", "subject": "1993 Grand Cherokee interior and engine bay", "desired_asset_type": ["photo"], "description": "Interior shot and/or V8 engine bay shot for the spec rundown.", "priority": "medium", "exact_subject_required": true}
+      ]
+    },
+    {
+      "beat_id": "b6_legacy_scale",
+      "purpose": "Close on scale: how big this actually got, worldwide.",
+      "summary": "Jeep built over 1.25 million of them across six model years -- including a rare, one-year-only Grand Wagoneer flagship trim of just 6,378 units -- and assembled them not just in Detroit but in Austria, Argentina, and Venezuela, all while the smaller Cherokee it was meant to eventually succeed kept selling right alongside it.",
+      "supporting_claim_ids": ["prod01_total_production", "prod02_grand_wagoneer_variant", "plant01_global_production", "gen01_predecessor_context"],
+      "unresolved_claim_ids": [],
+      "narration_direction": "These are the pack's most straightforward background stats -- state them plainly as the closing 'how big did this actually get' beat. All four are single-sourced background facts at medium confidence; fine to state directly per their safe_wording, just don't stack extra certainty onto them.",
+      "visual_requests": [
+        {"request_id": "V008", "beat_id": "b6_legacy_scale", "subject": "1993 Grand Wagoneer trim (ZJ)", "desired_asset_type": ["photo"], "description": "The rare one-year-only flagship trim for the closing scale beat.", "priority": "low", "exact_subject_required": true},
+        {"request_id": "V009", "beat_id": "b6_legacy_scale", "subject": "Magna Steyr Graz Austria assembly plant", "desired_asset_type": ["photo", "contextual_video"], "description": "Supporting visual for the global-assembly point; generic period Magna Steyr/Graz plant imagery acceptable if ZJ-specific footage isn't found.", "priority": "low", "exact_subject_required": false}
+      ]
+    }
+  ]
+}

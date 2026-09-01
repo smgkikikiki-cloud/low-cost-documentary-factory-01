@@ -1,0 +1,88 @@
+{
+  "episode_id": "ForeignCarsTH_lancia-thema-8-32",
+  "status": "drafted",
+  "thesis": "The Thema 8.32 really did run a Ferrari-cast V8 -- cast at Maranello itself -- but Lancia and Ducati deliberately reengineered it (a different crankshaft, smaller valves, a different firing order) specifically so it would NOT feel like a Ferrari, trading race-bred character for saloon-car smoothness. That's more interesting, and more precise, than either 'just a Ferrari engine' or the vaguer 'Ferrari-derived' usually gets credit for -- and it's part of why a car that cost roughly triple a standard Thema, in a run of under four thousand, stayed a footnote rather than becoming a cult icon.",
+  "thesis_claim_ids": ["eng01_ferrari_cast_origin", "eng02_deferraried_modifications", "eng03_assembly_process", "price01_uk_1988_price", "d02_price_premium_vs_base", "prod03_total_stated"],
+  "hook": "In the mid-1980s, Lancia put a genuine Ferrari-cast V8 -- cast at Maranello itself -- into a plain three-box executive sedan, then had it deliberately reengineered so it wouldn't feel like a Ferrari at all.",
+  "hook_claim_ids": ["eng01_ferrari_cast_origin", "eng02_deferraried_modifications"],
+  "estimated_runtime_sec": 600,
+  "runtime_rationale": "10 minutes, near the low end of the channel's normal_range_minutes, below the 12-minute preferred_minutes center. This episode's evidence is real but thinner than the channel's Cimarron pilot: no primary document equivalent to a manufacturer brochure, several claims single-sourced (perf01, price01, eq01, own02), one important thread -- who actually originated the project -- left as two unreconciled competing attributions (dev01/dev02) rather than a clean story, and one contemporary source (rec02, Quattroruote) found but unreadable. Beats covering unresolved/hedged material run shorter, not longer, than a fully-evidenced beat would -- hedging compresses screen time rather than filling it. Six beats of moderate density land naturally under 12 minutes without padding.",
+  "open_questions": [
+    "dev01 vs dev02: two sources name two different people (Andre Chardonnet, a French importer, vs Vittorio Ghidella, Fiat's CEO) as the originator of the Ferrari-engine idea, with no source reconciling them. A French-language follow-up pass (fr.wikipedia.org's Chardonnet biography, or opening guideautoweb.com/caradisiac.com directly rather than via search synthesis) is the most promising next step.",
+    "price01 (UK 1988 price, £37,500) is single-sourced and is specifically a UK market figure for a left-hand-drive-only car (own02) -- no original Italian domestic launch price was found. Worth finding a period Italian price to know whether the UK figure reflects import premium or the car's actual list price.",
+    "rec02 confirms a June 1987 Quattroruote road test exists but its content (positive/negative, specific findings) is unknown -- this environment can't process video. If the episode wants genuine contemporary Italian critical reaction (as opposed to the English-language retrospective in rec01), transcribing or finding a text version of that test is the way to get it."
+  ],
+  "beats": [
+    {
+      "beat_id": "b1_cold_open",
+      "purpose": "Open on the central tension -- a plain sedan hiding a genuinely Ferrari-cast engine -- and set up the question the episode answers: how Ferrari is it, really?",
+      "summary": "A conventional-looking three-box Italian executive sedan from the mid-1980s concealed a 2.9-litre V8 cast at Ferrari's own Maranello plant -- 215 PS in its uncatalyzed form, enough for 0-100 km/h in under seven seconds.",
+      "supporting_claim_ids": ["eng01_ferrari_cast_origin", "eng04_power_output", "perf01_acceleration_top_speed"],
+      "unresolved_claim_ids": [],
+      "narration_direction": "Lead with the visual mismatch (plain sedan / Ferrari-cast engine) before naming the car. eng01 supports 'genuinely Ferrari-cast' plainly. Performance figures (eng04, perf01) are safe but perf01 is single-sourced -- keep it as color, not a headline claim. Do not resolve the 'how Ferrari is it' question yet -- that's b3.",
+      "visual_requests": [
+        {"request_id": "V001", "beat_id": "b1_cold_open", "subject": "Lancia Thema 8.32 exterior, plain/unbadged framing", "desired_asset_type": ["photo"], "description": "Exterior shot emphasizing the conventional three-box saloon look, ideally without the 8.32 badge legible yet.", "priority": "high", "exact_subject_required": true},
+        {"request_id": "V002", "beat_id": "b1_cold_open", "subject": "Thema 8.32 V8 engine bay", "desired_asset_type": ["photo"], "description": "Engine bay shot of the transverse-mounted Ferrari V8.", "priority": "high", "exact_subject_required": true}
+      ]
+    },
+    {
+      "beat_id": "b2_origin_story",
+      "purpose": "Show how the project began -- and be honest that the record itself is unresolved about whose idea it was.",
+      "summary": "Two competing accounts exist for who proposed fitting a Ferrari V8 to the Thema: French-language sources credit Andre Chardonnet, Lancia's independent French importer; an English-language feature instead credits Fiat Group CEO Vittorio Ghidella with championing the project and building its production line. Neither source cites evidence for its claim, and nothing reconciles the two.",
+      "supporting_claim_ids": ["dev01_chardonnet_attribution", "dev02_ghidella_attribution"],
+      "unresolved_claim_ids": [],
+      "narration_direction": "Present both attributions explicitly as competing accounts rather than picking one -- this beat's honesty about not knowing is more interesting than a false clean origin story would be. Both claims are individually medium-confidence and airable, but the SYNTHESIS ('here's definitively who did it') is not supported by either alone.",
+      "visual_requests": [
+        {"request_id": "V003", "beat_id": "b2_origin_story", "subject": "Vittorio Ghidella and/or Andre Chardonnet, mid-1980s", "desired_asset_type": ["photo"], "description": "Period photo of either named individual if available.", "priority": "low", "exact_subject_required": true},
+        {"request_id": "V004", "beat_id": "b2_origin_story", "subject": "1986 Turin Motor Show", "desired_asset_type": ["photo", "contextual_video"], "description": "Footage/photos of the Turin show where the 8.32 was unveiled; period-appropriate substitutes acceptable.", "priority": "medium", "exact_subject_required": false}
+      ]
+    },
+    {
+      "beat_id": "b3_the_deferraried_ferrari",
+      "purpose": "Deliver the thesis: a real Ferrari engine, deliberately made to not feel like one.",
+      "summary": "Ferrari cast the block at Maranello; Ducati assembled it; Lancia's Turin plant built it into the car. But the crankshaft was swapped from the flat-plane type used in contemporary Ferrari road cars to a cross-plane design, the valves were made smaller, and the firing order was changed -- all specifically so the engine would deliver smooth saloon-car torque rather than a sports car's high-revving snarl.",
+      "supporting_claim_ids": ["eng01_ferrari_cast_origin", "eng02_deferraried_modifications", "eng03_assembly_process"],
+      "unresolved_claim_ids": [],
+      "narration_direction": "This is the core beat -- state plainly that this WAS a genuine Ferrari engine (eng01/eng03) and then pivot to exactly what was changed and why (eng02). Avoid both oversimplifications the fact pack flags: don't say 'it wasn't really a Ferrari engine', and don't stop at 'Ferrari engine' without the modification.",
+      "visual_requests": [
+        {"request_id": "V005", "beat_id": "b3_the_deferraried_ferrari", "subject": "Ferrari 308/Mondial Quattrovalvole V8 vs Thema 8.32 V8", "desired_asset_type": ["photo", "chart"], "description": "Side-by-side or comparison graphic of the donor Ferrari engine and the modified Thema unit, ideally highlighting the crankshaft difference.", "priority": "high", "exact_subject_required": true},
+        {"request_id": "V006", "beat_id": "b3_the_deferraried_ferrari", "subject": "Maranello casting / Ducati assembly of the era", "desired_asset_type": ["photo", "contextual_video"], "description": "Period manufacturing imagery; generic Ferrari-era Maranello or Ducati factory material acceptable if the specific process isn't available.", "priority": "low", "exact_subject_required": false}
+      ]
+    },
+    {
+      "beat_id": "b4_what_it_cost_and_came_with",
+      "purpose": "Ground the engineering story in what a buyer actually got and paid.",
+      "summary": "Standard equipment included a driver-controlled retractable rear spoiler, ABS, power steering, and a wood-and-Alcantara interior, offered with a 5-speed manual only -- no automatic was ever built. In the UK in 1988 it listed at £37,500, roughly triple the £12,495 asked for a base Thema in the same market that year.",
+      "supporting_claim_ids": ["eq01_standard_features", "des01_designer_credit", "price01_uk_1988_price", "d02_price_premium_vs_base"],
+      "unresolved_claim_ids": [],
+      "narration_direction": "Use d02's safe_wording for the price comparison -- 'roughly three times', with the UK/1988/base-Thema comparator stated, never an unqualified 'it cost 3x a Thema'. price01 is single-sourced and UK-specific -- flag this is a British price for a left-hand-drive-only car, not confirmed as the original Italian price.",
+      "visual_requests": [
+        {"request_id": "V007", "beat_id": "b4_what_it_cost_and_came_with", "subject": "Thema 8.32 interior", "desired_asset_type": ["photo"], "description": "Interior shot showing the wood-and-Alcantara trim and retractable rear spoiler control.", "priority": "medium", "exact_subject_required": true},
+        {"request_id": "V008", "beat_id": "b4_what_it_cost_and_came_with", "subject": "1988 UK price list or period advertisement", "desired_asset_type": ["document", "advertisement"], "description": "Period pricing document if one survives, to support the £37,500 figure on screen.", "priority": "low", "exact_subject_required": true}
+      ]
+    },
+    {
+      "beat_id": "b5_reception",
+      "purpose": "Show what contemporary and retrospective press actually said, honestly marking what could and couldn't be verified.",
+      "summary": "A contemporary road test ran in Italy's Quattroruote magazine in June 1987, though its content isn't available here to characterize. Road & Track's own later retrospective called the car 'one of the weirder sleepers to come out of the 1980s' -- a judgment made well after launch, not at the time.",
+      "supporting_claim_ids": ["rec01_road_and_track_retrospective"],
+      "unresolved_claim_ids": ["rec02_quattroruote_existence"],
+      "narration_direction": "rec02 may only be used to note that a contemporary Italian test existed and when -- never to characterize what it concluded. rec01's quote is explicitly retrospective (per its own 'out of the 1980s' framing) -- do not present it as a period reaction.",
+      "visual_requests": [
+        {"request_id": "V009", "beat_id": "b5_reception", "subject": "June 1987 Quattroruote issue/cover", "desired_asset_type": ["magazine_scan", "photo"], "description": "Cover or masthead of the June 1987 Quattroruote issue containing the road test, to support the existence claim on screen without needing its content.", "priority": "low", "exact_subject_required": true}
+      ]
+    },
+    {
+      "beat_id": "b6_legacy",
+      "purpose": "Close on scale and a memorable ownership detail, landing the thesis's 'stayed a footnote' claim.",
+      "summary": "Total production across both series was 3,971 cars -- 2,370 first-series examples from 1986-1988, 1,601 second-series cars taking the run to 1992 -- all left-hand drive only. Enzo Ferrari himself reportedly kept one as his personal car in his final years.",
+      "supporting_claim_ids": ["prod01_series1_count", "prod02_series2_count", "prod03_total_stated", "d01_total_arithmetic_check", "own01_enzo_ferrari_ownership", "own02_uk_lhd_only"],
+      "unresolved_claim_ids": [],
+      "narration_direction": "Production numbers are the pack's best-corroborated statistics (three independent sources, arithmetic checked via d01) -- state them plainly. Close on own01 with its 'reportedly' hedge intact per its safe_wording; it's a strong closing image precisely because the man whose company's name was on the castings chose to drive one.",
+      "visual_requests": [
+        {"request_id": "V010", "beat_id": "b6_legacy", "subject": "Late-production (1990-1992) Thema 8.32", "desired_asset_type": ["photo"], "description": "A Series 2 car for visual variety/closure.", "priority": "low", "exact_subject_required": true},
+        {"request_id": "V011", "beat_id": "b6_legacy", "subject": "Enzo Ferrari, later-life period photo", "desired_asset_type": ["photo"], "description": "A period photo of Enzo Ferrari from the mid-to-late 1980s; does not need to show him with the car specifically.", "priority": "medium", "exact_subject_required": false}
+      ]
+    }
+  ]
+}

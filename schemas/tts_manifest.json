@@ -1,0 +1,42 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "tts_manifest.schema.json",
+  "title": "TTSManifest",
+  "description": "The MEASURED (never estimated) narration timing for script_manifest.json's blocks. Produced by a TTS rendering step (not yet built -- this file defines only the data contract) that runs AFTER script ingestion and BEFORE B-DISCOVER: since the master script is already complete and locked, there is no outline-estimate intermediary anymore -- B-DISCOVER plans visual coverage directly against real audio duration. duration_sec must come from probing the actual rendered audio file (e.g. scripts/media_probe.py's probe()), never copied or guessed from anywhere else. B-EDIT computes each block's position on the final documentary timeline deterministically as a running sum over script_manifest.json's own block order: block N starts exactly where block N-1 ended.",
+  "type": "object",
+  "required": ["episode_id", "status", "blocks"],
+  "additionalProperties": false,
+  "properties": {
+    "episode_id": { "type": "string" },
+    "status": {
+      "type": "string",
+      "enum": ["pending", "generated"],
+      "default": "pending",
+      "description": "pending: audio not fully rendered yet (zero or partial blocks present is normal). generated: EVERY script_manifest.json block has exactly one measured entry here -- a partial set must not use this status. B-DISCOVER/B-EDIT treat production as not-yet-ready until this is generated; the validator enforces full block coverage whenever this is set."
+    },
+    "blocks": {
+      "type": "array",
+      "description": "One entry per script_manifest.json block whose narration audio has been rendered and measured. Entries may appear in any order -- lookups are by block_id; cumulative timing is reconstructed from script_manifest.json's own block order, not this array's order.",
+      "items": {
+        "type": "object",
+        "required": ["block_id", "audio_path", "duration_sec"],
+        "additionalProperties": false,
+        "properties": {
+          "block_id": {
+            "type": "string",
+            "description": "References a block_id from script_manifest.json"
+          },
+          "audio_path": {
+            "type": "string",
+            "description": "Local path to the rendered narration audio for this block"
+          },
+          "duration_sec": {
+            "type": "number",
+            "minimum": 0,
+            "description": "MEASURED duration of audio_path -- e.g. via scripts/media_probe.py's probe(). Never an estimate."
+          }
+        }
+      }
+    }
+  }
+}
